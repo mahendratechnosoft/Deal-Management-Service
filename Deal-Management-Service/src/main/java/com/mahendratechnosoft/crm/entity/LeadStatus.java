@@ -1,13 +1,15 @@
 package com.mahendratechnosoft.crm.entity;
 
-import org.springframework.data.annotation.Id;
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 public class LeadStatus {
 
 	@Id
+	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String id;
 	private int companyId;
 	private String leadStatus;

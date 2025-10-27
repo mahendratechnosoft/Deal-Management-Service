@@ -3,13 +3,16 @@ package com.mahendratechnosoft.crm.entity;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.springframework.data.annotation.Id;
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
-@Entity// MongoDB collection name
+@Entity
 public class Lead {
 	@Id
+	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String id;
 	private Long companyId;
 	private Long employeeId;
@@ -30,6 +33,7 @@ public class Lead {
 //    private String zipcode;
 	private LocalDateTime createdDate;
 	private LocalDateTime updatedDate;
+	@Transient
 	private Map<String, Object> fields; // Flexible fields
 
 
