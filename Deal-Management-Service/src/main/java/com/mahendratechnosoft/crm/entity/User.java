@@ -14,8 +14,6 @@ public class User {
 	private String userId;
 	private String loginEmail;
 	private String password;
-	@Column(length = 500)
-	private String description;
 	private String role;
 	private LocalDateTime expiryDate;
 	
@@ -24,13 +22,12 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(String userId, String loginEmail, String password, String description, String role,
+	public User(String userId, String loginEmail, String password, String role,
 			LocalDateTime expiryDate) {
 		super();
 		this.userId = userId;
 		this.loginEmail = loginEmail;
 		this.password = password;
-		this.description = description;
 		this.role = role;
 		this.expiryDate = expiryDate;
 	}
@@ -58,15 +55,6 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getRole() {
 		return role;
 	}
@@ -85,7 +73,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", loginEmail=" + loginEmail + ", password=" + password + ", description="
-				+ description + ", role=" + role + ", expiryDate=" + expiryDate + "]";
+		return "User [userId=" + userId + ", loginEmail=" + loginEmail + ", password=" + password 
+				 + ", role=" + role + ", expiryDate=" + expiryDate + "]";
 	}
 }
