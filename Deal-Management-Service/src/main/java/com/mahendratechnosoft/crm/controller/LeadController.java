@@ -87,6 +87,12 @@ public class LeadController {
 		lead.setEmployeeId(dto.getEmployeeId());
 		lead.setClientName(dto.getClientName());
 		lead.setRevenue(dto.getRevenue());
+		lead.setStreet(dto.getStreet());
+		lead.setCountry(dto.getCountry());
+		lead.setState(dto.getState());
+		lead.setCity(dto.getCity());
+		lead.setZipCode(dto.getZipCode());
+		lead.setDescription(dto.getDescription());
 		leadRepository.save(lead);
 
 		// 3. Return updated columns and saved lead
@@ -145,7 +151,18 @@ public class LeadController {
 			leadColumn.setCompanyId("1");
 
 			lead.setFields(dto.getFields());
-			
+			lead.setStatus(dto.getStatus());
+			lead.setSource(dto.getSource());
+			lead.setAssignTo(dto.getAssignTo());
+			lead.setEmployeeId(dto.getEmployeeId());
+			lead.setClientName(dto.getClientName());
+			lead.setRevenue(dto.getRevenue());
+			lead.setStreet(dto.getStreet());
+			lead.setCountry(dto.getCountry());
+			lead.setState(dto.getState());
+			lead.setCity(dto.getCity());
+			lead.setZipCode(dto.getZipCode());
+			lead.setDescription(dto.getDescription());
 			leadRepository.save(lead);
 		//	leadColumnRepository.save(leadColumn);
 			

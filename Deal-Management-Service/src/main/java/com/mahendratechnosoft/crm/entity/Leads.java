@@ -23,7 +23,12 @@ public class Leads {
 	private String source;
 	private String clientName;
 	private Double revenue;
-	
+	private String street;
+	private String country;
+	private String state;
+	private String city;
+	private String zipCode;
+	private String description;
 
 	private LocalDateTime createdDate;
 	private LocalDateTime updatedDate;
@@ -137,6 +142,55 @@ public class Leads {
 	public void setRevenue(Double revenue) {
 		this.revenue = revenue;
 	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	
 	
 
