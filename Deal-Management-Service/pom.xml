@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mahendratechnosoft</groupId>
-	<artifactId>crm</artifactId>
+	<artifactId>Deal-Management-Service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Deal-Management-Service</name>
 	<description>Demo project for Spring Boot</description>
