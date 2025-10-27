@@ -3,43 +3,35 @@ package com.mahendratechnosoft.crm.entity;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
 
 @Entity
-public class Lead {
+public class Leads {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String id;
-	private Long companyId;
-	private Long employeeId;
+	private String companyId;
+	private String employeeId;
 	private String assignTo;
 	private String status;
 	private String source;
-
-//    private String name;
-//    private String companyName;
-//    private String phoneNumber;
-//    private String email;
-
-//    private String assignTo;
-//    private String address;
-//    private String country;
-//    private String state;
-//    private String city;
-//    private String zipcode;
-	private LocalDateTime createdDate;
-	private LocalDateTime updatedDate;
-	@Transient
-	private Map<String, Object> fields; // Flexible fields
-
-
+	private String clientName;
+	private Double revenue;
 	
 
-	public Lead(String id, Long companyId, Long employeeId, String assignTo, String status, String source,
+	private LocalDateTime createdDate;
+	private LocalDateTime updatedDate;
+	@Column(columnDefinition = "json")
+	@JdbcTypeCode(SqlTypes.JSON)
+	private Map<String, Object> fields;
+
+	public Leads(String id, String companyId, String employeeId, String assignTo, String status, String source,
 			LocalDateTime createdDate, LocalDateTime updatedDate, Map<String, Object> fields) {
 		super();
 		this.id = id;
@@ -53,7 +45,7 @@ public class Lead {
 		this.fields = fields;
 	}
 
-	public Lead() {
+	public Leads() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -74,19 +66,19 @@ public class Lead {
 		this.fields = fields;
 	}
 
-	public Long getCompanyId() {
+	public String getCompanyId() {
 		return companyId;
 	}
 
-	public void setCompanyId(Long companyId) {
+	public void setCompanyId(String companyId) {
 		this.companyId = companyId;
 	}
 
-	public Long getEmployeeId() {
+	public String getEmployeeId() {
 		return employeeId;
 	}
 
-	public void setEmployeeId(Long employeeId) {
+	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
 
@@ -130,5 +122,22 @@ public class Lead {
 		this.source = source;
 	}
 
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public Double getRevenue() {
+		return revenue;
+	}
+
+	public void setRevenue(Double revenue) {
+		this.revenue = revenue;
+	}
 	
+	
+
 }

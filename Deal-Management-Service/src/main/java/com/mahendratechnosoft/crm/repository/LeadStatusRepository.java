@@ -10,6 +10,6 @@ import com.mahendratechnosoft.crm.entity.LeadStatus;
 @Repository
 public interface LeadStatusRepository extends JpaRepository<LeadStatus, String>{
 	
-	List<LeadStatus> findByCompanyId(int companyId);
+	List<LeadStatus> findByCompanyId(String companyId);
 
 }

@@ -61,7 +61,7 @@ public class MainConfig {
                  http.cors()  //enabel cros
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**","/lead/**").hasRole("ADMIN")
                 .requestMatchers("/employee/**").hasRole("EMP")
                 .requestMatchers("/super/**").hasRole("SUPERADMIN")
 

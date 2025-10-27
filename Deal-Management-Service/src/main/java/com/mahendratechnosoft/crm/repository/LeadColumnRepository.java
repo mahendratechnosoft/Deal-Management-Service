@@ -7,5 +7,5 @@ import com.mahendratechnosoft.crm.entity.LeadColumn;
 @Repository
 public interface LeadColumnRepository extends JpaRepository<LeadColumn, String> {
  
-	LeadColumn findByCompanyId(int companyId);
+	LeadColumn findByCompanyId(String companyId);
 }
