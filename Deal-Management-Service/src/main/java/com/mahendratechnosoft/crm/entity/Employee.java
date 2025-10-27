@@ -7,16 +7,29 @@ import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 @Entity
 public class Employee {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String employeeId;
-	private String userId;
-	private String adminId;
-	private String loginEmail;
+//	private String userId;
+//	private String adminId;
+//	private String loginEmail;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
+	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "admin_id", referencedColumnName = "adminId")
+	private Admin admin;
+	
 	private String name;
 	private String phone;
 	private String address;
@@ -34,13 +47,14 @@ public class Employee {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Employee(String employeeId, String userId, String adminId, String loginEmail, String name, String phone,
-			String address, String gender, String description, byte[] profileImage) {
+	
+
+	public Employee(String employeeId, User user, Admin admin, String name, String phone, String address, String gender,
+			String description, byte[] profileImage) {
 		super();
 		this.employeeId = employeeId;
-		this.userId = userId;
-		this.adminId = adminId;
-		this.loginEmail = loginEmail;
+		this.user = user;
+		this.admin = admin;
 		this.name = name;
 		this.phone = phone;
 		this.address = address;
@@ -49,36 +63,14 @@ public class Employee {
 		this.profileImage = profileImage;
 	}
 
+
+
 	public String getEmployeeId() {
 		return employeeId;
 	}
 
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getAdminId() {
-		return adminId;
-	}
-
-	public void setAdminId(String adminId) {
-		this.adminId = adminId;
-	}
-
-	public String getLoginEmail() {
-		return loginEmail;
-	}
-
-	public void setLoginEmail(String loginEmail) {
-		this.loginEmail = loginEmail;
 	}
 
 	public String getName() {
@@ -129,12 +121,40 @@ public class Employee {
 		this.profileImage = profileImage;
 	}
 
+
+
+	public User getUser() {
+		return user;
+	}
+
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
+
+	public Admin getAdmin() {
+		return admin;
+	}
+
+
+
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
+	}
+
+
+
 	@Override
 	public String toString() {
-		return "Employee [employeeId=" + employeeId + ", userId=" + userId + ", adminId=" + adminId + ", loginEmail="
-				+ loginEmail + ", name=" + name + ", phone=" + phone + ", address=" + address + ", gender=" + gender
-				+ ", description=" + description + ", profileImage=" + Arrays.toString(profileImage) + "]";
+		return "Employee [employeeId=" + employeeId + ", user=" + user + ", admin=" + admin + ", name=" + name
+				+ ", phone=" + phone + ", address=" + address + ", gender=" + gender + ", description=" + description
+				+ ", profileImage=" + Arrays.toString(profileImage) + "]";
 	}
+
+	
 
 	
 }

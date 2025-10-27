@@ -1,14 +1,14 @@
 package com.mahendratechnosoft.crm.dto;
 
-public class AuthRequestDto {
+public class AdminRegistrationDto {
 	private String username;
     private String password;
     
-	public AuthRequestDto() {
+	public AdminRegistrationDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public AuthRequestDto(String username, String password) {
+	public AdminRegistrationDto(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
-import com.mahendratechnosoft.crm.dto.AuthRequestDto;
+import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
@@ -43,20 +43,25 @@ public class HomeController {
     
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody AuthRequestDto authRequest) {
-        userService.saveUser(authRequest.getUsername(), authRequest.getPassword());
-        return ResponseEntity.ok("User registered successfully!");
+    public ResponseEntity<String> registerUser(@RequestBody AdminRegistrationDto registrationDto) {
+        try {
+            userService.registerAdmin(registrationDto);
+            return ResponseEntity.ok("Admin registered successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body("Registration failed: " + e.getMessage());
+        }
     }
     
     @PostMapping("/signin")
-    public ResponseEntity<?> generateToken(@RequestBody AuthRequestDto authRequest) {
+    public ResponseEntity<?> generateToken(@RequestBody AdminRegistrationDto adminRegistrationDto) {
         try {
         	
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(adminRegistrationDto.getUsername(), adminRegistrationDto.getPassword())
             );
-            final UserDetails userDetails = userDetailServiceImp.loadUserByUsername(authRequest.getUsername());
-            User user = userRepository.findByLoginEmail(authRequest.getUsername());
+            final UserDetails userDetails = userDetailServiceImp.loadUserByUsername(adminRegistrationDto.getUsername());
+            User user = userRepository.findByLoginEmail(adminRegistrationDto.getUsername());
             
             final String token = jwtUtil.generateToken(userDetails);
             
