@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +17,11 @@ import org.springframework.security.core.Authentication;
 
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
+import com.mahendratechnosoft.crm.dto.EmployeeUpdateDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
-import com.mahendratechnosoft.crm.service.AdminService;
+import com.mahendratechnosoft.crm.service.EmployeeService;
 
 
 @RestController
@@ -30,7 +32,7 @@ public class AdminController {
     private AdminRepository adminRepository;
 	
 	@Autowired
-	private AdminService adminService;
+	private EmployeeService employeeService;
     
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -79,9 +81,18 @@ public class AdminController {
             @ModelAttribute("admin") Admin admin,
             @RequestBody EmployeeRegistrationDto employeeRequest) {
         
-    	Employee newEmployee = adminService.createEmployee(employeeRequest, admin);
+    	Employee newEmployee = employeeService.createEmployee(employeeRequest, admin);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(newEmployee);
+    }
+    
+    @PutMapping("/updateEmployee")
+    public ResponseEntity<Employee> updateEmployeeByAdmin(
+    		@ModelAttribute("admin") Admin admin,
+            @RequestBody Employee updateRequest) {
+        updateRequest.setAdmin(admin);
+        Employee updatedEmployee = employeeService.updateEmployee(updateRequest);
+        return ResponseEntity.ok(updatedEmployee);
     }
 
 }

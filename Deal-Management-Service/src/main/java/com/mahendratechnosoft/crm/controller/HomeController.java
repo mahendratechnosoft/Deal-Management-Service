@@ -61,7 +61,7 @@ public class HomeController {
                 new UsernamePasswordAuthenticationToken(adminRegistrationDto.getUsername(), adminRegistrationDto.getPassword())
             );
             final UserDetails userDetails = userDetailServiceImp.loadUserByUsername(adminRegistrationDto.getUsername());
-            User user = userRepository.findByLoginEmail(adminRegistrationDto.getUsername());
+            User user = userRepository.findByLoginEmail(adminRegistrationDto.getUsername()).get();
             
             final String token = jwtUtil.generateToken(userDetails);
             

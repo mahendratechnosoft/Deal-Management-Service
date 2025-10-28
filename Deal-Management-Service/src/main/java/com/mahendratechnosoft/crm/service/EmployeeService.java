@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
+import com.mahendratechnosoft.crm.dto.EmployeeUpdateDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.User;
@@ -18,10 +19,7 @@ import com.mahendratechnosoft.crm.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class AdminService {
-	
-	@Autowired
-	private AdminRepository adminRepository;
+public class EmployeeService {
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -77,4 +75,9 @@ public class AdminService {
         // 7. Return the safe DTO
         return savedEmployee;
     }
+	
+	public Employee updateEmployee(Employee employee) {
+	    Employee savedEmployee = employeeRepository.save(employee);
+	    return savedEmployee;
+	}
 }
