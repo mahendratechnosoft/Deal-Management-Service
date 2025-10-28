@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +12,6 @@ import com.mahendratechnosoft.crm.entity.Leads;
 public interface LeadRepository extends JpaRepository<Leads, String> {
 
 	Page<Leads> findByCompanyIdOrderByIdDesc(String companyId,Pageable pageable);
+	
+	List<Leads> findByCompanyId(String companyId);
 }

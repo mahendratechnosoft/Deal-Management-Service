@@ -203,23 +203,15 @@ public class LeadController {
 		}
 	}
 	
-	
-	
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/deleteLead/{id}")
 	public String deleteLead(@PathVariable String id) {
 		leadRepository.deleteById(id);
 		return "Lead deleted: " + id;
 	}
-
-	@PostMapping("/createColumn")
-	public LeadColumn createColumn(@RequestBody LeadColumn leadColumn) {
-		leadColumn.setCompanyId("1");
-		return leadColumnRepository.save(leadColumn);
-	}
 	
 	// Lead Colums APi as follows
-
+	
 	@GetMapping("/getAllColumns")
 	public ResponseEntity<?> getAllColumns() {
 		try {
@@ -231,35 +223,67 @@ public class LeadController {
 		}
 	}
 
-//	@PutMapping("/leadColumnRename")
-//	public ResponseEntity<?> renameColumn(@RequestBody Map<String, String> renameRequest) {
-//
-//		try {
-//			String oldName = renameRequest.get("oldName");
-//			String newName = renameRequest.get("newName");
-//
-//			LeadColumn column = leadColumnRepository.findByCompanyId("1");
-//
-//			column.getColumns().forEach(c -> {
-//				if (c.getName().equals(oldName)) {
-//					c.setName(newName);
-//				}
-//			});
-//
-//			leadColumnRepository.save(column);
-//			
-//			Query query = new Query(Criteria.where("companyId").is("1"));
-//			Update update = new Update().rename("fields." + oldName, "fields." + newName);
-//			mongoTemplate.updateMulti(query, update, Lead.class);
-//			
-//			return ResponseEntity.ok(column);
-//
-//		} catch (Exception e) {
-//
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
-//		}
-//
-//	}
+	@PostMapping("/updateLeadColumn")
+	public LeadColumn createColumn(@RequestBody LeadColumn leadColumn) {
+        LeadColumn leadColumnInfo=leadColumnRepository.findByCompanyId("1");
+        if(leadColumnInfo==null) {
+        	LeadColumn leadColumnNew=new LeadColumn();
+        	
+        	leadColumnNew.setCompanyId("1");
+        	leadColumnNew.setColumns(leadColumn.getColumns());
+        	
+        	return leadColumnRepository.save(leadColumnNew);
+        	
+        }else {
+        	 leadColumnInfo.setColumns(leadColumn.getColumns());
+     		return leadColumnRepository.save(leadColumnInfo);
+        }
+       
+	}
+	
+
+
+	@PutMapping("/leadColumnRename")
+	public ResponseEntity<?> renameColumn(@RequestBody Map<String, String> renameRequest) {
+
+		try {
+			String oldName = renameRequest.get("oldName");
+			String newName = renameRequest.get("newName");
+
+			LeadColumn column = leadColumnRepository.findByCompanyId("1");
+
+			column.getColumns().forEach(c -> {
+				if (c.getName().equals(oldName)) {
+					c.setName(newName);
+				}
+			});
+
+			leadColumnRepository.save(column);
+			
+			
+			// 3️⃣ Update all Leads JSON field keys for this company
+	        List<Leads> leadsList = leadRepository.findByCompanyId("1");
+	        for (Leads lead : leadsList) {
+	            Map<String, Object> fields = lead.getFields();
+	            if (fields != null && fields.containsKey(oldName)) {
+	                Object value = fields.remove(oldName);
+	                fields.put(newName, value);
+	                lead.setFields(fields);
+	            }
+	        }
+	        leadRepository.saveAll(leadsList);
+
+	        return ResponseEntity.ok("Column renamed successfully and leads updated.");
+			
+			
+			
+
+		} catch (Exception e) {
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+
+	}
 
 	@PutMapping("/leadColumnSequence")
 	public LeadColumn updateColumnSequence(
@@ -283,30 +307,40 @@ public class LeadController {
 	}
 	
 	
-//	@DeleteMapping("/deletColumn/{columnName}")
-//	public ResponseEntity<String> deleteColumn(
-//	        @PathVariable String columnName) {
-//
-//	    // 1. Find and update column sequence
-//	    LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
-//	    if (leadColumn == null) {
-//	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//	                .body("No column metadata found for company " + "1");
-//	    }
-//	    boolean removed = leadColumn.getColumns().removeIf(col -> col.getName().equalsIgnoreCase(columnName));
-//	    if (!removed) {
-//	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//	                .body("Column '" + columnName + "' not found");
-//	    }
-//	    leadColumnRepository.save(leadColumn);
-//
-//	    // 2. Use MongoTemplate to unset the field from all leads in one go
-//	    Query query = new Query(Criteria.where("companyId").is("1"));
-//	    Update update = new Update().unset("fields." + columnName);
-//	    mongoTemplate.updateMulti(query, update, Lead.class);
-//
-//	    return ResponseEntity.ok("Column '" + columnName + "' deleted successfully");
-//	}
+	@DeleteMapping("/deleteColumn")
+	public ResponseEntity<String> deleteColumn(@RequestBody Map<String, String> renameRequest) {
+		
+		String columnName = renameRequest.get("columnName");
+
+	    // 1. Find and update column sequence
+	    LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+	    if (leadColumn == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body("No column metadata found for company " + "1");
+	    }
+	    boolean removed = leadColumn.getColumns().removeIf(col -> col.getName().equalsIgnoreCase(columnName));
+	    if (!removed) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body("Column '" + columnName + "' not found");
+	    }
+	    leadColumnRepository.save(leadColumn);
+	    
+	    
+	    // 2️⃣ Delete this column key from every lead’s JSON fields
+        List<Leads> leadsList = leadRepository.findByCompanyId("1");
+        for (Leads lead : leadsList) {
+            Map<String, Object> fields = lead.getFields();
+            if (fields != null && fields.containsKey(columnName)) {
+                fields.remove(columnName);
+                lead.setFields(fields);
+            }
+        }
+        leadRepository.saveAll(leadsList);
+
+
+
+	    return ResponseEntity.ok("Column '" + columnName + "' deleted successfully");
+	}
 
 	
 	// lead status APIs
