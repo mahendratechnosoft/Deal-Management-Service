@@ -14,6 +14,13 @@ public class LeadWithColumnsDTO {
 	private String assignTo;
 	private String clientName;
 	private Double revenue;
+	private String mobileNumber;
+	private String phoneNumber;
+	private String email;
+	private String website;
+	private String industry;
+	private String priority;
+	private boolean converted;
 	private String street;
 	private String country;
 	private String state;
@@ -132,6 +139,62 @@ public class LeadWithColumnsDTO {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public boolean isConverted() {
+		return converted;
+	}
+
+	public void setConverted(boolean converted) {
+		this.converted = converted;
 	}
 	
 	
