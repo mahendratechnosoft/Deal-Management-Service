@@ -62,7 +62,7 @@ public class MainConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/admin/**","/lead/**").hasRole("ADMIN")
-                .requestMatchers("/employee/**").hasRole("EMP")
+                .requestMatchers("/employee/**").hasRole("EMPLOYEE")
                 .requestMatchers("/super/**").hasRole("SUPERADMIN")
 
                 .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register").permitAll()

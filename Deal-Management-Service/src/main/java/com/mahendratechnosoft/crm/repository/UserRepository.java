@@ -7,4 +7,6 @@ import com.mahendratechnosoft.crm.entity.User;
 public interface UserRepository extends JpaRepository<User, String> {
 	
 	User findByLoginEmail(String loginEmail);
+
+	boolean existsByLoginEmail(String loginEmail);
 }

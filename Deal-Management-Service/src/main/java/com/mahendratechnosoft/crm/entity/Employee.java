@@ -1,8 +1,5 @@
 package com.mahendratechnosoft.crm.entity;
 
-
-import java.util.Arrays;
-
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
@@ -12,19 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 @Entity
 public class Employee {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String employeeId;
-//	private String userId;
-//	private String adminId;
-//	private String loginEmail;
-	
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
-	private User user;
+	private String loginEmail;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "admin_id", referencedColumnName = "adminId")
@@ -47,13 +37,11 @@ public class Employee {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-
-	public Employee(String employeeId, User user, Admin admin, String name, String phone, String address, String gender,
-			String description, byte[] profileImage) {
+	public Employee(String employeeId, String loginEmail,Admin admin, String name, String phone,
+			String address, String gender, String description, byte[] profileImage) {
 		super();
 		this.employeeId = employeeId;
-		this.user = user;
+		this.loginEmail = loginEmail;
 		this.admin = admin;
 		this.name = name;
 		this.phone = phone;
@@ -63,14 +51,28 @@ public class Employee {
 		this.profileImage = profileImage;
 	}
 
-
-
 	public String getEmployeeId() {
 		return employeeId;
 	}
 
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
+	}
+
+	public String getLoginEmail() {
+		return loginEmail;
+	}
+
+	public void setLoginEmail(String loginEmail) {
+		this.loginEmail = loginEmail;
+	}
+
+	public Admin getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
 	}
 
 	public String getName() {
@@ -120,41 +122,5 @@ public class Employee {
 	public void setProfileImage(byte[] profileImage) {
 		this.profileImage = profileImage;
 	}
-
-
-
-	public User getUser() {
-		return user;
-	}
-
-
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
-
-	public Admin getAdmin() {
-		return admin;
-	}
-
-
-
-	public void setAdmin(Admin admin) {
-		this.admin = admin;
-	}
-
-
-
-	@Override
-	public String toString() {
-		return "Employee [employeeId=" + employeeId + ", user=" + user + ", admin=" + admin + ", name=" + name
-				+ ", phone=" + phone + ", address=" + address + ", gender=" + gender + ", description=" + description
-				+ ", profileImage=" + Arrays.toString(profileImage) + "]";
-	}
-
-	
-
 	
 }
