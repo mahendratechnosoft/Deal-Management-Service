@@ -3,19 +3,23 @@ package com.mahendratechnosoft.crm.controller;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.Authentication;
 
-import com.mahendratechnosoft.crm.dto.AdminInfoDto;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
+import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.service.AdminService;
 
 
 @RestController
@@ -24,6 +28,9 @@ public class AdminController {
 	
 	@Autowired
     private AdminRepository adminRepository;
+	
+	@Autowired
+	private AdminService adminService;
     
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -32,18 +39,17 @@ public class AdminController {
         }
         
         String loginEmail = authentication.getName();
-        return adminRepository.findByUser_LoginEmail(loginEmail)
+        return adminRepository.findByLoginEmail(loginEmail)
                 .orElseThrow(() -> new RuntimeException("Admin profile not found for user: " + loginEmail));
     }
     
     @GetMapping("/getAdminInfo")
-    public ResponseEntity<AdminInfoDto> getAdminInfo(@ModelAttribute("admin") Admin admin) {
-    	AdminInfoDto dto = new AdminInfoDto(admin);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<Admin> getAdminInfo(@ModelAttribute("admin") Admin admin) {
+        return ResponseEntity.ok(admin);
     }
     
     @PutMapping("/updateAdminInfo") // Note: Different path
-    public ResponseEntity<AdminInfoDto> updateAdminInfo(
+    public ResponseEntity<Admin> updateAdminInfo(
             @ModelAttribute("admin") Admin adminToUpdate,
             @RequestBody AdminUpdateDto updateDto) {
 
@@ -65,7 +71,17 @@ public class AdminController {
         }
 
         Admin updatedAdmin = adminRepository.save(adminToUpdate);
-        return ResponseEntity.ok(new AdminInfoDto(updatedAdmin));
+        return ResponseEntity.ok(updatedAdmin);
+    }
+    
+    @PostMapping("/createEmployee")
+    public ResponseEntity<Employee> createEmployee(
+            @ModelAttribute("admin") Admin admin,
+            @RequestBody EmployeeRegistrationDto employeeRequest) {
+        
+    	Employee newEmployee = adminService.createEmployee(employeeRequest, admin);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(newEmployee);
     }
 
 }

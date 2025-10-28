@@ -1,11 +1,8 @@
 package com.mahendratechnosoft.crm.entity;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.hibernate.annotations.UuidGenerator;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,18 +11,17 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 @Entity
 public class Admin {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String adminId;
-//	private String userId;
 	private String loginEmail;
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
-	private User user;
+	
+	@OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 	
 	private String name;
 	private String phone;
@@ -39,9 +35,6 @@ public class Admin {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] logo;
 	
-	@OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<Employee> employees = new HashSet<>();
-	
 	public Admin() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -49,7 +42,7 @@ public class Admin {
 
 
 	public Admin(String adminId, String loginEmail, User user, String name, String phone, String address,
-			String companyName, String description, byte[] logo, Set<Employee> employees) {
+			String companyName, String description, byte[] logo) {
 		super();
 		this.adminId = adminId;
 		this.loginEmail = loginEmail;
@@ -60,7 +53,6 @@ public class Admin {
 		this.companyName = companyName;
 		this.description = description;
 		this.logo = logo;
-		this.employees = employees;
 	}
 
 	public String getAdminId() {
@@ -126,14 +118,6 @@ public class Admin {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-	public Set<Employee> getEmployees() {
-		return employees;
-	}
-
-	public void setEmployees(Set<Employee> employees) {
-		this.employees = employees;
-	}
 	
 	public String getLoginEmail() {
 		return loginEmail;
@@ -143,13 +127,4 @@ public class Admin {
 	public void setLoginEmail(String loginEmail) {
 		this.loginEmail = loginEmail;
 	}
-
-	@Override
-	public String toString() {
-		return "Admin [adminId=" + adminId + ", loginEmail=" + loginEmail + ", user=" + user + ", name=" + name
-				+ ", phone=" + phone + ", address=" + address + ", companyName=" + companyName + ", description="
-				+ description + ", logo=" + Arrays.toString(logo) + ", employees=" + employees + "]";
-	}
-
-
 }
