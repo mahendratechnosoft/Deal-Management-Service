@@ -24,6 +24,8 @@ public class Leads {
 	private String status;
 	private String source;
 	private String clientName;
+	private String companyName;
+	private String accountId;
 	private Double revenue;
 	private String mobileNumber;
 	private String phoneNumber;
@@ -266,6 +268,22 @@ public class Leads {
 
 	public void setColumns(List<LeadColumn.ColumnDefinition> columns) {
 		this.columns = columns;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 	
 

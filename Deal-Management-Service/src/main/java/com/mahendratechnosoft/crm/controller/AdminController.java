@@ -153,11 +153,24 @@ public class AdminController {
 	}
 	
 	
+	@GetMapping("/getLeadById/{leadId}")
+	public ResponseEntity<?> getLeadById(@PathVariable String leadId) {
+		
+		return leadService.getLeadById(leadId);
+	}
+	
+
+	@DeleteMapping("/deleteLead/{id}")
+	public String deleteLead(@PathVariable String id) {
+		
+		return leadService.deleteLead(id);
+	}
+	
 	
 	@GetMapping("/getAllLeads/{page}/{size}")
-	public ResponseEntity<?> getAllLeads(@ModelAttribute("admin") Admin admin,@PathVariable int page ,@PathVariable int size) {
+	public ResponseEntity<?> getAllLeads(@ModelAttribute("admin") Admin admin,@PathVariable int page ,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) String leadStatus) {
 
-	  return  leadService.getAllLeads(page, size,admin);
+	  return  leadService.getAllLeads(page, size,admin,leadStatus,search);
 	}
     
 	@PutMapping("/updateLead")
@@ -165,6 +178,16 @@ public class AdminController {
 		lead.setAdminId(admin.getAdminId());
 		return leadService.updateLead(lead);
 	}
+	
+	
+	@PutMapping("/updateLeadStatus")
+	public ResponseEntity<?> updateLeadStatus(@RequestBody Map<String, String> request) {
+		String leadId = request.get("leadId");
+		String status = request.get("status");
+		return leadService.updateLeadStatus(leadId,status);
+	}
+	
+	
 	
 	
 	// lead status APIs

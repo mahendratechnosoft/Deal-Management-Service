@@ -1,10 +1,12 @@
 package com.mahendratechnosoft.crm.service;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,9 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.mahendratechnosoft.crm.dto.LeadWithColumnsDTO;
 import com.mahendratechnosoft.crm.entity.Admin;
-import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadColumn;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
@@ -90,10 +90,9 @@ public class LeadService {
 	}
 
 	
-	public ResponseEntity<?> getAllLeads(@PathVariable int page ,@PathVariable int size,Object loginUser) {
+	public ResponseEntity<?> getAllLeads(int page ,int size,Object loginUser,String leadStatus,String search) {
 
 	    try {
-	    	
 	    	  String role = "ROLE_EMPLOYEE";
 	          String adminId = null;
 	          String employeeId=null;
@@ -111,6 +110,7 @@ public class LeadService {
 	    	
 	        // 1. Fetch column metadata for company
 	        LeadColumn leadColumn = leadColumnRepository.findByAdminId(adminId);
+	        
 	        List<LeadColumn.ColumnDefinition> sortedColumns=null ;
 	        if(leadColumn!=null) {
 	        	sortedColumns=  leadColumn.getColumns()
@@ -122,22 +122,48 @@ public class LeadService {
 
 	        // 2. Fetch paginated leads for company
 	        Pageable pageable = PageRequest.of(page, size);
-	        
+	        List<Object[]> countAndStatus = null;
 	        if(role.equals("ROLE_ADMIN")){
-	        	leadPage = leadRepository.findByAdminIdOrderByIdDesc(adminId, pageable);
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
  
 	        }else {
 	        	
-	        	leadPage = leadRepository.findByEmployeeIdOrderByIdDesc(employeeId, pageable);
+	        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,search, pageable);
+	        	countAndStatus = leadRepository.countLeadsByStatusByEmployeeId(employeeId);
 	        }
 	        
+	        String statuses = "New Lead,Contacted,Qualified,Proposal,Negotiation,Won,Lost";
+
+	     // Convert to List for easy iteration
+	     List<String> allStatuses = Arrays.asList(statuses.split(","));
+
+	     // Step 1: Create a Map from DB results for quick lookup
+	     Map<String, Long> statusCountMap = new HashMap<>();
+	     for (Object[] row : countAndStatus) {
+	         String status = (String) row[0];
+	         Long totalLeads = ((Number) row[1]).longValue();
+	         statusCountMap.put(status, totalLeads);
+	     }
+
+	     // Step 2: Build final response (always include all statuses)
+	     List<Map<String, Object>> countAndStatusResponse = new ArrayList<>();
+
+	     for (String status : allStatuses) {
+	         Map<String, Object> map = new LinkedHashMap<>();
+	         map.put("status", status);
+	         map.put("count", statusCountMap.getOrDefault(status, 0L));
+	         countAndStatusResponse.add(map);
+	     }
 
 	        // 3. Prepare response
-	        Map<String, Object> response = new HashMap<>();
+	        Map<String, Object> response = new LinkedHashMap<>();
+	        
 	        response.put("columnSequence", sortedColumns);
+	        response.put("statusAndCount", countAndStatusResponse);
 	        response.put("leadList", leadPage.getContent());
 	        response.put("currentPage", leadPage.getNumber());
-	      //  response.put("totalItems", leadPage.getTotalElements());
+	        response.put("totalLeads", leadPage.getTotalElements());
 	        response.put("totalPages", leadPage.getTotalPages());
 
 	        return ResponseEntity.ok(response);
@@ -151,8 +177,8 @@ public class LeadService {
 
 
 
-	@PutMapping("/updateLead")
-	public ResponseEntity<?> updateLead( @RequestBody Leads lead) {
+	
+	public ResponseEntity<?> updateLead(  Leads lead) {
 		try {
 			Map<String,Object> leadInfo=new HashMap<>();
 			LeadColumn leadColumn = leadColumnRepository.findByAdminId(lead.getAdminId());
@@ -183,8 +209,8 @@ public class LeadService {
 		}
 	}
 	
-	@GetMapping("/getLeadById/{leadId}")
-	public ResponseEntity<?> getLeadById(@PathVariable String leadId) {
+	
+	public ResponseEntity<?> getLeadById(String leadId) {
 		try {
 			
 			Map<String,Object> leadInfo=new HashMap<>();
@@ -209,8 +235,25 @@ public class LeadService {
 		}
 	}
 	
+	
+	
+	public ResponseEntity<?> updateLeadStatus(String leadId, String status) {
+		try {
+			Optional<Leads> optionalLead = leadRepository.findById(leadId);
+			Leads lead = optionalLead.get();
+			lead.setStatus(status);
 
-	@DeleteMapping("/deleteLead/{id}")
+			leadRepository.save(lead);
+			return ResponseEntity.ok(lead);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
+	
+
 	public String deleteLead(@PathVariable String id) {
 		leadRepository.deleteById(id);
 		return "Lead deleted: " + id;

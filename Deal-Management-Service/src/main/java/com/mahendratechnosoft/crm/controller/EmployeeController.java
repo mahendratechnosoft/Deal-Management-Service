@@ -1,8 +1,11 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
@@ -100,15 +103,34 @@ public class EmployeeController {
 		
 		
 		@GetMapping("/getAllLeads/{page}/{size}")
-		public ResponseEntity<?> getAllLeads(@ModelAttribute("employee") Employee employee,@PathVariable int page ,@PathVariable int size) {
+		public ResponseEntity<?> getAllLeads(@ModelAttribute("employee") Employee employee,@PathVariable int page ,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) String leadStatus) {
 
-		  return  leadService.getAllLeads(page, size,employee);
+		  return  leadService.getAllLeads(page, size,employee,leadStatus,search);
 		}
 	    
 		@PutMapping("/updateLead")
 		public ResponseEntity<?> updateLead( @ModelAttribute("employee") Employee employee,@RequestBody Leads lead) {
 			lead.setAdminId(employee.getAdmin().getAdminId());
 			return leadService.updateLead(lead);
+		}
+		
+		@GetMapping("/getLeadById/{leadId}")
+		public ResponseEntity<?> getLeadById(@PathVariable String leadId) {
+			
+			return leadService.getLeadById(leadId);
+		}
+		
+		@DeleteMapping("/deleteLead/{id}")
+		public String deleteLead(@PathVariable String id) {
+			
+			return leadService.deleteLead(id);
+		}
+		
+		@PutMapping("/updateLeadStatus")
+		public ResponseEntity<?> updateLeadStatus(@RequestBody Map<String, String> request) {
+			String leadId = request.get("leadId");
+			String status = request.get("status");
+			return leadService.updateLeadStatus(leadId,status);
 		}
 		
     
