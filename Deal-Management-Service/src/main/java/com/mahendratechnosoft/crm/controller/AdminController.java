@@ -5,6 +5,7 @@ import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,14 +14,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.Authentication;
 
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
-import com.mahendratechnosoft.crm.dto.EmployeeUpdateDto;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 
 
@@ -33,7 +34,9 @@ public class AdminController {
 	
 	@Autowired
 	private EmployeeService employeeService;
-    
+	
+	@Autowired
+	private DealsService dealsService;
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
         if (authentication == null) {
@@ -43,6 +46,7 @@ public class AdminController {
         String loginEmail = authentication.getName();
         return adminRepository.findByLoginEmail(loginEmail)
                 .orElseThrow(() -> new RuntimeException("Admin profile not found for user: " + loginEmail));
+        
     }
     
     @GetMapping("/getAdminInfo")
@@ -94,5 +98,33 @@ public class AdminController {
         Employee updatedEmployee = employeeService.updateEmployee(updateRequest);
         return ResponseEntity.ok(updatedEmployee);
     }
+    
+    
+    // deals APIs
+    
+	@PostMapping("/createDeals")
+	public ResponseEntity<?> createDeals(@ModelAttribute("admin") Admin admin, @RequestBody Deals requestBody) {
+		requestBody.setAdminId(admin.getAdminId());
+
+		return dealsService.createDeals(requestBody);
+
+	}
+	
+	
+	@PostMapping("/updateDeals")
+	public ResponseEntity<?> updateDeals(@ModelAttribute("admin") Admin admin, @RequestBody Deals requestBody) {
+		requestBody.setAdminId(admin.getAdminId());
+
+		return dealsService.updateDeals(requestBody);
+
+	}
+	
+	@GetMapping("/getAllDeals/{page}/{size}")
+	public ResponseEntity<?> getAllDeals(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size) {
+
+		return dealsService.getAllDeals(page ,size,admin);
+
+	}
+    
 
 }
