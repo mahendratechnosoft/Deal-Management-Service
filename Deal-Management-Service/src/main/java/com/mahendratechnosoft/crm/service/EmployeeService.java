@@ -2,8 +2,11 @@ package com.mahendratechnosoft.crm.service;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -78,4 +81,20 @@ public class EmployeeService {
 	    Employee savedEmployee = employeeRepository.save(employee);
 	    return savedEmployee;
 	}
+	
+	public Page<Employee> getEmployeesByAdmin(Admin admin, String searchTerm, Pageable pageable) {
+        
+        // Simply call the new repository method
+        return employeeRepository.findByAdminWithPagination(admin, searchTerm, pageable);
+    }
+	
+	public Employee getEmployeeById(String employeeId) {
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + employeeId));
+    }
+	
+	public boolean emailExists(String email) {
+        return employeeRepository.existsByLoginEmail(email);
+    }
 }
+	

@@ -1,9 +1,16 @@
 package com.mahendratechnosoft.crm.controller;
 
 import java.util.Base64;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
@@ -203,5 +211,42 @@ public class AdminController {
 	}
 		
 	
+    
+    @GetMapping("/getAllEmployees/{page}/{size}")
+    public ResponseEntity<?> getEmployees(
+            @ModelAttribute("admin") Admin admin,
+            @PathVariable int page,
+            @PathVariable int size,
+            @RequestParam(name = "search", required = false) String searchTerm
+            ) {
+    	Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "employeeId"));
+        Page<Employee> employeePage = employeeService.getEmployeesByAdmin(admin, searchTerm, pageable);
+        Map<String, Object> response = new HashMap<>();
+        response.put("employeeList", employeePage.getContent());
+        response.put("currentPage", employeePage.getNumber());
+        response.put("totalItems", employeePage.getTotalElements());
+        response.put("totalPages", employeePage.getTotalPages());
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/getEmployeeById/{employeeId}")
+    public ResponseEntity<?> getEmployeeByIdByAdmin(
+            @ModelAttribute("admin") Admin admin,
+            @PathVariable String employeeId) {
+        try {
+            Employee employee = employeeService.getEmployeeById(employeeId);
 
+            // Optional: Check if employee belongs to the same admin (security measure)
+            if (employee.getAdmin() != null && !employee.getAdmin().getAdminId().equals(admin.getAdminId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("You are not authorized to access this employee's details.");
+            }
+    
+            return ResponseEntity.ok(employee);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred while fetching employee details.");
+        }
+    }
+    
 }

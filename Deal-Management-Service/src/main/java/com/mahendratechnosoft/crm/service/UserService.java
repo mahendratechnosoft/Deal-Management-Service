@@ -46,4 +46,8 @@ public class UserService {
         admin.setUser(savedUser);
         adminRepository.save(admin);
     }
+    
+    public boolean emailExists(String email) {
+        return userRepository.existsByLoginEmail(email);
+    }
 }
