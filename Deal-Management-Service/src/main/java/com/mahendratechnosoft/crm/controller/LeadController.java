@@ -60,9 +60,9 @@ public class LeadController {
 
 
 	@PostMapping("/createLead")
-	public Leads createLead(@RequestBody LeadWithColumnsDTO dto) {
+	public Leads createLead(@RequestBody Leads dto) {
 		// 1. Save or update LeadColumn sequence
-		LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+		LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 
 		if (leadColumn == null) {
 			leadColumn = new LeadColumn();
@@ -72,13 +72,13 @@ public class LeadController {
 			leadColumn.setColumns(dto.getColumns());
 		}
 		
-		leadColumn.setCompanyId("1");
+		leadColumn.setAdminId("1");
 		leadColumnRepository.save(leadColumn);
 
 		// 2. Save the lead
 		Leads lead = new Leads();
 		lead.setFields(dto.getFields());
-		lead.setCompanyId("1");
+		lead.setAdminId("1");
 		lead.setCreatedDate(LocalDateTime.now());
 		lead.setUpdatedDate(LocalDateTime.now());
 		lead.setStatus(dto.getStatus());
@@ -104,7 +104,7 @@ public class LeadController {
 
 	    try {
 	        // 1. Fetch column metadata for company
-	        LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+	        LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 	        List<LeadColumn.ColumnDefinition> sortedColumns = leadColumn.getColumns()
 	                .stream()
 	                .sorted(Comparator.comparingInt(LeadColumn.ColumnDefinition::getSequence))
@@ -112,7 +112,7 @@ public class LeadController {
 
 	        // 2. Fetch paginated leads for company
 	        Pageable pageable = PageRequest.of(page, size);
-	        Page<Leads> leadPage = leadRepository.findByCompanyIdOrderByIdDesc("1", pageable);
+	        Page<Leads> leadPage = leadRepository.findByAdminIdOrderByIdDesc("1", pageable);
 
 	        // 3. Prepare response
 	        Map<String, Object> response = new HashMap<>();
@@ -134,10 +134,10 @@ public class LeadController {
 
 
 	@PutMapping("/updateLead/{id}")
-	public ResponseEntity<?> updateLead(@PathVariable String id, @RequestBody LeadWithColumnsDTO dto) {
+	public ResponseEntity<?> updateLead(@PathVariable String id, @RequestBody Leads dto) {
 		try {
 			Map<String,Object> leadInfo=new HashMap<>();
-			LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+			LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 			Leads lead = leadRepository.findById(id).orElseThrow(() -> new RuntimeException("Lead not found"));
 
 			if (leadColumn == null) {
@@ -148,7 +148,7 @@ public class LeadController {
 				leadColumn.setColumns(dto.getColumns());
 			}
 
-			leadColumn.setCompanyId("1");
+			leadColumn.setAdminId("1");
 
 			lead.setFields(dto.getFields());
 			lead.setStatus(dto.getStatus());
@@ -183,7 +183,7 @@ public class LeadController {
 			
 			Map<String,Object> leadInfo=new HashMap<>();
 			
-			LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+			LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 			 List<LeadColumn.ColumnDefinition> sortedColumns = leadColumn.getColumns()
 				        .stream()
 				        .sorted(Comparator.comparingInt(LeadColumn.ColumnDefinition::getSequence))
@@ -215,7 +215,7 @@ public class LeadController {
 	@GetMapping("/getAllColumns")
 	public ResponseEntity<?> getAllColumns() {
 		try {
-			return ResponseEntity.ok(leadColumnRepository.findByCompanyId("1"));
+			return ResponseEntity.ok(leadColumnRepository.findByAdminId("1"));
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -225,11 +225,11 @@ public class LeadController {
 
 	@PostMapping("/updateLeadColumn")
 	public LeadColumn createColumn(@RequestBody LeadColumn leadColumn) {
-        LeadColumn leadColumnInfo=leadColumnRepository.findByCompanyId("1");
+        LeadColumn leadColumnInfo=leadColumnRepository.findByAdminId("1");
         if(leadColumnInfo==null) {
         	LeadColumn leadColumnNew=new LeadColumn();
         	
-        	leadColumnNew.setCompanyId("1");
+        	leadColumnNew.setAdminId("1");
         	leadColumnNew.setColumns(leadColumn.getColumns());
         	
         	return leadColumnRepository.save(leadColumnNew);
@@ -250,7 +250,7 @@ public class LeadController {
 			String oldName = renameRequest.get("oldName");
 			String newName = renameRequest.get("newName");
 
-			LeadColumn column = leadColumnRepository.findByCompanyId("1");
+			LeadColumn column = leadColumnRepository.findByAdminId("1");
 
 			column.getColumns().forEach(c -> {
 				if (c.getName().equals(oldName)) {
@@ -262,7 +262,7 @@ public class LeadController {
 			
 			
 			// 3️⃣ Update all Leads JSON field keys for this company
-	        List<Leads> leadsList = leadRepository.findByCompanyId("1");
+	        List<Leads> leadsList = leadRepository.findByAdminId("1");
 	        for (Leads lead : leadsList) {
 	            Map<String, Object> fields = lead.getFields();
 	            if (fields != null && fields.containsKey(oldName)) {
@@ -289,7 +289,7 @@ public class LeadController {
 	public LeadColumn updateColumnSequence(
 			@RequestBody List<LeadColumn.ColumnDefinition> updatedColumns) {
 
-		LeadColumn column = leadColumnRepository.findByCompanyId("1");
+		LeadColumn column = leadColumnRepository.findByAdminId("1");
 
 		// Update only the columns provided in the request
 		column.getColumns().forEach(existingColumn -> {
@@ -313,7 +313,7 @@ public class LeadController {
 		String columnName = renameRequest.get("columnName");
 
 	    // 1. Find and update column sequence
-	    LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+	    LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 	    if (leadColumn == null) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                .body("No column metadata found for company " + "1");
@@ -327,7 +327,7 @@ public class LeadController {
 	    
 	    
 	    // 2️⃣ Delete this column key from every lead’s JSON fields
-        List<Leads> leadsList = leadRepository.findByCompanyId("1");
+        List<Leads> leadsList = leadRepository.findByAdminId("1");
         for (Leads lead : leadsList) {
             Map<String, Object> fields = lead.getFields();
             if (fields != null && fields.containsKey(columnName)) {
@@ -350,7 +350,7 @@ public class LeadController {
 		
 		try {
 			
-			leadStatus.setCompanyId("1");
+			leadStatus.setAdminId("1");
 			leadStatusRepository.save(leadStatus);
 			
 			return ResponseEntity.ok(leadStatus);
@@ -367,7 +367,7 @@ public class LeadController {
 
 		try {
 
-			List<LeadStatus> leadStatus = leadStatusRepository.findByCompanyId("1");
+			List<LeadStatus> leadStatus = leadStatusRepository.findByAdminId("1");
 
 			return ResponseEntity.ok(leadStatus);
 

@@ -11,7 +11,7 @@ public class LeadColumn {
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private String id;
 
-    private String companyId;
+    private String adminId;
 
     @ElementCollection
     @CollectionTable(name = "lead_column_definitions", joinColumns = @JoinColumn(name = "lead_column_id"))
@@ -32,9 +32,12 @@ public class LeadColumn {
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public String getCompanyId() { return companyId; }
-    public void setCompanyId(String companyId) { this.companyId = companyId; }
-
-    public List<ColumnDefinition> getColumns() { return columns; }
+    public String getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+	public List<ColumnDefinition> getColumns() { return columns; }
     public void setColumns(List<ColumnDefinition> columns) { this.columns = columns; }
 }

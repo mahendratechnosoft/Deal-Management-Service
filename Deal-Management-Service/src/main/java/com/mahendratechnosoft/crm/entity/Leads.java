@@ -1,6 +1,7 @@
 package com.mahendratechnosoft.crm.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.annotations.JdbcTypeCode;
@@ -10,13 +11,14 @@ import org.hibernate.type.SqlTypes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Leads {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String id;
-	private String companyId;
+	private String adminId;
 	private String employeeId;
 	private String assignTo;
 	private String status;
@@ -42,12 +44,16 @@ public class Leads {
 	@Column(columnDefinition = "json")
 	@JdbcTypeCode(SqlTypes.JSON)
 	private Map<String, Object> fields;
+	
+	@Transient
+	private List<LeadColumn.ColumnDefinition> columns;
+	
 
-	public Leads(String id, String companyId, String employeeId, String assignTo, String status, String source,
+	public Leads(String id, String adminId, String employeeId, String assignTo, String status, String source,
 			LocalDateTime createdDate, LocalDateTime updatedDate, Map<String, Object> fields) {
 		super();
 		this.id = id;
-		this.companyId = companyId;
+		this.adminId=adminId;
 		this.employeeId = employeeId;
 		this.assignTo = assignTo;
 		this.status = status;
@@ -77,13 +83,13 @@ public class Leads {
 	public void setFields(Map<String, Object> fields) {
 		this.fields = fields;
 	}
-
-	public String getCompanyId() {
-		return companyId;
+	
+	public String getAdminId() {
+		return adminId;
 	}
 
-	public void setCompanyId(String companyId) {
-		this.companyId = companyId;
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
 	}
 
 	public String getEmployeeId() {
@@ -254,7 +260,13 @@ public class Leads {
 		this.email = email;
 	}
 	
-	
+	public List<LeadColumn.ColumnDefinition> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<LeadColumn.ColumnDefinition> columns) {
+		this.columns = columns;
+	}
 	
 
 }

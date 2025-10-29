@@ -6,7 +6,7 @@ import java.util.Map;
 import com.mahendratechnosoft.crm.entity.LeadColumn;
 
 public class LeadWithColumnsDTO {
-	private List<LeadColumn.ColumnDefinition> columns;
+	
 	private Map<String, Object> fields;
 	private String status;
 	private String source;
@@ -27,13 +27,7 @@ public class LeadWithColumnsDTO {
 	private String city;
 	private String zipCode;
     private String description;
-	public List<LeadColumn.ColumnDefinition> getColumns() {
-		return columns;
-	}
 
-	public void setColumns(List<LeadColumn.ColumnDefinition> columns) {
-		this.columns = columns;
-	}
 
 	public Map<String, Object> getFields() {
 		return fields;

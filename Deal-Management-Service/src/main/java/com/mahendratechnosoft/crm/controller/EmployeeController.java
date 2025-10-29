@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
+import com.mahendratechnosoft.crm.service.LeadService;
 
 @RestController
 @RequestMapping("/employee")
@@ -29,6 +32,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private DealsService dealsService;
+	
+	@Autowired
+	private LeadService leadService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -83,7 +89,28 @@ public class EmployeeController {
 
 	}
 
-    
+	// lead APis
+	
+		@PostMapping("/createLead")
+		public ResponseEntity<?> createLead(@ModelAttribute("employee") Employee employee,@RequestBody Leads dto) {
+			dto.setAdminId(employee.getAdmin().getAdminId());
+			return leadService.createLead(dto);
+		}
+		
+		
+		
+		@GetMapping("/getAllLeads/{page}/{size}")
+		public ResponseEntity<?> getAllLeads(@ModelAttribute("employee") Employee employee,@PathVariable int page ,@PathVariable int size) {
+
+		  return  leadService.getAllLeads(page, size,employee);
+		}
+	    
+		@PutMapping("/updateLead")
+		public ResponseEntity<?> updateLead( @ModelAttribute("employee") Employee employee,@RequestBody Leads lead) {
+			lead.setAdminId(employee.getAdmin().getAdminId());
+			return leadService.updateLead(lead);
+		}
+		
     
     
 }

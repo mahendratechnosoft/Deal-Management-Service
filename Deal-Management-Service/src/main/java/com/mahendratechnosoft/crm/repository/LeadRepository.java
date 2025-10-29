@@ -11,7 +11,9 @@ import com.mahendratechnosoft.crm.entity.Leads;
 @Repository
 public interface LeadRepository extends JpaRepository<Leads, String> {
 
-	Page<Leads> findByCompanyIdOrderByIdDesc(String companyId,Pageable pageable);
+	Page<Leads> findByAdminIdOrderByIdDesc(String companyId,Pageable pageable);
 	
-	List<Leads> findByCompanyId(String companyId);
+	Page<Leads> findByEmployeeIdOrderByIdDesc(String companyId,Pageable pageable);
+	
+	List<Leads> findByAdminId(String companyId);
 }

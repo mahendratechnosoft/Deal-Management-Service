@@ -11,14 +11,14 @@ public class LeadStatus {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String id;
-	private String companyId;
+	private String adminId;
 	private String leadStatus;
     private int sequence;
     
-	public LeadStatus(String id, String companyId, String leadStatus, int sequence) {
+	public LeadStatus(String id, String adminId, String leadStatus, int sequence) {
 		super();
 		this.id = id;
-		this.companyId = companyId;
+		this.adminId = adminId;
 		this.leadStatus = leadStatus;
 		this.sequence = sequence;
 	}
@@ -34,12 +34,15 @@ public class LeadStatus {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getCompanyId() {
-		return companyId;
+	
+	public String getAdminId() {
+		return adminId;
 	}
-	public void setCompanyId(String companyId) {
-		this.companyId = companyId;
+
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
 	}
+
 	public String getLeadStatus() {
 		return leadStatus;
 	}

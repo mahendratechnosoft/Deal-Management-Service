@@ -1,6 +1,8 @@
 package com.mahendratechnosoft.crm.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.mahendratechnosoft.crm.dto.LeadWithColumnsDTO;
+import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Deals;
+import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadColumn;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
@@ -52,10 +57,11 @@ public class LeadService {
 
 
 
-	@PostMapping("/createLead")
-	public Leads createLead(@RequestBody LeadWithColumnsDTO dto) {
+	
+	public ResponseEntity<?> createLead(@RequestBody Leads dto) {
 		// 1. Save or update LeadColumn sequence
-		LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+		try {
+		LeadColumn leadColumn = leadColumnRepository.findByAdminId(dto.getAdminId());
 
 		if (leadColumn == null) {
 			leadColumn = new LeadColumn();
@@ -65,39 +71,45 @@ public class LeadService {
 			leadColumn.setColumns(dto.getColumns());
 		}
 		
-		leadColumn.setCompanyId("1");
+		leadColumn.setAdminId(dto.getAdminId());
 		leadColumnRepository.save(leadColumn);
 
-		// 2. Save the lead
-		Leads lead = new Leads();
-		lead.setFields(dto.getFields());
-		lead.setCompanyId("1");
-		lead.setCreatedDate(LocalDateTime.now());
-		lead.setUpdatedDate(LocalDateTime.now());
-		lead.setStatus(dto.getStatus());
-		lead.setSource(dto.getSource());
-		lead.setAssignTo(dto.getAssignTo());
-		lead.setEmployeeId(dto.getEmployeeId());
-		lead.setClientName(dto.getClientName());
-		lead.setRevenue(dto.getRevenue());
-		lead.setStreet(dto.getStreet());
-		lead.setCountry(dto.getCountry());
-		lead.setState(dto.getState());
-		lead.setCity(dto.getCity());
-		lead.setZipCode(dto.getZipCode());
-		lead.setDescription(dto.getDescription());
-		leadRepository.save(lead);
+		dto.setCreatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+		dto.setUpdatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+		leadRepository.save(dto);
 
 		// 3. Return updated columns and saved lead
-		return lead;
+		return ResponseEntity.ok(dto);
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error " + e.getMessage());
+			
+		}
 	}
 
-	@GetMapping("/getAllLeads/{page}/{size}")
-	public ResponseEntity<?> getAllLeads(@PathVariable int page ,@PathVariable int size) {
+	
+	public ResponseEntity<?> getAllLeads(@PathVariable int page ,@PathVariable int size,Object loginUser) {
 
 	    try {
+	    	
+	    	  String role = "ROLE_EMPLOYEE";
+	          String adminId = null;
+	          String employeeId=null;
+	          Page<Leads> leadPage=null;
+	    	   if (loginUser instanceof Admin admin) {
+	               role = admin.getUser().getRole();
+	               adminId = admin.getAdminId();
+	           } 
+	           else if (loginUser instanceof Employee employee) {
+	               
+	        	   employeeId = employee.getEmployeeId();
+	           }
+
+	    	
 	        // 1. Fetch column metadata for company
-	        LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+	        LeadColumn leadColumn = leadColumnRepository.findByAdminId(adminId);
 	        List<LeadColumn.ColumnDefinition> sortedColumns = leadColumn.getColumns()
 	                .stream()
 	                .sorted(Comparator.comparingInt(LeadColumn.ColumnDefinition::getSequence))
@@ -105,7 +117,15 @@ public class LeadService {
 
 	        // 2. Fetch paginated leads for company
 	        Pageable pageable = PageRequest.of(page, size);
-	        Page<Leads> leadPage = leadRepository.findByCompanyIdOrderByIdDesc("1", pageable);
+	        
+	        if(role.equals("ROLE_ADMIN")){
+	        	leadPage = leadRepository.findByAdminIdOrderByIdDesc(adminId, pageable);
+ 
+	        }else {
+	        	
+	        	leadPage = leadRepository.findByEmployeeIdOrderByIdDesc(employeeId, pageable);
+	        }
+	        
 
 	        // 3. Prepare response
 	        Map<String, Object> response = new HashMap<>();
@@ -126,37 +146,25 @@ public class LeadService {
 
 
 
-	@PutMapping("/updateLead/{id}")
-	public ResponseEntity<?> updateLead(@PathVariable String id, @RequestBody LeadWithColumnsDTO dto) {
+	@PutMapping("/updateLead")
+	public ResponseEntity<?> updateLead( @RequestBody Leads lead) {
 		try {
 			Map<String,Object> leadInfo=new HashMap<>();
-			LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
-			Leads lead = leadRepository.findById(id).orElseThrow(() -> new RuntimeException("Lead not found"));
+			LeadColumn leadColumn = leadColumnRepository.findByAdminId(lead.getAdminId());
+			
 
 			if (leadColumn == null) {
 				leadColumn = new LeadColumn();
-				leadColumn.setColumns(dto.getColumns());
+				leadColumn.setColumns(lead.getColumns());
 
 			} else {
-				leadColumn.setColumns(dto.getColumns());
+				leadColumn.setColumns(lead.getColumns());
 			}
 
-			leadColumn.setCompanyId("1");
-
-			lead.setFields(dto.getFields());
-			lead.setStatus(dto.getStatus());
-			lead.setSource(dto.getSource());
-			lead.setAssignTo(dto.getAssignTo());
-			lead.setEmployeeId(dto.getEmployeeId());
-			lead.setClientName(dto.getClientName());
-			lead.setRevenue(dto.getRevenue());
-			lead.setStreet(dto.getStreet());
-			lead.setCountry(dto.getCountry());
-			lead.setState(dto.getState());
-			lead.setCity(dto.getCity());
-			lead.setZipCode(dto.getZipCode());
-			lead.setDescription(dto.getDescription());
+			lead.setFields(lead.getFields());
 			leadRepository.save(lead);
+			
+		//	leadColumn.setAdminId(lead.getAdminId());
 		//	leadColumnRepository.save(leadColumn);
 			
 			leadInfo.put("lead",lead);
@@ -176,7 +184,7 @@ public class LeadService {
 			
 			Map<String,Object> leadInfo=new HashMap<>();
 			
-			LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+			LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 			 List<LeadColumn.ColumnDefinition> sortedColumns = leadColumn.getColumns()
 				        .stream()
 				        .sorted(Comparator.comparingInt(LeadColumn.ColumnDefinition::getSequence))
@@ -208,7 +216,7 @@ public class LeadService {
 	@GetMapping("/getAllColumns")
 	public ResponseEntity<?> getAllColumns() {
 		try {
-			return ResponseEntity.ok(leadColumnRepository.findByCompanyId("1"));
+			return ResponseEntity.ok(leadColumnRepository.findByAdminId("1"));
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -218,11 +226,11 @@ public class LeadService {
 
 	@PostMapping("/updateLeadColumn")
 	public LeadColumn createColumn(@RequestBody LeadColumn leadColumn) {
-        LeadColumn leadColumnInfo=leadColumnRepository.findByCompanyId("1");
+        LeadColumn leadColumnInfo=leadColumnRepository.findByAdminId("1");
         if(leadColumnInfo==null) {
         	LeadColumn leadColumnNew=new LeadColumn();
         	
-        	leadColumnNew.setCompanyId("1");
+        	leadColumnNew.setAdminId("1");
         	leadColumnNew.setColumns(leadColumn.getColumns());
         	
         	return leadColumnRepository.save(leadColumnNew);
@@ -243,7 +251,7 @@ public class LeadService {
 			String oldName = renameRequest.get("oldName");
 			String newName = renameRequest.get("newName");
 
-			LeadColumn column = leadColumnRepository.findByCompanyId("1");
+			LeadColumn column = leadColumnRepository.findByAdminId("1");
 
 			column.getColumns().forEach(c -> {
 				if (c.getName().equals(oldName)) {
@@ -255,7 +263,7 @@ public class LeadService {
 			
 			
 			// 3️⃣ Update all Leads JSON field keys for this company
-	        List<Leads> leadsList = leadRepository.findByCompanyId("1");
+	        List<Leads> leadsList = leadRepository.findByAdminId("1");
 	        for (Leads lead : leadsList) {
 	            Map<String, Object> fields = lead.getFields();
 	            if (fields != null && fields.containsKey(oldName)) {
@@ -282,7 +290,7 @@ public class LeadService {
 	public LeadColumn updateColumnSequence(
 			@RequestBody List<LeadColumn.ColumnDefinition> updatedColumns) {
 
-		LeadColumn column = leadColumnRepository.findByCompanyId("1");
+		LeadColumn column = leadColumnRepository.findByAdminId("1");
 
 		// Update only the columns provided in the request
 		column.getColumns().forEach(existingColumn -> {
@@ -306,7 +314,7 @@ public class LeadService {
 		String columnName = renameRequest.get("columnName");
 
 	    // 1. Find and update column sequence
-	    LeadColumn leadColumn = leadColumnRepository.findByCompanyId("1");
+	    LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
 	    if (leadColumn == null) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                .body("No column metadata found for company " + "1");
@@ -320,7 +328,7 @@ public class LeadService {
 	    
 	    
 	    // 2️⃣ Delete this column key from every lead’s JSON fields
-        List<Leads> leadsList = leadRepository.findByCompanyId("1");
+        List<Leads> leadsList = leadRepository.findByAdminId("1");
         for (Leads lead : leadsList) {
             Map<String, Object> fields = lead.getFields();
             if (fields != null && fields.containsKey(columnName)) {
@@ -343,7 +351,7 @@ public class LeadService {
 		
 		try {
 			
-			leadStatus.setCompanyId("1");
+			leadStatus.setAdminId("1");
 			leadStatusRepository.save(leadStatus);
 			
 			return ResponseEntity.ok(leadStatus);
@@ -360,7 +368,7 @@ public class LeadService {
 
 		try {
 
-			List<LeadStatus> leadStatus = leadStatusRepository.findByCompanyId("1");
+			List<LeadStatus> leadStatus = leadStatusRepository.findByAdminId("1");
 
 			return ResponseEntity.ok(leadStatus);
 

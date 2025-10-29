@@ -20,9 +20,11 @@ import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
+import com.mahendratechnosoft.crm.service.LeadService;
 
 
 @RestController
@@ -37,6 +39,10 @@ public class AdminController {
 	
 	@Autowired
 	private DealsService dealsService;
+	
+	@Autowired
+	private LeadService leadService;
+	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
         if (authentication == null) {
@@ -125,6 +131,30 @@ public class AdminController {
 		return dealsService.getAllDeals(page ,size,admin);
 
 	}
+	
+	
+	// lead APis
+	
+	@PostMapping("/createLead")
+	public ResponseEntity<?> createLead(@ModelAttribute("admin") Admin admin,@RequestBody Leads dto) {
+		dto.setAdminId(admin.getAdminId());
+		return leadService.createLead(dto);
+	}
+	
+	
+	
+	@GetMapping("/getAllLeads/{page}/{size}")
+	public ResponseEntity<?> getAllLeads(@ModelAttribute("admin") Admin admin,@PathVariable int page ,@PathVariable int size) {
+
+	  return  leadService.getAllLeads(page, size,admin);
+	}
     
+	@PutMapping("/updateLead")
+	public ResponseEntity<?> updateLead( @ModelAttribute("admin") Admin admin,@RequestBody Leads lead) {
+		lead.setAdminId(admin.getAdminId());
+		return leadService.updateLead(lead);
+	}
+	
+	
 
 }
