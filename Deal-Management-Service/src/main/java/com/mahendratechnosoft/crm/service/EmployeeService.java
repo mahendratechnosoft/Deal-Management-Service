@@ -8,11 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
-import com.mahendratechnosoft.crm.dto.EmployeeUpdateDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.User;
-import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 
