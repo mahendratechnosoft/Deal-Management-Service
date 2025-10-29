@@ -111,10 +111,14 @@ public class LeadService {
 	    	
 	        // 1. Fetch column metadata for company
 	        LeadColumn leadColumn = leadColumnRepository.findByAdminId(adminId);
-	        List<LeadColumn.ColumnDefinition> sortedColumns = leadColumn.getColumns()
+	        List<LeadColumn.ColumnDefinition> sortedColumns=null ;
+	        if(leadColumn!=null) {
+	        	sortedColumns=  leadColumn.getColumns()
 	                .stream()
 	                .sorted(Comparator.comparingInt(LeadColumn.ColumnDefinition::getSequence))
 	                .toList();
+	        }
+	        
 
 	        // 2. Fetch paginated leads for company
 	        Pageable pageable = PageRequest.of(page, size);
