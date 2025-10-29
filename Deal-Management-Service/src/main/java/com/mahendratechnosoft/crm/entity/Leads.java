@@ -25,7 +25,7 @@ public class Leads {
 	private String source;
 	private String clientName;
 	private String companyName;
-	private String accountId;
+	private String customerId;
 	private Double revenue;
 	private String mobileNumber;
 	private String phoneNumber;
@@ -278,13 +278,15 @@ public class Leads {
 		this.companyName = companyName;
 	}
 
-	public String getAccountId() {
-		return accountId;
+	public String getCustomerId() {
+		return customerId;
 	}
 
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
+
+	
 	
 
 }
