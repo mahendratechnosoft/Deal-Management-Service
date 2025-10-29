@@ -17,6 +17,7 @@ public class Admin {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String adminId;
+	@Column(unique = true, nullable = false)
 	private String loginEmail;
 	
 	@OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)

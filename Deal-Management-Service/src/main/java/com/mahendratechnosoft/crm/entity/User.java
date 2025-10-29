@@ -3,6 +3,8 @@ package com.mahendratechnosoft.crm.entity;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.UuidGenerator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -11,6 +13,7 @@ public class User {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String userId;
+	@Column(unique = true, nullable = false)
 	private String loginEmail;
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;

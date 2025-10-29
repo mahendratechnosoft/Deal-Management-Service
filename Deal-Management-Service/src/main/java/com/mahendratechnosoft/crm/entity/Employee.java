@@ -14,6 +14,7 @@ public class Employee {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String employeeId;
+	@Column(unique = true, nullable = false)
 	private String loginEmail;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
