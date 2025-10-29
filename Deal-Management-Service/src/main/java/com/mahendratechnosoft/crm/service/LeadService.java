@@ -105,6 +105,7 @@ public class LeadService {
 	           else if (loginUser instanceof Employee employee) {
 	               
 	        	   employeeId = employee.getEmployeeId();
+	        	   adminId=employee.getAdmin().getAdminId();
 	           }
 
 	    	
@@ -346,29 +347,42 @@ public class LeadService {
 	
 	// lead status APIs
 	
-	@PostMapping("/addLeadStatus")
-	public ResponseEntity<?> addLeadStatus(@RequestBody LeadStatus leadStatus){
-		
+	
+	public ResponseEntity<?> addLeadStatus(@RequestBody LeadStatus leadStatus) {
+
 		try {
-			
-			leadStatus.setAdminId("1");
+
 			leadStatusRepository.save(leadStatus);
-			
+
 			return ResponseEntity.ok(leadStatus);
-			
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
-			
+
 		}
 	}
 	
-	@GetMapping("/getLeadStaus")
-	public ResponseEntity<?> getLeadStatus() {
+	
+	public ResponseEntity<?> getLeadStatus(Object loginUser) {
 
 		try {
+			
+			  String role = "ROLE_EMPLOYEE";
+	          String adminId = null;
+	          String employeeId=null;
+	          Page<Leads> leadPage=null;
+	    	   if (loginUser instanceof Admin admin) {
+	               role = admin.getUser().getRole();
+	               adminId = admin.getAdminId();
+	           } 
+	           else if (loginUser instanceof Employee employee) {
+	               
+	        	   employeeId = employee.getEmployeeId();
+	        	   adminId=employee.getAdmin().getAdminId();
+	           }
 
-			List<LeadStatus> leadStatus = leadStatusRepository.findByAdminId("1");
+			List<LeadStatus> leadStatus = leadStatusRepository.findByAdminId(adminId);
 
 			return ResponseEntity.ok(leadStatus);
 
@@ -378,8 +392,8 @@ public class LeadService {
 		}
 	}
 	
-	@DeleteMapping("/deleteLeadStatus/{leadStatusId}")
-	public ResponseEntity<?> fLeadStatus(@PathVariable String leadStatusId) {
+	
+	public ResponseEntity<?> deleteLeadStatus(String leadStatusId) {
 
 		try {
 

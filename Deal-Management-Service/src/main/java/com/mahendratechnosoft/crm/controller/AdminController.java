@@ -1,11 +1,13 @@
 package com.mahendratechnosoft.crm.controller;
 
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.DealsService;
@@ -155,6 +158,50 @@ public class AdminController {
 		return leadService.updateLead(lead);
 	}
 	
+	
+	// lead status APIs
+
+	@PostMapping("/addLeadStatus")
+	public ResponseEntity<?> addLeadStatus(@ModelAttribute("admin") Admin admin, @RequestBody LeadStatus leadStatus) {
+
+		try {
+
+			leadStatus.setAdminId(admin.getAdminId());
+
+			return leadService.addLeadStatus(leadStatus);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+
+		}
+	}
+
+	@GetMapping("/getLeadStaus")
+	public ResponseEntity<?> getLeadStatus(@ModelAttribute("admin") Admin admin) {
+
+		try {
+
+			return leadService.getLeadStatus(admin);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
+
+	@DeleteMapping("/deleteLeadStatus/{leadStatusId}")
+	public ResponseEntity<?> deleteLeadStatus(@PathVariable String leadStatusId) {
+
+		try {
+			return leadService.deleteLeadStatus(leadStatusId);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
+		
 	
 
 }
