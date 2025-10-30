@@ -9,6 +9,12 @@ public class AdminUpdateDto {
     
     // Add this field
     private String logoBase64;
+    
+    private String gstNumber;
+    private String bankName;
+    private String accountHolderName;
+    private String accountNumber;
+    private String ifscCode;
 
 	public String getName() {
 		return name;
@@ -56,6 +62,46 @@ public class AdminUpdateDto {
 
 	public void setLogoBase64(String logoBase64) {
 		this.logoBase64 = logoBase64;
+	}
+
+	public String getGstNumber() {
+		return gstNumber;
+	}
+
+	public void setGstNumber(String gstNumber) {
+		this.gstNumber = gstNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getAccountHolderName() {
+		return accountHolderName;
+	}
+
+	public void setAccountHolderName(String accountHolderName) {
+		this.accountHolderName = accountHolderName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
 	}
     
     

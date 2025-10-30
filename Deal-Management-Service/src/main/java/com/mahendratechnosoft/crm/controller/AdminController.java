@@ -104,7 +104,13 @@ public class AdminController {
         adminToUpdate.setAddress(updateDto.getAddress());
         adminToUpdate.setCompanyName(updateDto.getCompanyName());
         adminToUpdate.setDescription(updateDto.getDescription());
+        adminToUpdate.setGstNumber(updateDto.getGstNumber());
+        adminToUpdate.setBankName(updateDto.getBankName());
+        adminToUpdate.setAccountHolderName(updateDto.getAccountHolderName());
+        adminToUpdate.setAccountNumber(updateDto.getAccountNumber());
+        adminToUpdate.setIfscCode(updateDto.getIfscCode());
         
+
         String base64Image = updateDto.getLogoBase64();
         if (base64Image != null && !base64Image.isEmpty()) {
         	try {

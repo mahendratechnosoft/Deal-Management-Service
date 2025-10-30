@@ -36,6 +36,12 @@ public class Admin {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] logo;
 	
+    private String gstNumber;
+    private String bankName;
+    private String accountHolderName;
+    private String accountNumber;
+    private String ifscCode;
+	
 	public Admin() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -128,4 +134,56 @@ public class Admin {
 	public void setLoginEmail(String loginEmail) {
 		this.loginEmail = loginEmail;
 	}
+
+
+	public String getGstNumber() {
+		return gstNumber;
+	}
+
+
+	public void setGstNumber(String gstNumber) {
+		this.gstNumber = gstNumber;
+	}
+
+
+	public String getBankName() {
+		return bankName;
+	}
+
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+
+	public String getAccountHolderName() {
+		return accountHolderName;
+	}
+
+
+	public void setAccountHolderName(String accountHolderName) {
+		this.accountHolderName = accountHolderName;
+	}
+
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+	
+	
 }
