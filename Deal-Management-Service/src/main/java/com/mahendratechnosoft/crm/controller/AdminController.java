@@ -1,9 +1,7 @@
 package com.mahendratechnosoft.crm.controller;
 
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Contacts;
+import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.service.ContactsService;
+import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.LeadService;
@@ -53,6 +55,12 @@ public class AdminController {
 	
 	@Autowired
 	private LeadService leadService;
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private ContactsService contactsService;
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -272,4 +280,73 @@ public class AdminController {
         }
     }
     
+    
+    @PostMapping("/createCustomer")
+	public ResponseEntity<?> createCustomer(@ModelAttribute("admin") Admin admin,@RequestBody Customer customer) {
+
+		try {
+            customer.setAdminId(admin.getAdminId());
+			return customerService.createCustomer(customer);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
+    
+    @PutMapping("/updateCustomer")
+	public ResponseEntity<?> udpateCustomer(@ModelAttribute("admin") Admin admin,@RequestBody Customer customer) {
+
+		try {
+            customer.setAdminId(admin.getAdminId());
+			return customerService.updateCustomer(customer);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
+    
+    
+	@GetMapping("/getAllCustomer/{page}/{size}")
+	public ResponseEntity<?> getAllCustomer(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return customerService.getAllCustomer(page ,size,admin,search);
+
+	}
+	
+	@GetMapping("/getCustomerListWithNameAndId")
+	public ResponseEntity<?> getCustomerListWithNameAndId(@ModelAttribute("admin") Admin admin) {
+
+		return customerService.getCustomerListWithNameAndId(admin);
+
+	}
+	
+	
+	@PostMapping("/createContact")
+	public ResponseEntity<?> createContact(@RequestBody Contacts contacts) {
+          
+		return contactsService.createContact(contacts);
+		
+	}
+	
+	@PutMapping("/updateContact")
+	public ResponseEntity<?> updateContact(@RequestBody Contacts contacts) {
+
+		return contactsService.updateContact(contacts);
+
+	}
+    
+	
+	@GetMapping("/getContacts/{customerId}")
+	public ResponseEntity<?> getContacts(@PathVariable String customerId,@RequestParam(defaultValue = "") String name) {
+      
+		return contactsService.getContacts(customerId, name);
+	}
+	
+	
+	@DeleteMapping("/deleteContacts/{contactId}")
+	public ResponseEntity<?> deleteContacts(@PathVariable String contactId) {
+		return contactsService.deleteContacts(contactId);
+	}
 }

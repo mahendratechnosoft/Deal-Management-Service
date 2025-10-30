@@ -3,6 +3,7 @@ package com.mahendratechnosoft.crm.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Contacts;
+import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
+import com.mahendratechnosoft.crm.service.ContactsService;
+import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.LeadService;
@@ -38,6 +44,12 @@ public class EmployeeController {
 	
 	@Autowired
 	private LeadService leadService;
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private ContactsService contactsService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -133,6 +145,73 @@ public class EmployeeController {
 			return leadService.updateLeadStatus(leadId,status);
 		}
 		
-    
+		@PostMapping("/createCustomer")
+		public ResponseEntity<?> createCustomer(@ModelAttribute("employee") Employee employee, @RequestBody Customer customer) {
+
+			try {
+				customer.setAdminId(employee.getAdmin().getAdminId());
+				customer.setEmployeeId(employee.getEmployeeId());
+				return customerService.createCustomer(customer);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+			}
+		}
+
+		@PutMapping("/updateCustomer")
+		public ResponseEntity<?> udpateCustomer(@ModelAttribute("employee") Employee employee, @RequestBody Customer customer) {
+
+			try {
+				customer.setAdminId(employee.getAdmin().getAdminId());
+				return customerService.updateCustomer(customer);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+			}
+		}
+
+		@GetMapping("/getAllCustomer/{page}/{size}")
+		public ResponseEntity<?> getAllCustomer(@ModelAttribute("employee") Employee employee, @PathVariable int page,
+				@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return customerService.getAllCustomer(page, size, employee,search);
+
+		}
+		
+		@GetMapping("/getCustomerListWithNameAndId")
+		public ResponseEntity<?> getCustomerListWithNameAndId(@ModelAttribute("employee") Employee employee) {
+
+			return customerService.getCustomerListWithNameAndId(employee);
+
+		}
+		
+		@PostMapping("/createContact")
+		public ResponseEntity<?> createContact(@RequestBody Contacts contacts) {
+	          
+			return contactsService.createContact(contacts);
+			
+		}
+		
+		@PutMapping("/updateContact")
+		public ResponseEntity<?> updateContact(@RequestBody Contacts contacts) {
+
+			return contactsService.updateContact(contacts);
+
+		}
+	    
+		
+		@GetMapping("/getContacts/{customerId}")
+		public ResponseEntity<?> getContacts(@PathVariable String customerId,@RequestParam(defaultValue = "") String name) {
+	      
+			return contactsService.getContacts(customerId, name);
+		}
+		
+		
+		@DeleteMapping("/deleteContacts/{contactId}")
+		public ResponseEntity<?> deleteContacts(@PathVariable String contactId) {
+			return contactsService.deleteContacts(contactId);
+		}
     
 }
