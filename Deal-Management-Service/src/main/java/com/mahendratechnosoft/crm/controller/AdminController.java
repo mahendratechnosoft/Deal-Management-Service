@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.controller;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +30,18 @@ import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
+import com.mahendratechnosoft.crm.entity.Department;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.LeadService;
+import com.mahendratechnosoft.crm.service.SettingServices;
 
 
 @RestController
@@ -61,6 +65,9 @@ public class AdminController {
 	
 	@Autowired
 	private ContactsService contactsService;
+	
+	@Autowired
+	private SettingServices settingServices;
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -349,4 +356,48 @@ public class AdminController {
 	public ResponseEntity<?> deleteContacts(@PathVariable String contactId) {
 		return contactsService.deleteContacts(contactId);
 	}
+    @PostMapping("/createDepartment")
+    public ResponseEntity<?> createDepartment(
+    		@ModelAttribute Admin admin,
+    		@RequestBody Department department
+    		){
+    	department.setAdminId(admin.getAdminId());
+    	Department responce = settingServices.createDepartment(department);
+    	return ResponseEntity.ok(responce);
+    }
+    
+    @GetMapping("/getAllDepartment")
+    public ResponseEntity<?> getAllDepartmetn(
+        @ModelAttribute Admin admin,
+        @RequestParam(value = "name", required = false) String name
+    ) {
+        List<Department> allDepartmentByAdmin = settingServices.getAllDepartmentByAdmin(admin.getAdminId(), name);
+        return ResponseEntity.ok(allDepartmentByAdmin);
+    }
+    
+    @PostMapping("/createRole")
+    public ResponseEntity<?> creteRole(@ModelAttribute Admin admin,
+    		@RequestBody Role role){
+    	role.setAdminId(admin.getAdminId());
+    	Role responce = settingServices.createRole(role);
+    	return ResponseEntity.ok(responce);
+    }
+    
+    @GetMapping("/getRoleByDepartment/{departemntId}")
+    public ResponseEntity<?> getAllRoleByDepartemntId(@PathVariable String departemntId){
+    	List<Role> allRoleByDepartemntId = settingServices.getAllRoleByDepartemntId(departemntId);
+    	return ResponseEntity.ok(allRoleByDepartemntId);
+    }
+    
+    @DeleteMapping("/deleteDepartment/{departmentId}")
+    public ResponseEntity<?> deleteDepartment(@PathVariable String departmentId) {
+        settingServices.deleteDepartmentAndRoles(departmentId);
+        return ResponseEntity.ok("Department deleted successfully..");
+    }
+    
+    @DeleteMapping("/deleteRole/{roleId}")
+    public ResponseEntity<?> deleteRole(@PathVariable String roleId) {
+        settingServices.deleteRole(roleId);
+        return ResponseEntity.ok("Role deleted successfully..");
+    }
 }
