@@ -33,6 +33,11 @@ public class Employee {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] profileImage;
 	
+	private String departmentId;
+	private String departmentName;
+	private String roleId;
+	private String roleName;
+	
 	public Employee() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -122,6 +127,38 @@ public class Employee {
 
 	public void setProfileImage(byte[] profileImage) {
 		this.profileImage = profileImage;
+	}
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 	
 }

@@ -9,6 +9,10 @@ public class EmployeeRegistrationDto {
     private String gender;
     private String description;
     private String profileImageBase64;
+    private String departmentId;
+	private String departmentName;
+	private String roleId;
+	private String roleName;
     
 	public String getLoginEmail() {
 		return loginEmail;
@@ -57,6 +61,30 @@ public class EmployeeRegistrationDto {
 	}
 	public void setProfileImageBase64(String profileImageBase64) {
 		this.profileImageBase64 = profileImageBase64;
+	}
+	public String getDepartmentId() {
+		return departmentId;
+	}
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+	public String getDepartmentName() {
+		return departmentName;
+	}
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+	public String getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
     
     

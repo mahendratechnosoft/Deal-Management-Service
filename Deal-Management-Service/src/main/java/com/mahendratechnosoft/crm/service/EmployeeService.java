@@ -56,7 +56,10 @@ public class EmployeeService {
         newEmployee.setAddress(request.getAddress());
         newEmployee.setGender(request.getGender());
         newEmployee.setDescription(request.getDescription());
-
+        newEmployee.setDepartmentId(request.getDepartmentId());
+        newEmployee.setDepartmentName(request.getDepartmentName());
+        newEmployee.setRoleId(request.getRoleId());
+        newEmployee.setRoleName(request.getRoleName());
         newEmployee.setAdmin(admin); // The logged-in admin
 
         // 5. Handle the profile image (same as your Admin controller)
