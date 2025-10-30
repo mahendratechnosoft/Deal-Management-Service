@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -29,6 +29,7 @@ import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.LeadService;
+import com.mahendratechnosoft.crm.service.SalesService;
 
 @RestController
 @RequestMapping("/employee")
@@ -50,6 +51,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private ContactsService contactsService;
+	
+	@Autowired
+	private SalesService salesService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -212,6 +216,28 @@ public class EmployeeController {
 		@DeleteMapping("/deleteContacts/{contactId}")
 		public ResponseEntity<?> deleteContacts(@PathVariable String contactId) {
 			return contactsService.deleteContacts(contactId);
+		}
+		
+		
+		@PostMapping("/createProposal")
+		public ResponseEntity<?> createProposal(@ModelAttribute("employee") Employee employee,@RequestBody ProposalDto request) {
+			
+			return salesService.createProposal(request,employee);
+			
+		}
+		
+		@PutMapping("/updateProposal")
+		public ResponseEntity<?> updateProposal(@ModelAttribute("employee") Employee employee,@RequestBody ProposalDto request) {
+			
+			return salesService.updateProposal(request,employee);
+			
+		}
+		
+		@GetMapping("/getAllProposal/{page}/{size}")
+		public ResponseEntity<?> getAllProposal(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return salesService.getAllProposal(page ,size,employee,search);
+
 		}
     
 }

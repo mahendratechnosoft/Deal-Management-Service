@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
+import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
@@ -34,6 +35,7 @@ import com.mahendratechnosoft.crm.entity.Department;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -41,6 +43,7 @@ import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.LeadService;
+import com.mahendratechnosoft.crm.service.SalesService;
 import com.mahendratechnosoft.crm.service.SettingServices;
 
 
@@ -68,6 +71,10 @@ public class AdminController {
 	
 	@Autowired
 	private SettingServices settingServices;
+	
+	@Autowired
+    private SalesService salesService;	
+	
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -356,6 +363,8 @@ public class AdminController {
 	public ResponseEntity<?> deleteContacts(@PathVariable String contactId) {
 		return contactsService.deleteContacts(contactId);
 	}
+	
+	
     @PostMapping("/createDepartment")
     public ResponseEntity<?> createDepartment(
     		@ModelAttribute Admin admin,
@@ -400,4 +409,27 @@ public class AdminController {
         settingServices.deleteRole(roleId);
         return ResponseEntity.ok("Role deleted successfully..");
     }
+	
+	
+	@PostMapping("/createProposal")
+	public ResponseEntity<?> createProposal(@ModelAttribute("admin") Admin admin,@RequestBody ProposalDto request) {
+		
+		return salesService.createProposal(request,admin);
+		
+	}
+	
+	@PutMapping("/updateProposal")
+	public ResponseEntity<?> updateProposal(@ModelAttribute("admin") Admin admin,@RequestBody ProposalDto request) {
+		
+		return salesService.updateProposal(request,admin);
+		
+	}
+	
+	@GetMapping("/getAllProposal/{page}/{size}")
+	public ResponseEntity<?> getAllProposal(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return salesService.getAllProposal(page ,size,admin,search);
+
+	}
+	
 }
