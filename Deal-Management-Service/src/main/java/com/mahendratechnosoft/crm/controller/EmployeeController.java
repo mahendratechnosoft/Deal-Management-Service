@@ -113,6 +113,7 @@ public class EmployeeController {
 		@PostMapping("/createLead")
 		public ResponseEntity<?> createLead(@ModelAttribute("employee") Employee employee,@RequestBody Leads dto) {
 			dto.setAdminId(employee.getAdmin().getAdminId());
+			dto.setEmployeeId(employee.getEmployeeId());
 			return leadService.createLead(dto);
 		}
 		

@@ -140,6 +140,12 @@ public class AdminController {
     		@ModelAttribute("admin") Admin admin,
             @RequestBody Employee updateRequest) {
         updateRequest.setAdmin(admin);
+        
+        if (updateRequest.getModuleAccess() != null) {
+            updateRequest.getModuleAccess().setEmployeeId(updateRequest.getEmployeeId()); 
+            updateRequest.getModuleAccess().setAdminId(admin.getAdminId()); 
+        }
+        
         Employee updatedEmployee = employeeService.updateEmployee(updateRequest);
         return ResponseEntity.ok(updatedEmployee);
     }

@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.entity;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 @Entity
 public class Employee {
 	@Id
@@ -38,6 +40,8 @@ public class Employee {
 	private String roleId;
 	private String roleName;
 	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	private ModuleAccess moduleAccess;
 	public Employee() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -160,5 +164,14 @@ public class Employee {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+
+	public ModuleAccess getModuleAccess() {
+		return moduleAccess;
+	}
+
+	public void setModuleAccess(ModuleAccess moduleAccess) {
+		this.moduleAccess = moduleAccess;
+	}
+	
 	
 }
