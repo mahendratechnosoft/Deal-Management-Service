@@ -307,6 +307,13 @@ public class AdminController {
     }
     
     
+    @GetMapping("/getEmployeeNameAndId")
+    public ResponseEntity<?> getEmployeeByIdByAdmin( @ModelAttribute("admin") Admin admin)   {
+   
+    	return employeeService.getEmployeeNameAndId(admin);
+    }
+    
+    
     @PostMapping("/createCustomer")
 	public ResponseEntity<?> createCustomer(@ModelAttribute("admin") Admin admin,@RequestBody Customer customer) {
 

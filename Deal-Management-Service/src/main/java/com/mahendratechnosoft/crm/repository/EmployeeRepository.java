@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -44,4 +45,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
     );
 	
 	boolean existsByLoginEmail(String loginEmail);
+	
+	@Query("SELECT e.employeeId, e.name FROM Employee e WHERE e.admin = :admin")
+	List<Object[]> EmployeeNameAndIdByAdminId(@Param("admin") Admin admin);
+
 }

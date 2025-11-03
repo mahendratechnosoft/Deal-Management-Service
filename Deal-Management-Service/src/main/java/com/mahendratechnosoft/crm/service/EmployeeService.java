@@ -2,11 +2,14 @@ package com.mahendratechnosoft.crm.service;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.Optional;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -99,5 +102,38 @@ public class EmployeeService {
 	public boolean emailExists(String email) {
         return employeeRepository.existsByLoginEmail(email);
     }
+	
+	public ResponseEntity<?> getEmployeeNameAndId(Object loginUser) {
+	    try {
+	        Admin admin = null;
+
+	        if (loginUser instanceof Admin a) {
+	            admin = a;
+	        } else if (loginUser instanceof Employee employee) {
+	            admin = employee.getAdmin();
+	        }
+
+	       
+
+	        if (admin == null) {
+	            return ResponseEntity.badRequest().body("Admin not found for the logged-in user");
+	        }
+
+	        List<Object[]> employees = employeeRepository.EmployeeNameAndIdByAdminId(admin);
+
+	        List<Map<String, Object>> result = employees.stream()
+	                .map(e -> Map.of("employeeId", e[0], "name", e[1]))
+	                .toList();
+
+	        return ResponseEntity.ok(result);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error: " + e.getMessage());
+	    }
+	}
+
+
 }
 	
