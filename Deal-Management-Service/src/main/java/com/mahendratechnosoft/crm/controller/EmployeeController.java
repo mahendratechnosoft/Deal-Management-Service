@@ -163,6 +163,20 @@ public class EmployeeController {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
 			}
 		}
+		
+	    
+	    @GetMapping("/getCustomerById/{customerId}")
+	 	public ResponseEntity<?> getCustomerById(@PathVariable("customerId") String customerId) {
+
+	 		try {
+	            
+	 			return customerService.getCustomerById(customerId);
+
+	 		} catch (Exception e) {
+	 			e.printStackTrace();
+	 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+	 		}
+	 	}
 
 		@PutMapping("/updateCustomer")
 		public ResponseEntity<?> udpateCustomer(@ModelAttribute("employee") Employee employee, @RequestBody Customer customer) {

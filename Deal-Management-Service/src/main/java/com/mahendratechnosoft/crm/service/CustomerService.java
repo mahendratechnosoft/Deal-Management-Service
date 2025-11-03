@@ -38,6 +38,21 @@ public class CustomerService {
 		}
 
 	}
+	
+	public ResponseEntity<?> getCustomerById(String  customerId) {
+
+		try {
+
+			
+			return ResponseEntity.ok(customerRepository.findByCustomerId(customerId));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
 
 	public ResponseEntity<?> updateCustomer(Customer customer) {
 
