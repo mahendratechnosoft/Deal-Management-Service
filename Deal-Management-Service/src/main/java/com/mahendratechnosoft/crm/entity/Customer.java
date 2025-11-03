@@ -18,6 +18,8 @@ public class Customer {
 	private String website;
 	private String industry;
 	private String revenue;
+	private String gstin;
+	private String panNumber;
 	private String billingStreet;
 	private String billingCity;
 	private String billingState;
@@ -186,6 +188,24 @@ public class Customer {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public String getGstin() {
+		return gstin;
+	}
+
+	public void setGstin(String gstin) {
+		this.gstin = gstin;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+
 	
 	
 	
