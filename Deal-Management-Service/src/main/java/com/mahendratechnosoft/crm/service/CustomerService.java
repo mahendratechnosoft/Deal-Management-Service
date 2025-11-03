@@ -99,6 +99,7 @@ public class CustomerService {
 
 			response.put("customerList", customerPage.getContent());
 			response.put("currentPage", customerPage.getNumber());
+			response.put("totalCustomers", customerPage.getTotalElements());
 			response.put("totalPages", customerPage.getTotalPages());
 
 			return ResponseEntity.ok(response);
