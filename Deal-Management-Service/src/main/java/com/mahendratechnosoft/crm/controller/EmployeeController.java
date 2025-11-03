@@ -152,6 +152,12 @@ public class EmployeeController {
 			return leadService.deleteLead(id);
 		}
 		
+		@GetMapping("/getLeadNameAndId")
+		public ResponseEntity<?> getLeadNameAndId(@ModelAttribute("employee") Employee employee) {
+
+		  return  leadService.getLeadNameAndId(employee);
+		}
+		
 		@PutMapping("/updateLeadStatus")
 		public ResponseEntity<?> updateLeadStatus(@RequestBody Map<String, String> request) {
 			String leadId = request.get("leadId");

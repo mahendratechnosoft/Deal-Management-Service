@@ -41,4 +41,8 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 	@Query("SELECT l.status, COUNT(l) " + "FROM Leads l " + "WHERE l.employeeId = :employeeId " + "GROUP BY l.status")
 	List<Object[]> countLeadsByStatusByEmployeeId(@Param("employeeId") String employeeId);
 	
+	
+	@Query("SELECT e.id, e.clientName FROM Leads e WHERE e.adminId = :adminId")
+	List<Object[]> LeadNameAndIdByAdminId(@Param("adminId") String adminId);
+	
 }

@@ -222,6 +222,12 @@ public class AdminController {
 	}
 	
 	
+	@GetMapping("/getLeadNameAndId")
+	public ResponseEntity<?> getLeadNameAndId(@ModelAttribute("admin") Admin admin) {
+
+	  return  leadService.getLeadNameAndId(admin);
+	}
+	
 	
 	
 	// lead status APIs
