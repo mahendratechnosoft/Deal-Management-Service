@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,5 +38,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, String >{
 		        Pageable pageable);
 	
 	Proposal findByProposalId(String proposalId);
+	
+	List<Proposal> findByRelatedToAndRelatedId(String relatedTo,String RelatedId);
 
 }

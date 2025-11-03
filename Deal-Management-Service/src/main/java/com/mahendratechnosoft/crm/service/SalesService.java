@@ -141,6 +141,24 @@ public class SalesService {
 	}
 	
 
+	public ResponseEntity<?> getProposalByModuleType(String moduleTypeId,String moduleType) {
+
+		try {
+            if("lead".equalsIgnoreCase(moduleType)) {
+			return ResponseEntity.ok(proposalRepository.findByRelatedToAndRelatedId("lead",moduleTypeId));
+            }else {
+            	return ResponseEntity.ok(proposalRepository.findByRelatedToAndRelatedId("customer",moduleTypeId));
+            }
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+
 	public ResponseEntity<?> getAllProposal(int page, int size, Object loginUser, String search) {
 
 		try {
@@ -318,6 +336,21 @@ public class SalesService {
 			response.put("totalPages", invoicePage.getTotalPages());
 
 			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getInvoiceByCustomerId(String customerId) {
+
+		try {
+			
+			return ResponseEntity.ok(invoiceRepository.findByRelatedToAndRelatedId("customer",customerId));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 

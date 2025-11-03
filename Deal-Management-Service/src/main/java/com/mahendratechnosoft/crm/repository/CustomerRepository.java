@@ -41,5 +41,10 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     List<Object[]> findCompanyNameAndIdsByCompanyId(@Param("adminId") String adminId);
     
     Customer findByCustomerId(String customerId);
+    
+    
+    @Query("SELECT c.status, COUNT(c) FROM Customer c WHERE c.adminId = :adminId GROUP BY c.status")
+    List<Object[]> countLeadsByStatusAndAdminId(@Param("adminId") String adminId);
+
 
 }

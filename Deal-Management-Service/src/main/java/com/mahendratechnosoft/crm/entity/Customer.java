@@ -31,6 +31,7 @@ public class Customer {
 	private String shippingCountry;
 	private String shippingZipCode;
 	private String description;
+	private boolean status;
 	
 	public Customer() {
 		super();
@@ -205,7 +206,14 @@ public class Customer {
 		this.panNumber = panNumber;
 	}
 
+	public boolean isStatus() {
+		return status;
+	}
 
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+   
 	
 	
 	

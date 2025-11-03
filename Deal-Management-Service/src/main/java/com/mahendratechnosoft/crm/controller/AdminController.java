@@ -375,6 +375,28 @@ public class AdminController {
 	}
 	
 	
+    @PutMapping("/updateCustomerStatus/{customerId}/{status}")
+	public ResponseEntity<?> updateCustomerStatus(@PathVariable("customerId") String customerId,@PathVariable("status") boolean status) {
+
+		try {
+           
+			return customerService.updateCustomerStatus(customerId,status);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
+    
+	@GetMapping("/getAllCustomerStatusAndCount")
+	public ResponseEntity<?> getAllCustomerStatusAndCount(@ModelAttribute("admin") Admin admin) {
+
+		return customerService.getAllCustomerStatusAndCount(admin);
+
+	}
+    
+    
+	
 	@PostMapping("/createContact")
 	public ResponseEntity<?> createContact(@RequestBody Contacts contacts) {
           
@@ -478,6 +500,13 @@ public class AdminController {
 
 	}
 	
+	@GetMapping("/getProposalByModuleType/{moduleTypeId}/{moduleType}")
+	public ResponseEntity<?> getProposalByModuleType(@PathVariable String moduleTypeId,@PathVariable String moduleType) {
+
+		return salesService.getProposalByModuleType(moduleTypeId,moduleType);
+
+	}
+	
 	
 	
 	//Invoice API
@@ -509,4 +538,13 @@ public class AdminController {
 		return salesService.getAllInvoice(page ,size,admin,search);
 
 	}
+	
+	
+	@GetMapping("/getInvoiceByCustomerId/{customerId}")
+	public ResponseEntity<?> getInvoiceByCustomerId( @PathVariable String customerId) {
+
+		return salesService.getInvoiceByCustomerId(customerId);
+
+	}
+	
 }

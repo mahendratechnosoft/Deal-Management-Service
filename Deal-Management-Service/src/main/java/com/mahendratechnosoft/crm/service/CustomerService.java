@@ -68,6 +68,23 @@ public class CustomerService {
 		}
 
 	}
+	
+	public ResponseEntity<?> updateCustomerStatus(String customerId, boolean status) {
+
+		try {
+
+			Customer customer = customerRepository.findByCustomerId(customerId);
+			customer.setStatus(status);
+			customerRepository.save(customer);
+			return ResponseEntity.ok(customer);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
 
 	public ResponseEntity<?> getAllCustomer(@PathVariable int page, @PathVariable int size, Object loginUser,String search) {
 
@@ -108,6 +125,33 @@ public class CustomerService {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
 		}
+	}
+	
+	
+	
+	public ResponseEntity<?> getAllCustomerStatusAndCount( Object loginUser) {
+
+		try {
+			
+			String adminId = null;
+			if (loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+			}
+
+			List<Object[]> result = customerRepository.countLeadsByStatusAndAdminId(adminId);
+
+		
+
+			return ResponseEntity.ok(result);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
 	}
 	
 	

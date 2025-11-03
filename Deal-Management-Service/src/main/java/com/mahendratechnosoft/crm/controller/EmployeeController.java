@@ -205,6 +205,28 @@ public class EmployeeController {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
 			}
 		}
+		
+
+	    @PutMapping("/updateCustomerStatus/{customerId}/{status}")
+		public ResponseEntity<?> updateCustomerStatus(@PathVariable("customerId") String customerId,@PathVariable("status") boolean status) {
+
+			try {
+	           
+				return customerService.updateCustomerStatus(customerId,status);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+			}
+		}
+	    
+	    
+		@GetMapping("/getAllCustomerStatusAndCount")
+		public ResponseEntity<?> getAllCustomerStatusAndCount(@ModelAttribute("admin") Admin admin) {
+
+			return customerService.getAllCustomerStatusAndCount(admin);
+
+		}
 
 		@GetMapping("/getAllCustomer/{page}/{size}")
 		public ResponseEntity<?> getAllCustomer(@ModelAttribute("employee") Employee employee, @PathVariable int page,
@@ -279,6 +301,14 @@ public class EmployeeController {
 		}
 		
 		
+		@GetMapping("/getProposalByModuleType/{moduleTypeId}/{moduleType}")
+		public ResponseEntity<?> getProposalByLeadId(@PathVariable String moduleTypeId,@PathVariable String moduleType) {
+
+			return salesService.getProposalByModuleType(moduleTypeId,moduleType);
+
+		}
+		
+		
 		//Invoice API
 		@PostMapping("/createInvoice")
 		public ResponseEntity<?> createInvoice(@ModelAttribute("employee") Employee employee,@RequestBody InvoiceDto request) {
@@ -308,5 +338,13 @@ public class EmployeeController {
 			return salesService.getAllInvoice(page ,size,employee,search);
 
 		}
+		
+		@GetMapping("/getInvoiceByCustomerId/{customerId}")
+		public ResponseEntity<?> getInvoiceByCustomerId( @PathVariable String customerId) {
+
+			return salesService.getInvoiceByCustomerId(customerId);
+
+		}
+		
     
 }

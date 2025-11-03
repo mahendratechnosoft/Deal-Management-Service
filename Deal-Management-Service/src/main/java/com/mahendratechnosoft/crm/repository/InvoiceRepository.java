@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,5 +37,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, String> {
 		        @Param("employeeId") String employeeId,
 		        @Param("search") String search,
 		        Pageable pageable);
+	
+	List<Invoice> findByRelatedToAndRelatedId(String releatedTo,String relatedId);
 
 }
