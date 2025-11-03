@@ -121,6 +121,25 @@ public class SalesService {
 		}
 
 	}
+	
+	public ResponseEntity<?> getProposalById(String proposalId) {
+
+		try {
+
+			ProposalDto response = new ProposalDto();
+			response.setProposalInfo(proposalRepository.findByProposalId(proposalId));
+			response.setProposalContent(proposalContentRepository.findByProposalId(proposalId));
+
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
 
 	public ResponseEntity<?> getAllProposal(int page, int size, Object loginUser, String search) {
 

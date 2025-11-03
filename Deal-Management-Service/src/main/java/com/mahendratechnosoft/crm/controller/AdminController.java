@@ -450,6 +450,14 @@ public class AdminController {
 		
 	}
 	
+	
+	@GetMapping("/getProposalById/{proposalId}")
+	public ResponseEntity<?> getProposalById(@PathVariable String proposalId) {
+		
+		return salesService.getProposalById(proposalId);
+		
+	}
+	
 	@GetMapping("/getAllProposal/{page}/{size}")
 	public ResponseEntity<?> getAllProposal(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 

@@ -34,5 +34,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, String >{
 		        @Param("employeeId") String employeeId,
 		        @Param("search") String search,
 		        Pageable pageable);
+	
+	Proposal findByProposalId(String proposalId);
 
 }

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -247,6 +246,14 @@ public class EmployeeController {
 		public ResponseEntity<?> updateProposal(@ModelAttribute("employee") Employee employee,@RequestBody ProposalDto request) {
 			
 			return salesService.updateProposal(request,employee);
+			
+		}
+		
+		
+		@GetMapping("/getProposalById/{proposalId}")
+		public ResponseEntity<?> getProposalById(@PathVariable String proposalId) {
+			
+			return salesService.getProposalById(proposalId);
 			
 		}
 		
