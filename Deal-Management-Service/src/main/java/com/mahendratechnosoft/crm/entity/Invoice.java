@@ -1,0 +1,271 @@
+package com.mahendratechnosoft.crm.entity;
+
+import java.sql.Date;
+
+import org.hibernate.annotations.UuidGenerator;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Invoice {
+
+	@Id
+	@UuidGenerator(style = UuidGenerator.Style.TIME)
+	private String invoiceId;
+	private String adminId;
+	private String employeeId;
+	private String proposalId;
+	private String assignTo;
+	private String invoiceNumber;
+	private String currencyType;
+	private double discount;
+	private String taxType;
+	private Date dueDate;
+	private Date invoiceDate;
+	private double totalAmmount;
+	private String status;
+	private String relatedTo; // lead,customer
+	private String relatedId;
+	private String companyName;
+	private String mobileNumber;
+	private String gstin;
+	private String panNumber;
+	private String email;
+	private String billingStreet;
+	private String billingCity;
+	private String billingState;
+	private String billingCountry;
+	private String billingZipCode;
+	private String shippingStreet;
+	private String shippingCity;
+	private String shippingState;
+	private String shippingCountry;
+	private String shippingZipCode;
+	public Invoice() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Invoice(String invoiceId, String adminId, String employeeId, String proposalId, String assignTo,
+			String invoiceNumber, String currencyType, double discount, String taxType, Date dueDate, Date invoiceDate,
+			double totalAmmount, String status, String relatedTo, String relatedId, String companyName,
+			String mobileNumber, String gstin, String panNumber, String email, String billingStreet, String billingCity,
+			String billingState, String billingCountry, String billingZipCode, String shippingStreet,
+			String shippingCity, String shippingState, String shippingCountry, String shippingZipCode) {
+		super();
+		this.invoiceId = invoiceId;
+		this.adminId = adminId;
+		this.employeeId = employeeId;
+		this.proposalId = proposalId;
+		this.assignTo = assignTo;
+		this.invoiceNumber = invoiceNumber;
+		this.currencyType = currencyType;
+		this.discount = discount;
+		this.taxType = taxType;
+		this.dueDate = dueDate;
+		this.invoiceDate = invoiceDate;
+		this.totalAmmount = totalAmmount;
+		this.status = status;
+		this.relatedTo = relatedTo;
+		this.relatedId = relatedId;
+		this.companyName = companyName;
+		this.mobileNumber = mobileNumber;
+		this.gstin = gstin;
+		this.panNumber = panNumber;
+		this.email = email;
+		this.billingStreet = billingStreet;
+		this.billingCity = billingCity;
+		this.billingState = billingState;
+		this.billingCountry = billingCountry;
+		this.billingZipCode = billingZipCode;
+		this.shippingStreet = shippingStreet;
+		this.shippingCity = shippingCity;
+		this.shippingState = shippingState;
+		this.shippingCountry = shippingCountry;
+		this.shippingZipCode = shippingZipCode;
+	}
+	public String getInvoiceId() {
+		return invoiceId;
+	}
+	public void setInvoiceId(String invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+	public String getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	public String getProposalId() {
+		return proposalId;
+	}
+	public void setProposalId(String proposalId) {
+		this.proposalId = proposalId;
+	}
+	public String getAssignTo() {
+		return assignTo;
+	}
+	public void setAssignTo(String assignTo) {
+		this.assignTo = assignTo;
+	}
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+	public String getCurrencyType() {
+		return currencyType;
+	}
+	public void setCurrencyType(String currencyType) {
+		this.currencyType = currencyType;
+	}
+	public double getDiscount() {
+		return discount;
+	}
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
+	public String getTaxType() {
+		return taxType;
+	}
+	public void setTaxType(String taxType) {
+		this.taxType = taxType;
+	}
+	public Date getDueDate() {
+		return dueDate;
+	}
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
+	}
+	public Date getInvoiceDate() {
+		return invoiceDate;
+	}
+	public void setInvoiceDate(Date invoiceDate) {
+		this.invoiceDate = invoiceDate;
+	}
+	public double getTotalAmmount() {
+		return totalAmmount;
+	}
+	public void setTotalAmmount(double totalAmmount) {
+		this.totalAmmount = totalAmmount;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getRelatedTo() {
+		return relatedTo;
+	}
+	public void setRelatedTo(String relatedTo) {
+		this.relatedTo = relatedTo;
+	}
+	public String getRelatedId() {
+		return relatedId;
+	}
+	public void setRelatedId(String relatedId) {
+		this.relatedId = relatedId;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+	public String getGstin() {
+		return gstin;
+	}
+	public void setGstin(String gstin) {
+		this.gstin = gstin;
+	}
+	public String getPanNumber() {
+		return panNumber;
+	}
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getBillingStreet() {
+		return billingStreet;
+	}
+	public void setBillingStreet(String billingStreet) {
+		this.billingStreet = billingStreet;
+	}
+	public String getBillingCity() {
+		return billingCity;
+	}
+	public void setBillingCity(String billingCity) {
+		this.billingCity = billingCity;
+	}
+	public String getBillingState() {
+		return billingState;
+	}
+	public void setBillingState(String billingState) {
+		this.billingState = billingState;
+	}
+	public String getBillingCountry() {
+		return billingCountry;
+	}
+	public void setBillingCountry(String billingCountry) {
+		this.billingCountry = billingCountry;
+	}
+	public String getBillingZipCode() {
+		return billingZipCode;
+	}
+	public void setBillingZipCode(String billingZipCode) {
+		this.billingZipCode = billingZipCode;
+	}
+	public String getShippingStreet() {
+		return shippingStreet;
+	}
+	public void setShippingStreet(String shippingStreet) {
+		this.shippingStreet = shippingStreet;
+	}
+	public String getShippingCity() {
+		return shippingCity;
+	}
+	public void setShippingCity(String shippingCity) {
+		this.shippingCity = shippingCity;
+	}
+	public String getShippingState() {
+		return shippingState;
+	}
+	public void setShippingState(String shippingState) {
+		this.shippingState = shippingState;
+	}
+	public String getShippingCountry() {
+		return shippingCountry;
+	}
+	public void setShippingCountry(String shippingCountry) {
+		this.shippingCountry = shippingCountry;
+	}
+	public String getShippingZipCode() {
+		return shippingZipCode;
+	}
+	public void setShippingZipCode(String shippingZipCode) {
+		this.shippingZipCode = shippingZipCode;
+	}
+	
+	
+	
+
+}

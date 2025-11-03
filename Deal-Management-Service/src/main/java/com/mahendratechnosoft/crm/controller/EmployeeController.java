@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -252,6 +254,37 @@ public class EmployeeController {
 		public ResponseEntity<?> getAllProposal(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 
 			return salesService.getAllProposal(page ,size,employee,search);
+
+		}
+		
+		
+		//Invoice API
+		@PostMapping("/createInvoice")
+		public ResponseEntity<?> createInvoice(@ModelAttribute("employee") Employee employee,@RequestBody InvoiceDto request) {
+			
+			return salesService.createInvoice(request,employee);
+			
+		}
+		
+		@PutMapping("/updateInvoice")
+		public ResponseEntity<?> updateInvoice(@ModelAttribute("employee") Employee employee,@RequestBody InvoiceDto request) {
+			
+			return salesService.updateInvoice(request,employee);
+			
+		}
+		
+		@GetMapping("/getInvoiceById/{invoiceId}")
+		public ResponseEntity<?> getInvoiceById(@PathVariable String invoiceId) {
+			
+			return salesService.getInvoiceById(invoiceId);
+			
+		}
+		
+		
+		@GetMapping("/getAllInvoice/{page}/{size}")
+		public ResponseEntity<?> getAllInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return salesService.getAllInvoice(page ,size,employee,search);
 
 		}
     

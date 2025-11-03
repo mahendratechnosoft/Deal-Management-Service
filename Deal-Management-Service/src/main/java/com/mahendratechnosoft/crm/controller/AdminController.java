@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
+import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
@@ -456,4 +457,35 @@ public class AdminController {
 
 	}
 	
+	
+	
+	//Invoice API
+	@PostMapping("/createInvoice")
+	public ResponseEntity<?> createInvoice(@ModelAttribute("admin") Admin admin,@RequestBody InvoiceDto request) {
+		
+		return salesService.createInvoice(request,admin);
+		
+	}
+	
+	@PutMapping("/updateInvoice")
+	public ResponseEntity<?> updateInvoice(@ModelAttribute("admin") Admin admin,@RequestBody InvoiceDto request) {
+		
+		return salesService.updateInvoice(request,admin);
+		
+	}
+	
+	@GetMapping("/getInvoiceById/{invoiceId}")
+	public ResponseEntity<?> getInvoiceById(@PathVariable String invoiceId) {
+		
+		return salesService.getInvoiceById(invoiceId);
+		
+	}
+	
+	
+	@GetMapping("/getAllInvoice/{page}/{size}")
+	public ResponseEntity<?> getAllInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return salesService.getAllInvoice(page ,size,admin,search);
+
+	}
 }
