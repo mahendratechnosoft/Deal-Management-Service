@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +78,9 @@ public class EmployeeController {
     
     
     @GetMapping("/getEmployeeNameAndId")
-    public ResponseEntity<?> getEmployeeByIdByAdmin( @ModelAttribute("admin") Admin admin)   {
+    public ResponseEntity<?> getEmployeeByIdByAdmin( @ModelAttribute("employee") Employee employee)   {
    
-    	return employeeService.getEmployeeNameAndId(admin);
+    	return employeeService.getEmployeeNameAndId(employee);
     }
     
     @PutMapping("/updateProfile")
@@ -354,5 +355,13 @@ public class EmployeeController {
 
 		}
 		
+		@DeleteMapping("/deleteProposalContent")
+		public ResponseEntity<?> deleteProposalContent(@RequestBody List<String> proposalContentIds) {
+		    if (proposalContentIds == null || proposalContentIds.isEmpty()) {
+		        return ResponseEntity.badRequest().body(Map.of("message", "No proposal content IDs provided"));
+		    }
+		    salesService.deleteProposalContent(proposalContentIds);
+		    return ResponseEntity.ok("Proposals deleted successfully");
+		}
     
 }

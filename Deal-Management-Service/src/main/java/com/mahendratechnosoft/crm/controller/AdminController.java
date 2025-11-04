@@ -555,4 +555,13 @@ public class AdminController {
         return customerService.checkCustomerExist(companyName);
 
 	}
+	@DeleteMapping("/deleteProposalContent")
+	public ResponseEntity<?> deleteProposalContent(@RequestBody List<String> proposalContentIds) {
+	    if (proposalContentIds == null || proposalContentIds.isEmpty()) {
+	        return ResponseEntity.badRequest().body(Map.of("message", "No proposal content IDs provided"));
+	    }
+	    salesService.deleteProposalContent(proposalContentIds);
+	    return ResponseEntity.ok("Proposals deleted successfully");
+	}
+
 }

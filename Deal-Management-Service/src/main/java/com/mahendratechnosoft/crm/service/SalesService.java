@@ -26,6 +26,8 @@ import com.mahendratechnosoft.crm.repository.InvoiceRepository;
 import com.mahendratechnosoft.crm.repository.ProposalContentRepository;
 import com.mahendratechnosoft.crm.repository.ProposalRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class SalesService {
 
@@ -358,5 +360,11 @@ public class SalesService {
 		}
 
 	}
+	
+	@Transactional
+	public void deleteProposalContent(List<String> proposalContentIds) {
+        proposalContentRepository.deleteAllById(proposalContentIds);
+    }
+	
 
 }

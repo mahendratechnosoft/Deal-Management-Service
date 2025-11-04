@@ -18,6 +18,7 @@ public class Proposal {
 	private String currencyType;
 	private double discount;
 	private String taxType;
+	private double taxPercentage;
 	private Date dueDate;
 	private Date proposalDate;
 	private double totalAmmount;
@@ -206,8 +207,10 @@ public class Proposal {
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
-
-    
-    
-	
+	public double getTaxPercentage() {
+		return taxPercentage;
+	}
+	public void setTaxPercentage(double taxPercentage) {
+		this.taxPercentage = taxPercentage;
+	}
 }
