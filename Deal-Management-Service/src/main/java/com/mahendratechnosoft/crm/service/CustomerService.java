@@ -186,5 +186,19 @@ public class CustomerService {
 	                             .body("Error: " + e.getMessage());
 	    }
 	}
+	
+	
+	
+	public ResponseEntity<?> checkCustomerExist(String companyName) {
+		try {
+			
+			boolean exists = customerRepository.existsByCompanyName(companyName);
+          
+			return ResponseEntity.ok(exists);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+		}
+	}
 
 }

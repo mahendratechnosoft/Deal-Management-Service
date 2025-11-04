@@ -47,4 +47,5 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     List<Object[]> countLeadsByStatusAndAdminId(@Param("adminId") String adminId);
 
 
+    boolean existsByCompanyName(String companyName);
 }

@@ -32,7 +32,6 @@ import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.repository.LeadColumnRepository;
-import com.mahendratechnosoft.crm.repository.LeadInfoRepository;
 import com.mahendratechnosoft.crm.repository.LeadRepository;
 import com.mahendratechnosoft.crm.repository.LeadStatusRepository;
 
@@ -131,7 +130,7 @@ public class LeadService {
 	        	countAndStatus = leadRepository.countLeadsByStatusByEmployeeId(employeeId);
 	        }
 	        
-	        String statuses = "New Lead,Contacted,Qualified,Proposal,Negotiation,Won,Lost";
+	        String statuses = "New Lead,Contacted,Qualified,Proposal,Negotiation,Won,Lost,Converted";
 
 	     // Convert to List for easy iteration
 	     List<String> allStatuses = Arrays.asList(statuses.split(","));

@@ -346,5 +346,13 @@ public class EmployeeController {
 
 		}
 		
+		@GetMapping("/checkCustomerIsExist")
+		public ResponseEntity<?> getInvoiceByCustomerId(@RequestBody Map<String, String> request ) {
+
+			String companyName = request.get("companyName");
+	        return customerService.checkCustomerExist(companyName);
+
+		}
+		
     
 }
