@@ -25,15 +25,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.mahendratechnosoft.crm.entity.ActivityLogs;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadColumn;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.User;
+import com.mahendratechnosoft.crm.repository.ActivityLogsRepository;
 import com.mahendratechnosoft.crm.repository.LeadColumnRepository;
 import com.mahendratechnosoft.crm.repository.LeadRepository;
 import com.mahendratechnosoft.crm.repository.LeadStatusRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class LeadService {
@@ -50,12 +54,12 @@ public class LeadService {
 	@Autowired
 	private LeadStatusRepository leadStatusRepository;
 
-	User user;
+	@Autowired
+    private ActivityLogsRepository activityLogsRepository;
 
 
-
-	
-	public ResponseEntity<?> createLead(@RequestBody Leads dto) {
+	@Transactional
+	public ResponseEntity<?> createLead(@RequestBody Leads dto,String createdBy) {
 		// 1. Save or update LeadColumn sequence
 		try {
 		LeadColumn leadColumn = leadColumnRepository.findByAdminId(dto.getAdminId());
@@ -74,6 +78,18 @@ public class LeadService {
 		dto.setCreatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
 		dto.setUpdatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
 		leadRepository.save(dto);
+		
+		
+		//Save Lead Activity
+		
+		ActivityLogs activity=new ActivityLogs();
+		activity.setAdminId(dto.getAdminId());
+		activity.setCreatedBy(createdBy);
+		activity.setCreatedDateTime(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+		activity.setDescription("Lead Created");
+		activity.setModuleType("lead");
+		activity.setModuleId(dto.getId());
+		activityLogsRepository.save(activity);
 
 		// 3. Return updated columns and saved lead
 		return ResponseEntity.ok(dto);
@@ -175,7 +191,7 @@ public class LeadService {
 
 
 	
-	public ResponseEntity<?> updateLead(  Leads lead) {
+	public ResponseEntity<?> updateLead(  Leads lead,String createdBy) {
 		try {
 			Map<String,Object> leadInfo=new HashMap<>();
 			LeadColumn leadColumn = leadColumnRepository.findByAdminId(lead.getAdminId());
@@ -194,6 +210,17 @@ public class LeadService {
 			
 		//	leadColumn.setAdminId(lead.getAdminId());
 		//	leadColumnRepository.save(leadColumn);
+			
+			//Save Lead Activity
+			
+			ActivityLogs activity=new ActivityLogs();
+			activity.setAdminId(lead.getAdminId());
+			activity.setCreatedBy(createdBy);
+			activity.setCreatedDateTime(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+			activity.setDescription("Lead Created");
+			activity.setModuleType("lead");
+			activity.setModuleId(lead.getId());
+			activityLogsRepository.save(activity);
 			
 			leadInfo.put("lead",lead);
 			leadInfo.put("leadColumn", leadColumn);
@@ -234,13 +261,24 @@ public class LeadService {
 	
 	
 	
-	public ResponseEntity<?> updateLeadStatus(String leadId, String status) {
+	public ResponseEntity<?> updateLeadStatus(String leadId, String status,String createdBy) {
 		try {
 			Optional<Leads> optionalLead = leadRepository.findById(leadId);
 			Leads lead = optionalLead.get();
 			lead.setStatus(status);
-
 			leadRepository.save(lead);
+			
+           //Save Lead Activity
+			
+			ActivityLogs activity=new ActivityLogs();
+			activity.setAdminId(lead.getAdminId());
+			activity.setCreatedBy(createdBy);
+			activity.setCreatedDateTime(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+			activity.setDescription("Lead Status : " +status);
+			activity.setModuleType("lead");
+			activity.setModuleId(lead.getId());
+			activityLogsRepository.save(activity);
+			
 			return ResponseEntity.ok(lead);
 		} catch (Exception e) {
 
@@ -254,6 +292,20 @@ public class LeadService {
 	public String deleteLead(@PathVariable String id) {
 		leadRepository.deleteById(id);
 		return "Lead deleted: " + id;
+	}
+	
+	public ResponseEntity<?> getModuleActivit(String moduleId,String moduleType) {
+		try {
+
+			List<ActivityLogs> activityLogs = activityLogsRepository.findByModuleIdAndModuleTypeOrderByCreatedDateTime(moduleId,moduleType);
+
+			return ResponseEntity.ok(activityLogs);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
 	}
 	
 	// Lead Colums APi as follows

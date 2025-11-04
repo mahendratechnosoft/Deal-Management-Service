@@ -183,7 +183,7 @@ public class AdminController {
 	@PostMapping("/createLead")
 	public ResponseEntity<?> createLead(@ModelAttribute("admin") Admin admin,@RequestBody Leads dto) {
 		dto.setAdminId(admin.getAdminId());
-		return leadService.createLead(dto);
+		return leadService.createLead(dto,admin.getCompanyName());
 	}
 	
 	
@@ -210,15 +210,21 @@ public class AdminController {
 	@PutMapping("/updateLead")
 	public ResponseEntity<?> updateLead( @ModelAttribute("admin") Admin admin,@RequestBody Leads lead) {
 		lead.setAdminId(admin.getAdminId());
-		return leadService.updateLead(lead);
+		return leadService.updateLead(lead,admin.getCompanyName());
 	}
 	
 	
 	@PutMapping("/updateLeadStatus")
-	public ResponseEntity<?> updateLeadStatus(@RequestBody Map<String, String> request) {
+	public ResponseEntity<?> updateLeadStatus(@ModelAttribute("admin") Admin admin,@RequestBody Map<String, String> request) {
 		String leadId = request.get("leadId");
 		String status = request.get("status");
-		return leadService.updateLeadStatus(leadId,status);
+		return leadService.updateLeadStatus(leadId,status,admin.getCompanyName());
+	}
+	
+	@GetMapping("/getModuleActivity/{moduleId}/{moduleType}")
+	public ResponseEntity<?> getModuleActivity(@PathVariable String moduleId,@PathVariable String moduleType) {
+
+		return leadService.getModuleActivit(moduleId,moduleType);
 	}
 	
 	

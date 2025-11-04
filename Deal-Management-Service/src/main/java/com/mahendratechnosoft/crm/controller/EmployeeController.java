@@ -124,7 +124,8 @@ public class EmployeeController {
 		public ResponseEntity<?> createLead(@ModelAttribute("employee") Employee employee,@RequestBody Leads dto) {
 			dto.setAdminId(employee.getAdmin().getAdminId());
 			dto.setEmployeeId(employee.getEmployeeId());
-			return leadService.createLead(dto);
+			dto.setAssignTo(employee.getName());
+			return leadService.createLead(dto,employee.getName());
 		}
 		
 		
@@ -138,7 +139,8 @@ public class EmployeeController {
 		@PutMapping("/updateLead")
 		public ResponseEntity<?> updateLead( @ModelAttribute("employee") Employee employee,@RequestBody Leads lead) {
 			lead.setAdminId(employee.getAdmin().getAdminId());
-			return leadService.updateLead(lead);
+			lead.setAssignTo(employee.getName());
+			return leadService.updateLead(lead,employee.getName());
 		}
 		
 		@GetMapping("/getLeadById/{leadId}")
@@ -160,10 +162,10 @@ public class EmployeeController {
 		}
 		
 		@PutMapping("/updateLeadStatus")
-		public ResponseEntity<?> updateLeadStatus(@RequestBody Map<String, String> request) {
+		public ResponseEntity<?> updateLeadStatus(@ModelAttribute("employee") Employee employee,@RequestBody Map<String, String> request) {
 			String leadId = request.get("leadId");
 			String status = request.get("status");
-			return leadService.updateLeadStatus(leadId,status);
+			return leadService.updateLeadStatus(leadId,status,employee.getName());
 		}
 		
 		@PostMapping("/createCustomer")
