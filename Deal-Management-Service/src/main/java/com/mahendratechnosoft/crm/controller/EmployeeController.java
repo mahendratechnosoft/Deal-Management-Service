@@ -365,5 +365,12 @@ public class EmployeeController {
 		    salesService.deleteProposalContent(proposalContentIds);
 		    return ResponseEntity.ok("Proposals deleted successfully");
 		}
+		
+		@GetMapping("/getModuleActivity/{moduleId}/{moduleType}")
+		public ResponseEntity<?> getModuleActivity(@PathVariable String moduleId,@PathVariable String moduleType) {
+
+			return leadService.getModuleActivit(moduleId,moduleType);
+		}
+		
     
 }

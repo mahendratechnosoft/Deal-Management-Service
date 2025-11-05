@@ -297,7 +297,7 @@ public class LeadService {
 	public ResponseEntity<?> getModuleActivit(String moduleId,String moduleType) {
 		try {
 
-			List<ActivityLogs> activityLogs = activityLogsRepository.findByModuleIdAndModuleTypeOrderByCreatedDateTime(moduleId,moduleType);
+			List<ActivityLogs> activityLogs = activityLogsRepository.findByModuleIdAndModuleTypeOrderByCreatedDateTimeDesc(moduleId,moduleType);
 
 			return ResponseEntity.ok(activityLogs);
 		} catch (Exception e) {

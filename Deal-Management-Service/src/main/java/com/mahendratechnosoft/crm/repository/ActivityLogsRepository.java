@@ -10,5 +10,5 @@ public interface ActivityLogsRepository extends JpaRepository<ActivityLogs, Stri
 	
 	
 
-	List<ActivityLogs> findByModuleIdAndModuleTypeOrderByCreatedDateTime(String moduleId,String moduleType);
+	List<ActivityLogs> findByModuleIdAndModuleTypeOrderByCreatedDateTimeDesc(String moduleId,String moduleType);
 }
