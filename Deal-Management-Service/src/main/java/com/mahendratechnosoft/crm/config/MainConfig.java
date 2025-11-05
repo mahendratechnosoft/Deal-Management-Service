@@ -101,7 +101,7 @@ public class MainConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://91.203.133.210:9090"); // Allow frontend
+        configuration.addAllowedOrigin("http://91.203.133.210:5173"); // Allow frontend
         configuration.addAllowedMethod("*"); // Allow all HTTP methods
         configuration.addAllowedHeader("*"); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (cookies, etc.)
