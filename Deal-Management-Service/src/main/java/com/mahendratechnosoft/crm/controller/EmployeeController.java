@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -136,6 +135,13 @@ public class EmployeeController {
 
 		  return  leadService.getAllLeads(page, size,employee,leadStatus,search);
 		}
+		
+		@GetMapping("/getLeadStatusAndCount")
+		public ResponseEntity<?> getLeadStatusAndCount(@ModelAttribute("employee") Employee employee) {
+
+		  return  leadService.getLeadStatusAndCount(employee);
+		}
+	    
 	    
 		@PutMapping("/updateLead")
 		public ResponseEntity<?> updateLead( @ModelAttribute("employee") Employee employee,@RequestBody Leads lead) {
@@ -226,9 +232,9 @@ public class EmployeeController {
 	    
 	    
 		@GetMapping("/getAllCustomerStatusAndCount")
-		public ResponseEntity<?> getAllCustomerStatusAndCount(@ModelAttribute("admin") Admin admin) {
+		public ResponseEntity<?> getAllCustomerStatusAndCount(@ModelAttribute("employee") Employee employee) {
 
-			return customerService.getAllCustomerStatusAndCount(admin);
+			return customerService.getAllCustomerStatusAndCount(employee);
 
 		}
 

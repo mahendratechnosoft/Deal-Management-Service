@@ -187,6 +187,64 @@ public class LeadService {
 	                .body("Error " + e.getMessage());
 	    }
 	}
+	
+	public ResponseEntity<?> getLeadStatusAndCount(Object loginUser) {
+		try {
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			List<Object[]> countAndStatus = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+				adminId = employee.getAdmin().getAdminId();
+			}
+
+			if (role.equals("ROLE_ADMIN")) {
+
+				countAndStatus = leadRepository.countLeadsByStatus(adminId);
+
+			} else {
+
+				countAndStatus = leadRepository.countLeadsByStatusByEmployeeId(employeeId);
+			}
+			
+			
+	        
+	        String statuses = "New Lead,Contacted,Qualified,Proposal,Negotiation,Won,Lost,Converted";
+
+	     // Convert to List for easy iteration
+	     List<String> allStatuses = Arrays.asList(statuses.split(","));
+
+	     // Step 1: Create a Map from DB results for quick lookup
+	     Map<String, Long> statusCountMap = new HashMap<>();
+	     for (Object[] row : countAndStatus) {
+	         String status = (String) row[0];
+	         Long totalLeads = ((Number) row[1]).longValue();
+	         statusCountMap.put(status, totalLeads);
+	     }
+
+	     // Step 2: Build final response (always include all statuses)
+	     List<Map<String, Object>> countAndStatusResponse = new ArrayList<>();
+
+	     for (String status : allStatuses) {
+	         Map<String, Object> map = new LinkedHashMap<>();
+	         map.put("status", status);
+	         map.put("count", statusCountMap.getOrDefault(status, 0L));
+	         countAndStatusResponse.add(map);
+	     }
+
+			return ResponseEntity.ok(countAndStatusResponse);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error  " + e.getMessage());
+		}
+	}
 
 
 

@@ -207,6 +207,12 @@ public class AdminController {
 
 	  return  leadService.getAllLeads(page, size,admin,leadStatus,search);
 	}
+	
+	@GetMapping("/getLeadStatusAndCount")
+	public ResponseEntity<?> getLeadStatusAndCount(@ModelAttribute("admin") Admin admin) {
+
+	  return  leadService.getLeadStatusAndCount(admin);
+	}
     
 	@PutMapping("/updateLead")
 	public ResponseEntity<?> updateLead( @ModelAttribute("admin") Admin admin,@RequestBody Leads lead) {
