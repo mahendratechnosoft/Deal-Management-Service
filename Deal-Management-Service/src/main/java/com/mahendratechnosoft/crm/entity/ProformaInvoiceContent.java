@@ -5,13 +5,13 @@ import org.hibernate.annotations.UuidGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
 @Entity
-public class InvoiceContent {
-	
+public class ProformaInvoiceContent {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
-	private String invoiceContentId;
-	private String invoiceId;
+	private String proformaInvoiceContentId;
+	private String proformaInvoiceId;
 	@Column(length = 1000)
 	private String item;
 	@Column(length = 5000)
@@ -20,16 +20,16 @@ public class InvoiceContent {
 	private double rate;
 	private String sacCode;
 	
-	public InvoiceContent() {
+	public ProformaInvoiceContent() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public InvoiceContent(String invoiceContentId, String invoiceId, String item, String description, int quantity,
-			double rate, String sacCode) {
+	public ProformaInvoiceContent(String proformaInvoiceContentId, String proformaInvoiceId, String item,
+			String description, int quantity, double rate, String sacCode) {
 		super();
-		this.invoiceContentId = invoiceContentId;
-		this.invoiceId = invoiceId;
+		this.proformaInvoiceContentId = proformaInvoiceContentId;
+		this.proformaInvoiceId = proformaInvoiceId;
 		this.item = item;
 		this.description = description;
 		this.quantity = quantity;
@@ -37,20 +37,20 @@ public class InvoiceContent {
 		this.sacCode = sacCode;
 	}
 
-	public String getInvoiceContentId() {
-		return invoiceContentId;
+	public String getProformaInvoiceContentId() {
+		return proformaInvoiceContentId;
 	}
 
-	public void setInvoiceContentId(String invoiceContentId) {
-		this.invoiceContentId = invoiceContentId;
+	public void setProformaInvoiceContentId(String proformaInvoiceContentId) {
+		this.proformaInvoiceContentId = proformaInvoiceContentId;
 	}
 
-	public String getInvoiceId() {
-		return invoiceId;
+	public String getProformaInvoiceId() {
+		return proformaInvoiceId;
 	}
 
-	public void setInvoiceId(String invoiceId) {
-		this.invoiceId = invoiceId;
+	public void setProformaInvoiceId(String proformaInvoiceId) {
+		this.proformaInvoiceId = proformaInvoiceId;
 	}
 
 	public String getItem() {
@@ -95,4 +95,7 @@ public class InvoiceContent {
 	
 	
 
+	
+	
+	
 }

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
@@ -561,12 +562,58 @@ public class AdminController {
         return customerService.checkCustomerExist(companyName);
 
 	}
+	
+	
 	@DeleteMapping("/deleteProposalContent")
 	public ResponseEntity<?> deleteProposalContent(@RequestBody List<String> proposalContentIds) {
 	    if (proposalContentIds == null || proposalContentIds.isEmpty()) {
 	        return ResponseEntity.badRequest().body(Map.of("message", "No proposal content IDs provided"));
 	    }
 	    salesService.deleteProposalContent(proposalContentIds);
+	    return ResponseEntity.ok("Proposals deleted successfully");
+	}
+	
+	
+	// proforma-invoice api
+	
+	@PostMapping("/createProformaInvoice")
+	public ResponseEntity<?> createProformaInvoice(@ModelAttribute("admin") Admin admin,@RequestBody ProformaInvoiceDto request) {
+		 
+		return salesService.createProformaInvoice(request,admin);
+		
+	}
+	
+	
+	@PutMapping("/updateProformaInvoice")
+	public ResponseEntity<?> updateProformaInvoice(@ModelAttribute("admin") Admin admin,@RequestBody ProformaInvoiceDto request) {
+		
+		return salesService.updateProformaInvoice(request,admin);
+		
+	}
+	
+	@GetMapping("/getProformaInvoiceById/{proformaInvoiceId}")
+	public ResponseEntity<?> getProformaInvoiceById(@PathVariable String proformaInvoiceId) {
+		
+		return salesService.getProformaInvoiceById(proformaInvoiceId);
+		
+	}
+	
+	
+	
+	@GetMapping("/getAllProformaInvoice/{page}/{size}")
+	public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return salesService.getAllProformaInvoice(page ,size,admin,search);
+
+	}
+	
+	
+	@DeleteMapping("/deleteProformaInvoiceContent")
+	public ResponseEntity<?> deleteProformaInvoiceContent(@RequestBody List<String> proformaInvoiceContentIds) {
+	    if (proformaInvoiceContentIds == null || proformaInvoiceContentIds.isEmpty()) {
+	        return ResponseEntity.badRequest().body(Map.of("message", "No Proforma Invoice content IDs provided"));
+	    }
+	    salesService.deleteProformaInvoiceContent(proformaInvoiceContentIds);
 	    return ResponseEntity.ok("Proposals deleted successfully");
 	}
 

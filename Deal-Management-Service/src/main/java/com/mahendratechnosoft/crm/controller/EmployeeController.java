@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
@@ -372,5 +373,49 @@ public class EmployeeController {
 			return leadService.getModuleActivit(moduleId,moduleType);
 		}
 		
+		
+		// proforma-invoice api
+		
+		@PostMapping("/createProformaInvoice")
+		public ResponseEntity<?> createProformaInvoice(@ModelAttribute("employee") Employee employee,@RequestBody ProformaInvoiceDto request) {
+			 
+			return salesService.createProformaInvoice(request,employee);
+			
+		}
+		
+		
+		@PutMapping("/updateProformaInvoice")
+		public ResponseEntity<?> updateProformaInvoice(@ModelAttribute("employee") Employee employee,@RequestBody ProformaInvoiceDto request) {
+			
+			return salesService.updateProformaInvoice(request,employee);
+			
+		}
+		
+		@GetMapping("/getProformaInvoiceById/{proformaInvoiceId}")
+		public ResponseEntity<?> getProformaInvoiceById(@PathVariable String proformaInvoiceId) {
+			
+			return salesService.getProformaInvoiceById(proformaInvoiceId);
+			
+		}
+		
+		
+		
+		@GetMapping("/getAllProformaInvoice/{page}/{size}")
+		public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return salesService.getAllProformaInvoice(page ,size,employee,search);
+
+		}
+		
+		
+		@DeleteMapping("/deleteProformaInvoiceContent")
+		public ResponseEntity<?> deleteProformaInvoiceContent(@RequestBody List<String> proformaInvoiceContentIds) {
+		    if (proformaInvoiceContentIds == null || proformaInvoiceContentIds.isEmpty()) {
+		        return ResponseEntity.badRequest().body(Map.of("message", "No Proforma Invoice content IDs provided"));
+		    }
+		    salesService.deleteProformaInvoiceContent(proformaInvoiceContentIds);
+		    return ResponseEntity.ok("Proposals deleted successfully");
+		}
+
     
 }

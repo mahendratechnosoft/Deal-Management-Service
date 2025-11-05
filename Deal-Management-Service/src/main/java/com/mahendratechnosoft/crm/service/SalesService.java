@@ -14,15 +14,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.InvoiceContent;
+import com.mahendratechnosoft.crm.entity.ProformaInvoice;
+import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
 import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceRepository;
+import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
+import com.mahendratechnosoft.crm.repository.ProformaInvoiceRepository;
 import com.mahendratechnosoft.crm.repository.ProposalContentRepository;
 import com.mahendratechnosoft.crm.repository.ProposalRepository;
 
@@ -42,6 +47,12 @@ public class SalesService {
 	
 	@Autowired
 	private InvoiceContentRepository invoiceContentRepository;
+	
+	@Autowired
+	private ProformaInvoiceRepository proformaInvoiceRepository;
+	
+	@Autowired
+	private ProformaInvoiceContentRepository proformaInvoiceContentRepository;
 	
 
 	public ResponseEntity<?> createProposal(ProposalDto proposalDto, Object loginUser) {
@@ -367,4 +378,152 @@ public class SalesService {
     }
 	
 
+	public ResponseEntity<?> createProformaInvoice(ProformaInvoiceDto invoiceDto, Object loginUser) {
+
+		try {
+
+			String adminId = null;
+			String employeeId = null;
+
+			if (loginUser instanceof Admin admin) {
+
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+			}
+
+			ProformaInvoice invoice = invoiceDto.getProformaInvoiceInfo();
+			invoice.setAdminId(adminId);
+			if(invoice.getEmployeeId()==null) {
+				invoice.setEmployeeId(employeeId);
+			}
+			proformaInvoiceRepository.save(invoice);
+
+			List<ProformaInvoiceContent> invoiceContentAll = new ArrayList<>();
+
+			for (ProformaInvoiceContent content : invoiceDto.getProformaInvoiceContents()) {
+
+				content.setProformaInvoiceId(invoice.getProformaInvoiceId());
+
+				invoiceContentAll.add(content);
+			}
+
+			proformaInvoiceContentRepository.saveAll(invoiceContentAll);
+
+			return ResponseEntity.ok(invoiceDto);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> updateProformaInvoice(ProformaInvoiceDto invoiceDto, Object loginUser) {
+
+		try {
+
+			String adminId = null;
+
+			if (loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+			}
+
+			ProformaInvoice invoice = invoiceDto.getProformaInvoiceInfo();
+			invoice.setAdminId(adminId);
+			proformaInvoiceRepository.save(invoice);
+
+			List<ProformaInvoiceContent> invoiceContentAll = new ArrayList<>();
+
+			for (ProformaInvoiceContent content : invoiceDto.getProformaInvoiceContents()) {
+
+				content.setProformaInvoiceId(invoice.getProformaInvoiceId());
+
+				invoiceContentAll.add(content);
+			}
+
+			proformaInvoiceContentRepository.saveAll(invoiceContentAll);
+
+			return ResponseEntity.ok(invoiceDto);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getProformaInvoiceById(String  proformaInvoiceId) {
+
+		try {
+			
+			ProformaInvoiceDto response=new ProformaInvoiceDto();
+			response.setProformaInvoiceInfo(proformaInvoiceRepository.findByProformaInvoiceId(proformaInvoiceId));
+            response.setProformaInvoiceContents(proformaInvoiceContentRepository.findByProformaInvoiceId(proformaInvoiceId));
+			
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getAllProformaInvoice(int page, int size, Object loginUser, String search) {
+
+		try {
+
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			Page<ProformaInvoice> invoicePage = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+			}
+
+			// 2. Fetch paginated leads for company
+			Pageable pageable = PageRequest.of(page, size);
+			if (role.equals("ROLE_ADMIN")) {
+				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, pageable);
+
+			} else {
+
+				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search, pageable);
+			}
+			// 3. Prepare response
+			Map<String, Object> response = new HashMap<>();
+
+			response.put("ProformaInvoiceList", invoicePage.getContent());
+			response.put("currentPage", invoicePage.getNumber());
+
+			response.put("totalPages", invoicePage.getTotalPages());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	@Transactional
+	public void deleteProformaInvoiceContent(List<String> proformaInvoiceContentIds) {
+		proformaInvoiceContentRepository.deleteAllById(proformaInvoiceContentIds);
+    }
 }
