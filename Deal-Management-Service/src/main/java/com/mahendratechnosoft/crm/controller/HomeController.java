@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
+import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
+import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.security.JwtUtil;
 import com.mahendratechnosoft.crm.service.UserService;
@@ -43,6 +49,12 @@ public class HomeController {
     @Autowired
     private UserService userService;
     
+    @Autowired
+    private AdminRepository adminRepository;
+    
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody AdminRegistrationDto registrationDto) {
@@ -66,8 +78,16 @@ public class HomeController {
             User user = userRepository.findByLoginEmail(adminRegistrationDto.getUsername()).get();
             
             final String token = jwtUtil.generateToken(userDetails);
+            String name;
+            if (user.getRole().equals("ROLE_ADMIN")) {
+            	 Optional<Admin> admin=adminRepository.findByLoginEmail(user.getLoginEmail());
+            	 name=admin.get().getName();
+            }else {
+            	Optional<Employee> employee=employeeRepository.findByLoginEmail(user.getLoginEmail());
+            	name=employee.get().getName();
+            }
             
-            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate());
+            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name);
             
             return ResponseEntity.ok(signInRespoonceDto);
 
