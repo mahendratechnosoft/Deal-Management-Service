@@ -22,7 +22,7 @@ WORKDIR /app
 COPY target/*.jar app.jar
 
 # Expose application port
-EXPOSE 8080
+EXPOSE 9090
 
 # Run the application with headless mode
 ENTRYPOINT ["java", "-Djava.awt.headless=true", "-jar", "app.jar"]
