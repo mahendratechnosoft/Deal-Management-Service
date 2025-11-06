@@ -20,6 +20,7 @@ import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.InvoiceContent;
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
@@ -175,7 +176,7 @@ public class SalesService {
 	public ResponseEntity<?> getAllProposal(int page, int size, Object loginUser, String search) {
 
 		try {
-
+            ModuleAccess moduleAccess=null;
 			String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 			String employeeId = null;
@@ -186,6 +187,7 @@ public class SalesService {
 			} else if (loginUser instanceof Employee employee) {
 
 				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
 			}
 
 			// 2. Fetch paginated leads for company
@@ -193,6 +195,10 @@ public class SalesService {
 			if (role.equals("ROLE_ADMIN")) {
 				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
 
+			}else if(moduleAccess.isProposalViewAll()) {
+                
+				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
+				
 			} else {
 
 				proposalPage = proposalRepository.findByEmployeeId(employeeId, search, pageable);
@@ -318,7 +324,7 @@ public class SalesService {
 	public ResponseEntity<?> getAllInvoice(int page, int size, Object loginUser, String search) {
 
 		try {
-
+            ModuleAccess moduleAccess=null;
 			String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 			String employeeId = null;
@@ -329,6 +335,7 @@ public class SalesService {
 			} else if (loginUser instanceof Employee employee) {
 
 				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
 			}
 
 			// 2. Fetch paginated leads for company
@@ -336,6 +343,10 @@ public class SalesService {
 			if (role.equals("ROLE_ADMIN")) {
 				invoicePage = invoiceRepository.findByAdminId(adminId, search, pageable);
 
+			}else if(moduleAccess.isInvoiceViewAll()) {
+				
+				invoicePage = invoiceRepository.findByAdminId(adminId, search, pageable);
+				
 			} else {
 
 				invoicePage = invoiceRepository.findByEmployeeId(employeeId, search, pageable);
@@ -482,7 +493,7 @@ public class SalesService {
 	public ResponseEntity<?> getAllProformaInvoice(int page, int size, Object loginUser, String search) {
 
 		try {
-
+            ModuleAccess moduleAccess=null;
 			String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 			String employeeId = null;
@@ -493,6 +504,7 @@ public class SalesService {
 			} else if (loginUser instanceof Employee employee) {
 
 				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
 			}
 
 			// 2. Fetch paginated leads for company
@@ -500,6 +512,10 @@ public class SalesService {
 			if (role.equals("ROLE_ADMIN")) {
 				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, pageable);
 
+			}else if(moduleAccess.isProformaInvoiceEdit()) {
+				
+				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, pageable);
+				
 			} else {
 
 				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search, pageable);
