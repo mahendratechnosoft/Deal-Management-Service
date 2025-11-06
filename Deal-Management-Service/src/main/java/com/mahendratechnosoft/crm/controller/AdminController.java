@@ -189,9 +189,9 @@ public class AdminController {
 	
 	
 	@GetMapping("/getLeadById/{leadId}")
-	public ResponseEntity<?> getLeadById(@PathVariable String leadId) {
+	public ResponseEntity<?> getLeadById(@ModelAttribute("admin") Admin admin,@PathVariable String leadId) {
 		
-		return leadService.getLeadById(leadId);
+		return leadService.getLeadById(leadId,admin);
 	}
 	
 

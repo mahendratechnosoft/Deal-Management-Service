@@ -151,9 +151,9 @@ public class EmployeeController {
 		}
 		
 		@GetMapping("/getLeadById/{leadId}")
-		public ResponseEntity<?> getLeadById(@PathVariable String leadId) {
+		public ResponseEntity<?> getLeadById(@ModelAttribute("employee") Employee employee,@PathVariable String leadId) {
 			
-			return leadService.getLeadById(leadId);
+			return leadService.getLeadById(leadId,employee);
 		}
 		
 		@DeleteMapping("/deleteLead/{id}")

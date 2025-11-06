@@ -292,12 +292,25 @@ public class LeadService {
 	}
 	
 	
-	public ResponseEntity<?> getLeadById(String leadId) {
+	public ResponseEntity<?> getLeadById(String leadId,Object loginUser) {
 		try {
+			
+			
 			
 			Map<String,Object> leadInfo=new HashMap<>();
 			
-			LeadColumn leadColumn = leadColumnRepository.findByAdminId("1");
+			String adminId = null;
+
+			if (loginUser instanceof Admin admin) {
+				
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				adminId = employee.getAdmin().getAdminId();
+			}
+
+			
+			LeadColumn leadColumn = leadColumnRepository.findByAdminId(adminId);
 			 List<LeadColumn.ColumnDefinition> sortedColumns = leadColumn.getColumns()
 				        .stream()
 				        .sorted(Comparator.comparingInt(LeadColumn.ColumnDefinition::getSequence))
