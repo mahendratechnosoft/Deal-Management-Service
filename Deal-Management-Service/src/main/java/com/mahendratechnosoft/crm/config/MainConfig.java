@@ -105,7 +105,7 @@ public class MainConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
             "http://localhost:5173",
-            "http://91.203.133.210:5173",
+            "http://91.203.133.210:5174",
             "https://mtechnosoft.xpertbizsolutions.com"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
