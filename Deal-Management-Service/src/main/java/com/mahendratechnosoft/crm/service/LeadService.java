@@ -32,7 +32,6 @@ import com.mahendratechnosoft.crm.entity.LeadColumn;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
-import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.repository.ActivityLogsRepository;
 import com.mahendratechnosoft.crm.repository.LeadColumnRepository;
 import com.mahendratechnosoft.crm.repository.LeadRepository;

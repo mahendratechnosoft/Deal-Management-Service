@@ -21,12 +21,14 @@ import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.security.JwtUtil;
+import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.UserService;
 
 
@@ -54,6 +56,9 @@ public class HomeController {
     
     @Autowired
     private EmployeeRepository employeeRepository;
+    
+    @Autowired
+    private LeadService leadService;
     
 
     @PostMapping("/register")
@@ -108,6 +113,16 @@ public class HomeController {
             @PathVariable String email) {
         boolean exists = userService.emailExists(email);
         return ResponseEntity.ok(exists);
+    }
+    
+    
+    @GetMapping("/generateLeads")
+    public ResponseEntity<?> genrateLeads(@RequestBody Leads dto ) {
+        if(dto.getAdminId() == null || dto.getAdminId().isEmpty()) {
+        	
+        	return ResponseEntity.ok("Admin Is Missing (Admin Id)");
+        }
+        return leadService.createLead(dto, "Form Genrated");
     }
 
 
