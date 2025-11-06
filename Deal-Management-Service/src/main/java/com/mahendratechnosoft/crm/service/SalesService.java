@@ -72,7 +72,7 @@ public class SalesService {
 
 			Proposal proposal = proposalDto.getProposalInfo();
 			proposal.setAdminId(adminId);
-			if(proposal.getEmployeeId()==null) {
+			if(proposal.getEmployeeId()==null || proposal.getEmployeeId().isEmpty()) {
 			proposal.setEmployeeId(employeeId);
 			}
 			proposalRepository.save(proposal);
