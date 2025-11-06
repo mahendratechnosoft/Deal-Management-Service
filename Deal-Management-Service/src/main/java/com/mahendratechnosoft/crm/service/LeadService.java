@@ -31,6 +31,7 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadColumn;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.repository.ActivityLogsRepository;
 import com.mahendratechnosoft.crm.repository.LeadColumnRepository;
@@ -106,6 +107,7 @@ public class LeadService {
 	public ResponseEntity<?> getAllLeads(int page ,int size,Object loginUser,String leadStatus,String search) {
 
 	    try {
+	    	  ModuleAccess moduleAcces=null;
 	    	  String role = "ROLE_EMPLOYEE";
 	          String adminId = null;
 	          String employeeId=null;
@@ -118,6 +120,8 @@ public class LeadService {
 	               
 	        	   employeeId = employee.getEmployeeId();
 	        	   adminId=employee.getAdmin().getAdminId();
+	        	   moduleAcces=employee.getModuleAccess();
+	        	   
 	           }
 
 	    	
@@ -140,6 +144,10 @@ public class LeadService {
 	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
  
+	        }else if(moduleAcces.isLeadViewAll()){
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
+	        	
 	        }else {
 	        	
 	        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,search, pageable);

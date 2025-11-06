@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.repository.CustomerRepository;
 
 @Service
@@ -89,6 +90,7 @@ public class CustomerService {
 	public ResponseEntity<?> getAllCustomer(@PathVariable int page, @PathVariable int size, Object loginUser,String search) {
 
 		try {
+			ModuleAccess moduleAccess=null;
 			String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 			String employeeId = null;
@@ -100,6 +102,7 @@ public class CustomerService {
 
 				employeeId = employee.getEmployeeId();
 				adminId = employee.getAdmin().getAdminId();
+				moduleAccess=employee.getModuleAccess();
 			}
 
 			// 2. Fetch paginated leads for company
@@ -107,6 +110,10 @@ public class CustomerService {
 			if (role.equals("ROLE_ADMIN")) {
 				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
 
+			}else if(moduleAccess.iscustomerViewAll()) {
+				
+				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
+				
 			} else {
 
 				customerPage = customerRepository.findByEmployeeId(employeeId, search,pageable);

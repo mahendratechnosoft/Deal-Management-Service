@@ -12,25 +12,36 @@ public class ModuleAccess {
 	private String adminId;
 	private String employeeId;
 
+	private boolean leadAccess;
 	private boolean leadViewAll;
 	private boolean leadCreate;
 	private boolean leadDelete;
 	private boolean leadEdit;
 	
-	private boolean accountViewAll;
-	private boolean accountCreate;
-	private boolean accountDelete;
-	private boolean accountEdit;
+	private boolean customerAccess;
+	private boolean customerViewAll;
+	private boolean customerCreate;
+	private boolean customerDelete;
+	private boolean customerEdit;
 	
-	private boolean dealViewAll;
-	private boolean dealCreate;
-	private boolean dealDelete;
-	private boolean dealEdit;
+	private boolean proposalAccess;
+	private boolean proposalViewAll;
+	private boolean proposalCreate;
+	private boolean proposalDelete;
+	private boolean proposalEdit;
 	
-	private boolean contactViewAll;
-	private boolean contactCreate;
-	private boolean contactDelete;
-	private boolean contactEdit;
+	private boolean proformaInvoiceAccess;
+	private boolean proformaInvoiceViewAll;
+	private boolean proformaInvoiceCreate;
+	private boolean proformaInvoiceDelete;
+	private boolean proformaInvoiceEdit;
+	
+	
+	private boolean invoiceAccess;
+	private boolean invoiceViewAll;
+	private boolean invoiceCreate;
+	private boolean invoiceDelete;
+	private boolean invoiceEdit;
 	
 
 	public String getModuleAccessId() {
@@ -92,146 +103,132 @@ public class ModuleAccess {
 
 
 
-	public boolean isAccountViewAll() {
-		return accountViewAll;
+	public boolean iscustomerViewAll() {
+		return customerViewAll;
 	}
 
 
 
-	public void setAccountViewAll(boolean accountViewAll) {
-		this.accountViewAll = accountViewAll;
+	public void setcustomerViewAll(boolean customerViewAll) {
+		this.customerViewAll = customerViewAll;
 	}
 
 
 
-	public boolean isAccountCreate() {
-		return accountCreate;
+	public boolean iscustomerCreate() {
+		return customerCreate;
 	}
 
 
 
-	public void setAccountCreate(boolean accountCreate) {
-		this.accountCreate = accountCreate;
+	public void setcustomerCreate(boolean customerCreate) {
+		this.customerCreate = customerCreate;
 	}
 
 
 
-	public boolean isAccountDelete() {
-		return accountDelete;
+	public boolean iscustomerDelete() {
+		return customerDelete;
 	}
 
 
 
-	public void setAccountDelete(boolean accountDelete) {
-		this.accountDelete = accountDelete;
+	public void setcustomerDelete(boolean customerDelete) {
+		this.customerDelete = customerDelete;
 	}
 
 
 
-	public boolean isAccountEdit() {
-		return accountEdit;
+	public boolean iscustomerEdit() {
+		return customerEdit;
 	}
 
 
 
-	public void setAccountEdit(boolean accountEdit) {
-		this.accountEdit = accountEdit;
+	public void setcustomerEdit(boolean customerEdit) {
+		this.customerEdit = customerEdit;
+	}
+
+	public boolean isproposalCreate() {
+		return proposalCreate;
 	}
 
 
 
-	public boolean isDealViewAll() {
-		return dealViewAll;
+	public void setproposalCreate(boolean proposalCreate) {
+		this.proposalCreate = proposalCreate;
 	}
 
 
 
-	public void setDealViewAll(boolean dealViewAll) {
-		this.dealViewAll = dealViewAll;
+	public boolean isproposalDelete() {
+		return proposalDelete;
 	}
 
 
 
-	public boolean isDealCreate() {
-		return dealCreate;
+	public void setproposalDelete(boolean proposalDelete) {
+		this.proposalDelete = proposalDelete;
 	}
 
 
 
-	public void setDealCreate(boolean dealCreate) {
-		this.dealCreate = dealCreate;
+	public boolean isproposalEdit() {
+		return proposalEdit;
 	}
 
 
 
-	public boolean isDealDelete() {
-		return dealDelete;
+	public void setproposalEdit(boolean proposalEdit) {
+		this.proposalEdit = proposalEdit;
 	}
 
 
 
-	public void setDealDelete(boolean dealDelete) {
-		this.dealDelete = dealDelete;
+	public boolean isproformaInvoiceViewAll() {
+		return proformaInvoiceViewAll;
 	}
 
 
 
-	public boolean isDealEdit() {
-		return dealEdit;
+	public void setproformaInvoiceViewAll(boolean proformaInvoiceViewAll) {
+		this.proformaInvoiceViewAll = proformaInvoiceViewAll;
 	}
 
 
 
-	public void setDealEdit(boolean dealEdit) {
-		this.dealEdit = dealEdit;
+	public boolean isproformaInvoiceCreate() {
+		return proformaInvoiceCreate;
 	}
 
 
 
-	public boolean isContactViewAll() {
-		return contactViewAll;
+	public void setproformaInvoiceCreate(boolean proformaInvoiceCreate) {
+		this.proformaInvoiceCreate = proformaInvoiceCreate;
 	}
 
 
 
-	public void setContactViewAll(boolean contactViewAll) {
-		this.contactViewAll = contactViewAll;
+	public boolean isproformaInvoiceDelete() {
+		return proformaInvoiceDelete;
 	}
 
 
 
-	public boolean isContactCreate() {
-		return contactCreate;
+	public void setproformaInvoiceDelete(boolean proformaInvoiceDelete) {
+		this.proformaInvoiceDelete = proformaInvoiceDelete;
 	}
 
 
 
-	public void setContactCreate(boolean contactCreate) {
-		this.contactCreate = contactCreate;
+	public boolean isproformaInvoiceEdit() {
+		return proformaInvoiceEdit;
 	}
 
 
 
-	public boolean isContactDelete() {
-		return contactDelete;
-	}
-
-
-
-	public void setContactDelete(boolean contactDelete) {
-		this.contactDelete = contactDelete;
-	}
-
-
-
-	public boolean isContactEdit() {
-		return contactEdit;
-	}
-
-
-
-	public void setContactEdit(boolean contactEdit) {
-		this.contactEdit = contactEdit;
+	public void setproformaInvoiceEdit(boolean proformaInvoiceEdit) {
+		this.proformaInvoiceEdit = proformaInvoiceEdit;
 	}
 
 
@@ -258,5 +255,258 @@ public class ModuleAccess {
 		this.employeeId = employeeId;
 	}
 
+
+
+	public boolean isLeadAccess() {
+		return leadAccess;
+	}
+
+
+
+	public void setLeadAccess(boolean leadAccess) {
+		this.leadAccess = leadAccess;
+	}
+
+
+
+	public boolean isCustomerAccess() {
+		return customerAccess;
+	}
+
+
+
+	public void setCustomerAccess(boolean customerAccess) {
+		this.customerAccess = customerAccess;
+	}
+
+
+
+	public boolean isCustomerViewAll() {
+		return customerViewAll;
+	}
+
+
+
+	public void setCustomerViewAll(boolean customerViewAll) {
+		this.customerViewAll = customerViewAll;
+	}
+
+
+
+	public boolean isCustomerCreate() {
+		return customerCreate;
+	}
+
+
+
+	public void setCustomerCreate(boolean customerCreate) {
+		this.customerCreate = customerCreate;
+	}
+
+
+
+	public boolean isCustomerDelete() {
+		return customerDelete;
+	}
+
+
+
+	public void setCustomerDelete(boolean customerDelete) {
+		this.customerDelete = customerDelete;
+	}
+
+
+
+	public boolean isCustomerEdit() {
+		return customerEdit;
+	}
+
+
+
+	public void setCustomerEdit(boolean customerEdit) {
+		this.customerEdit = customerEdit;
+	}
+
+
+
+	public boolean isProposalAccess() {
+		return proposalAccess;
+	}
+
+
+
+	public void setProposalAccess(boolean proposalAccess) {
+		this.proposalAccess = proposalAccess;
+	}
+
+
+
+	public boolean isProposalViewAll() {
+		return proposalViewAll;
+	}
+
+
+
+	public void setProposalViewAll(boolean proposalViewAll) {
+		this.proposalViewAll = proposalViewAll;
+	}
+
+
+
+	public boolean isProposalCreate() {
+		return proposalCreate;
+	}
+
+
+
+	public void setProposalCreate(boolean proposalCreate) {
+		this.proposalCreate = proposalCreate;
+	}
+
+
+
+	public boolean isProposalDelete() {
+		return proposalDelete;
+	}
+
+
+
+	public void setProposalDelete(boolean proposalDelete) {
+		this.proposalDelete = proposalDelete;
+	}
+
+
+
+	public boolean isProposalEdit() {
+		return proposalEdit;
+	}
+
+
+
+	public void setProposalEdit(boolean proposalEdit) {
+		this.proposalEdit = proposalEdit;
+	}
+
+
+
+	public boolean isProformaInvoiceAccess() {
+		return proformaInvoiceAccess;
+	}
+
+
+
+	public void setProformaInvoiceAccess(boolean proformaInvoiceAccess) {
+		this.proformaInvoiceAccess = proformaInvoiceAccess;
+	}
+
+
+
+	public boolean isProformaInvoiceViewAll() {
+		return proformaInvoiceViewAll;
+	}
+
+
+
+	public void setProformaInvoiceViewAll(boolean proformaInvoiceViewAll) {
+		this.proformaInvoiceViewAll = proformaInvoiceViewAll;
+	}
+
+
+
+	public boolean isProformaInvoiceCreate() {
+		return proformaInvoiceCreate;
+	}
+
+
+
+	public void setProformaInvoiceCreate(boolean proformaInvoiceCreate) {
+		this.proformaInvoiceCreate = proformaInvoiceCreate;
+	}
+
+
+
+	public boolean isProformaInvoiceDelete() {
+		return proformaInvoiceDelete;
+	}
+
+
+
+	public void setProformaInvoiceDelete(boolean proformaInvoiceDelete) {
+		this.proformaInvoiceDelete = proformaInvoiceDelete;
+	}
+
+
+
+	public boolean isProformaInvoiceEdit() {
+		return proformaInvoiceEdit;
+	}
+
+
+
+	public void setProformaInvoiceEdit(boolean proformaInvoiceEdit) {
+		this.proformaInvoiceEdit = proformaInvoiceEdit;
+	}
+
+
+
+	public boolean isInvoiceAccess() {
+		return invoiceAccess;
+	}
+
+
+
+	public void setInvoiceAccess(boolean invoiceAccess) {
+		this.invoiceAccess = invoiceAccess;
+	}
+
+
+
+	public boolean isInvoiceViewAll() {
+		return invoiceViewAll;
+	}
+
+
+
+	public void setInvoiceViewAll(boolean invoiceViewAll) {
+		this.invoiceViewAll = invoiceViewAll;
+	}
+
+
+
+	public boolean isInvoiceCreate() {
+		return invoiceCreate;
+	}
+
+
+
+	public void setInvoiceCreate(boolean invoiceCreate) {
+		this.invoiceCreate = invoiceCreate;
+	}
+
+
+
+	public boolean isInvoiceDelete() {
+		return invoiceDelete;
+	}
+
+
+
+	public void setInvoiceDelete(boolean invoiceDelete) {
+		this.invoiceDelete = invoiceDelete;
+	}
+
+
+
+	public boolean isInvoiceEdit() {
+		return invoiceEdit;
+	}
+
+
+
+	public void setInvoiceEdit(boolean invoiceEdit) {
+		this.invoiceEdit = invoiceEdit;
+	}
+
+	
 	
 }
