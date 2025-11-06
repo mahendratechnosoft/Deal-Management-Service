@@ -15,6 +15,9 @@ public class AdminUpdateDto {
     private String accountHolderName;
     private String accountNumber;
     private String ifscCode;
+    
+    private String signatureBase64;
+    private String stampBase64;
 
 	public String getName() {
 		return name;
@@ -102,6 +105,22 @@ public class AdminUpdateDto {
 
 	public void setIfscCode(String ifscCode) {
 		this.ifscCode = ifscCode;
+	}
+
+	public String getSignatureBase64() {
+		return signatureBase64;
+	}
+
+	public void setSignatureBase64(String signatureBase64) {
+		this.signatureBase64 = signatureBase64;
+	}
+
+	public String getStampBase64() {
+		return stampBase64;
+	}
+
+	public void setStampBase64(String stampBase64) {
+		this.stampBase64 = stampBase64;
 	}
     
     

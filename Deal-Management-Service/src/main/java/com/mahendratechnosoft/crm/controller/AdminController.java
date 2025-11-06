@@ -121,6 +121,26 @@ public class AdminController {
         		throw new RuntimeException("Invalid Base64 image format", e);
         	}
         }
+        
+        String signatureBase64 = updateDto.getSignatureBase64();
+        if (signatureBase64 != null ) {
+        	try {
+        		byte[] signatureBytes = Base64.getDecoder().decode(signatureBase64);
+        		adminToUpdate.setCompanySignature(signatureBytes);
+        	} catch (IllegalArgumentException e) {
+        		throw new RuntimeException("Invalid Base64 image format", e);
+        	}
+        }
+        
+        String stampBase64 = updateDto.getStampBase64();
+        if (stampBase64 != null ) {
+        	try {
+        		byte[] stampBytes= Base64.getDecoder().decode(stampBase64);
+        		adminToUpdate.setCompanyStamp(stampBytes);
+        	} catch (IllegalArgumentException e) {
+        		throw new RuntimeException("Invalid Base64 image format", e);
+        	}
+        }
 
         Admin updatedAdmin = adminRepository.save(adminToUpdate);
         return ResponseEntity.ok(updatedAdmin);
@@ -622,5 +642,4 @@ public class AdminController {
 	    salesService.deleteProformaInvoiceContent(proformaInvoiceContentIds);
 	    return ResponseEntity.ok("Proposals deleted successfully");
 	}
-
 }

@@ -4,8 +4,10 @@ import java.sql.Date;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 @Entity
 public class Proposal {
     @Id
@@ -34,7 +36,20 @@ public class Proposal {
     private String state;
     private String country;
     private String zipCode;
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String notes;
     
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String termsAndConditions;
+    
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] companySignature;
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] companyStamp;
     
 	public Proposal() {
 		super();
@@ -213,4 +228,30 @@ public class Proposal {
 	public void setTaxPercentage(double taxPercentage) {
 		this.taxPercentage = taxPercentage;
 	}
+	public String getNotes() {
+		return notes;
+	}
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+	public String getTermsAndConditions() {
+		return termsAndConditions;
+	}
+	public void setTermsAndConditions(String termsAndConditions) {
+		this.termsAndConditions = termsAndConditions;
+	}
+	public byte[] getCompanySignature() {
+		return companySignature;
+	}
+	public void setCompanySignature(byte[] companySignature) {
+		this.companySignature = companySignature;
+	}
+	public byte[] getCompanyStamp() {
+		return companyStamp;
+	}
+	public void setCompanyStamp(byte[] companyStamp) {
+		this.companyStamp = companyStamp;
+	}
+	
+	
 }
