@@ -24,7 +24,7 @@ public class UserDetailServiceImp implements UserDetailsService {
 	    
 	    // 1. Get the current time ONCE.
 	    LocalDateTime currentDateTime = LocalDateTime.now();
-	    System.err.println(username);
+	    
 	    User user = userRepository.findByLoginEmail(username).get();
 	    
 	    if (user == null) {
