@@ -41,6 +41,12 @@ public class Admin {
     private String accountHolderName;
     private String accountNumber;
     private String ifscCode;
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] companySignature;
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] companyStamp;
 	
 	public Admin() {
 		super();
@@ -183,6 +189,26 @@ public class Admin {
 
 	public void setIfscCode(String ifscCode) {
 		this.ifscCode = ifscCode;
+	}
+
+
+	public byte[] getCompanySignature() {
+		return companySignature;
+	}
+
+
+	public void setCompanySignature(byte[] companySignature) {
+		this.companySignature = companySignature;
+	}
+
+
+	public byte[] getCompanyStamp() {
+		return companyStamp;
+	}
+
+
+	public void setCompanyStamp(byte[] companyStamp) {
+		this.companyStamp = companyStamp;
 	}
 	
 	
