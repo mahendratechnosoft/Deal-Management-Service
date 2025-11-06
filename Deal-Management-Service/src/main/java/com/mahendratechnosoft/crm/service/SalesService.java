@@ -1,9 +1,12 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,12 +24,14 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.InvoiceContent;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
+import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
 import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceRepository;
+import com.mahendratechnosoft.crm.repository.PaymentsRepository;
 import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.ProformaInvoiceRepository;
 import com.mahendratechnosoft.crm.repository.ProposalContentRepository;
@@ -54,6 +59,9 @@ public class SalesService {
 	
 	@Autowired
 	private ProformaInvoiceContentRepository proformaInvoiceContentRepository;
+	
+    @Autowired
+	private PaymentsRepository paymentsRepository;
 	
 
 	public ResponseEntity<?> createProposal(ProposalDto proposalDto, Object loginUser) {
@@ -542,4 +550,153 @@ public class SalesService {
 	public void deleteProformaInvoiceContent(List<String> proformaInvoiceContentIds) {
 		proformaInvoiceContentRepository.deleteAllById(proformaInvoiceContentIds);
     }
+	
+	
+	public ResponseEntity<?> createPayment(Payments payment, Object loginUser) {
+
+		try {
+
+			String adminId = null;
+			String employeeId = null;
+			String createdBy = null;
+			if (loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+				createdBy = admin.getCompanyName();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+				createdBy = employee.getName();
+			}
+  
+			payment.setAdminId(adminId);
+			payment.setEmployeeId(employeeId);
+			payment.setCreatedBy(createdBy);
+            payment.setCreatedDateTime(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+			paymentsRepository.save(payment);
+			
+			
+			 ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
+			 
+			 invoice.setPaidAmount(invoice.getPaidAmount()+payment.getAmount());
+			 
+			 proformaInvoiceRepository.save(invoice);
+			 
+			 payment.setTotalProformaInvoicePaidAmount(invoice.getPaidAmount());
+
+			return ResponseEntity.ok(payment);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> updatePayment(Payments payment) {
+
+		try {
+
+			paymentsRepository.save(payment);
+			
+
+			 ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
+			 
+			 invoice.setPaidAmount(payment.getTotalProformaInvoicePaidAmount());
+			 
+			 proformaInvoiceRepository.save(invoice);
+
+			return ResponseEntity.ok(payment);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getPaymentById(String paymentId) {
+
+		try {
+
+			Optional<Payments> payment = paymentsRepository.findById(paymentId);
+
+			ProformaInvoice invoice = proformaInvoiceRepository.findByProformaInvoiceId(payment.get().getProformaInvoiceId());
+
+			payment.get().setTotalProformaInvoicePaidAmount(invoice.getPaidAmount());
+			return ResponseEntity.ok(payment);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getAllPayments(int page, int size, Object loginUser, String search) {
+
+		try {
+            ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			Page<Payments> paymentPage = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+
+			// 2. Fetch paginated leads for company
+			Pageable pageable = PageRequest.of(page, size);
+			if (role.equals("ROLE_ADMIN")) {
+				paymentPage  = paymentsRepository.findByAdminId(adminId, search, pageable);
+
+			}else if(moduleAccess.isPaymentViewAll()) {
+				
+				paymentPage = paymentsRepository.findByAdminId(adminId, search, pageable);
+				
+			} else {
+
+				paymentPage = paymentsRepository.findByEmployeeId(employeeId, search, pageable);
+			}
+			// 3. Prepare response
+			Map<String, Object> response = new HashMap<>();
+
+			response.put("paymentList", paymentPage.getContent());
+			response.put("currentPage", paymentPage.getNumber());
+
+			response.put("totalPages", paymentPage.getTotalPages());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getPaymentByProformaInvoice(String  proformaInvoiceId) {
+
+		try {
+			
+			return ResponseEntity.ok(paymentsRepository.findByProformaInvoiceId(proformaInvoiceId));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
 }

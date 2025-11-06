@@ -43,6 +43,12 @@ public class ModuleAccess {
 	private boolean invoiceDelete;
 	private boolean invoiceEdit;
 	
+	private boolean paymentAccess;
+	private boolean paymentViewAll;
+	private boolean paymentcreate;
+	private boolean paymentDelete;
+	private boolean paymentEdit;
+	
 
 	public String getModuleAccessId() {
 		return moduleAccessId;
@@ -505,6 +511,66 @@ public class ModuleAccess {
 
 	public void setInvoiceEdit(boolean invoiceEdit) {
 		this.invoiceEdit = invoiceEdit;
+	}
+
+
+
+	public boolean isPaymentAccess() {
+		return paymentAccess;
+	}
+
+
+
+	public void setPaymentAccess(boolean paymentAccess) {
+		this.paymentAccess = paymentAccess;
+	}
+
+
+
+	public boolean isPaymentViewAll() {
+		return paymentViewAll;
+	}
+
+
+
+	public void setPaymentViewAll(boolean paymentViewAll) {
+		this.paymentViewAll = paymentViewAll;
+	}
+
+
+
+	public boolean isPaymentcreate() {
+		return paymentcreate;
+	}
+
+
+
+	public void setPaymentcreate(boolean paymentcreate) {
+		this.paymentcreate = paymentcreate;
+	}
+
+
+
+	public boolean isPaymentDelete() {
+		return paymentDelete;
+	}
+
+
+
+	public void setPaymentDelete(boolean paymentDelete) {
+		this.paymentDelete = paymentDelete;
+	}
+
+
+
+	public boolean isPaymentEdit() {
+		return paymentEdit;
+	}
+
+
+
+	public void setPaymentEdit(boolean paymentEdit) {
+		this.paymentEdit = paymentEdit;
 	}
 
 	
