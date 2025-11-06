@@ -37,6 +37,7 @@ import com.mahendratechnosoft.crm.entity.Department;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -641,5 +642,44 @@ public class AdminController {
 	    }
 	    salesService.deleteProformaInvoiceContent(proformaInvoiceContentIds);
 	    return ResponseEntity.ok("Proposals deleted successfully");
+	}
+	
+	// Payments API
+	
+	
+	@PostMapping("/createPayment")
+	public ResponseEntity<?> createPayment(@ModelAttribute("admin") Admin admin,@RequestBody Payments request) {
+		 
+		return salesService.createPayment(request,admin);
+		
+	}
+	
+	@PostMapping("/updatePayment")
+	public ResponseEntity<?> updatePayment(@RequestBody Payments request) {
+		 
+		return salesService.updatePayment(request);
+		
+	}
+	
+	@GetMapping("/getPaymentById/{paymentId}")
+	public ResponseEntity<?> getPaymentById(@PathVariable String paymentId) {
+		
+		return salesService.getPaymentById(paymentId);
+		
+	}
+	
+	
+	@GetMapping("/getAllPayments/{page}/{size}")
+	public ResponseEntity<?> getAllPayments(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return salesService.getAllPayments(page ,size,admin,search);
+
+	}
+	
+	@GetMapping("/getPaymentsByProformaInvoice/{proformcaInvoiceId}")
+	public ResponseEntity<?> getPaymentByProformaInvoice(@PathVariable String getPaymentByProformaInvoice) {
+		
+		return salesService.getPaymentByProformaInvoice(getPaymentByProformaInvoice);
+		
 	}
 }

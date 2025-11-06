@@ -116,7 +116,7 @@ public class HomeController {
     }
     
     
-    @GetMapping("/generateLeads")
+    @PostMapping("/generateLeads")
     public ResponseEntity<?> genrateLeads(@RequestBody Leads dto ) {
         if(dto.getAdminId() == null || dto.getAdminId().isEmpty()) {
         	

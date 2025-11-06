@@ -26,6 +26,7 @@ import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
@@ -421,6 +422,47 @@ public class EmployeeController {
 		    }
 		    salesService.deleteProformaInvoiceContent(proformaInvoiceContentIds);
 		    return ResponseEntity.ok("Proposals deleted successfully");
+		}
+		
+		
+		// Payments API
+		
+		
+		@PostMapping("/createPayment")
+		public ResponseEntity<?> createPayment(@ModelAttribute("employee") Employee employee,
+				@RequestBody Payments request) {
+
+			return salesService.createPayment(request, employee);
+
+		}
+
+		@PostMapping("/updatePayment")
+		public ResponseEntity<?> updatePayment(@RequestBody Payments request) {
+
+			return salesService.updatePayment(request);
+
+		}
+
+		@GetMapping("/getPaymentById/{paymentId}")
+		public ResponseEntity<?> getPaymentById(@PathVariable String paymentId) {
+
+			return salesService.getPaymentById(paymentId);
+
+		}
+
+		@GetMapping("/getAllPayments/{page}/{size}")
+		public ResponseEntity<?> getAllPayments(@ModelAttribute("employee") Employee employee, @PathVariable int page,
+				@PathVariable int size, @RequestParam(required = false) String search) {
+
+			return salesService.getAllPayments(page, size, employee, search);
+
+		}
+
+		@GetMapping("/getPaymentsByProformaInvoice/{proformcaInvoiceId}")
+		public ResponseEntity<?> getPaymentByProformaInvoice(@PathVariable String getPaymentByProformaInvoice) {
+
+			return salesService.getPaymentByProformaInvoice(getPaymentByProformaInvoice);
+
 		}
 
     
