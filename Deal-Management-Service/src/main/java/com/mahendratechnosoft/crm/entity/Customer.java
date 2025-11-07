@@ -15,6 +15,7 @@ public class Customer {
 	private String companyName;
 	private String phone;
 	private String mobile;
+    private String email;
 	private String website;
 	private String industry;
 	private String revenue;
@@ -212,6 +213,14 @@ public class Customer {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
    
 	
