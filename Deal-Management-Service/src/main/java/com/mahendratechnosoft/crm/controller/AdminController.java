@@ -654,7 +654,7 @@ public class AdminController {
 		
 	}
 	
-	@PostMapping("/updatePayment")
+	@PutMapping("/updatePayment")
 	public ResponseEntity<?> updatePayment(@RequestBody Payments request) {
 		 
 		return salesService.updatePayment(request);
@@ -677,9 +677,9 @@ public class AdminController {
 	}
 	
 	@GetMapping("/getPaymentsByProformaInvoice/{proformcaInvoiceId}")
-	public ResponseEntity<?> getPaymentByProformaInvoice(@PathVariable String getPaymentByProformaInvoice) {
+	public ResponseEntity<?> getPaymentByProformaInvoice(@PathVariable String proformcaInvoiceId) {
 		
-		return salesService.getPaymentByProformaInvoice(getPaymentByProformaInvoice);
+		return salesService.getPaymentByProformaInvoice(proformcaInvoiceId);
 		
 	}
 }

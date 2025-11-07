@@ -436,7 +436,7 @@ public class EmployeeController {
 
 		}
 
-		@PostMapping("/updatePayment")
+		@PutMapping("/updatePayment")
 		public ResponseEntity<?> updatePayment(@RequestBody Payments request) {
 
 			return salesService.updatePayment(request);
