@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
@@ -25,6 +26,9 @@ public class Payments {
 	private double amount;
 	private Date paymentDate;
 	private LocalDateTime createdDateTime;
+	private String paymentMode;
+	@Column(length = 5000)
+	private String note;
 	
 	@Transient
 	private double totalProformaInvoicePaidAmount;
@@ -156,7 +160,23 @@ public class Payments {
 		this.totalProformaInvoicePaidAmount = totalProformaInvoicePaidAmount;
 	}
 
+	public String getPaymentMode() {
+		return paymentMode;
+	}
 
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+    
 	
 	
 	

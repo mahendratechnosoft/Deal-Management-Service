@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -576,9 +577,17 @@ public class SalesService {
 			
 			
 			 ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
+				
+			 if (invoice.getTotalAmmount() == (invoice.getPaidAmount() + payment.getAmount())) {
+
+					invoice.setStatus("Paid");
+				} else if (invoice.getTotalAmmount() < (invoice.getPaidAmount() + payment.getAmount())) {
+
+					invoice.setStatus("Partially Paid");
+				}
 			 
 			 invoice.setPaidAmount(invoice.getPaidAmount()+payment.getAmount());
-			 
+			
 			 proformaInvoiceRepository.save(invoice);
 			 
 			 payment.setTotalProformaInvoicePaidAmount(invoice.getPaidAmount());
@@ -600,11 +609,21 @@ public class SalesService {
 
 			paymentsRepository.save(payment);
 			
+		    ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
+			
+	        double totalAmount = invoice.getTotalAmmount();
+	        double paidAmount = payment.getTotalProformaInvoicePaidAmount();
 
-			 ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
+	        if ( totalAmount == paidAmount ) {
+	            invoice.setStatus("Paid");
+	        } else if (paidAmount > 0 && totalAmount > paidAmount) {
+	            invoice.setStatus("Partially Paid");
+	        } else {
+	            invoice.setStatus("Unpaid");
+	        }
 			 
 			 invoice.setPaidAmount(payment.getTotalProformaInvoicePaidAmount());
-			 
+			 System.err.println(payment.getTotalProformaInvoicePaidAmount());
 			 proformaInvoiceRepository.save(invoice);
 
 			return ResponseEntity.ok(payment);
@@ -669,7 +688,7 @@ public class SalesService {
 				paymentPage = paymentsRepository.findByEmployeeId(employeeId, search, pageable);
 			}
 			// 3. Prepare response
-			Map<String, Object> response = new HashMap<>();
+			Map<String, Object> response = new LinkedHashMap<>();
 
 			response.put("paymentList", paymentPage.getContent());
 			response.put("currentPage", paymentPage.getNumber());
