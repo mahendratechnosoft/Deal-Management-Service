@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -408,9 +409,9 @@ public class EmployeeController {
 		
 		
 		@GetMapping("/getAllProformaInvoice/{page}/{size}")
-		public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+		public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) Date startDate,@RequestParam(required = false) Date endDate) {
 
-			return salesService.getAllProformaInvoice(page ,size,employee,search);
+			return salesService.getAllProformaInvoice(page ,size,employee,search,startDate,endDate);
 
 		}
 		

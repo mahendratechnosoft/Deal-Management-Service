@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -499,7 +501,7 @@ public class SalesService {
 	}
 	
 	
-	public ResponseEntity<?> getAllProformaInvoice(int page, int size, Object loginUser, String search) {
+	public ResponseEntity<?> getAllProformaInvoice(int page, int size, Object loginUser, String search,Date startDate,Date endDate) {
 
 		try {
             ModuleAccess moduleAccess=null;
@@ -515,19 +517,23 @@ public class SalesService {
 				employeeId = employee.getEmployeeId();
 				moduleAccess=employee.getModuleAccess();
 			}
+			
+			startDate = (startDate == null) ? java.sql.Date.valueOf(LocalDate.of(1990, 1, 1)): startDate;
+			endDate = (endDate == null) ? java.sql.Date.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDate()) : endDate;
+
 
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
-				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, pageable);
+				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search,startDate,endDate, pageable);
 
 			}else if(moduleAccess.isProformaInvoiceEdit()) {
 				
-				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, pageable);
+				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search,startDate,endDate, pageable);
 				
 			} else {
 
-				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search, pageable);
+				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search,startDate,endDate, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new HashMap<>();

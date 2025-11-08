@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.sql.Date;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,11 +19,14 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    SELECT p FROM ProformaInvoice p
 		    WHERE p.adminId = :adminId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
+		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
 		    ORDER BY p.proposalId DESC
 		""")
 		Page<ProformaInvoice> findByAdminId(
 		        @Param("adminId") String adminId,
 		        @Param("search") String search,
+		        @Param("startDate") Date startDate,
+		        @Param("endDate") Date endDate,
 		        Pageable pageable);
 	
 
@@ -29,10 +34,13 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    SELECT p FROM ProformaInvoice p 
 		    WHERE p.employeeId = :employeeId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
+		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
 		    ORDER BY p.proposalId DESC
 		""")
 		Page<ProformaInvoice> findByEmployeeId(
 		        @Param("employeeId") String employeeId,
 		        @Param("search") String search,
+		        @Param("startDate") Date startDate,
+		        @Param("endDate") Date endDate,
 		        Pageable pageable);
 }

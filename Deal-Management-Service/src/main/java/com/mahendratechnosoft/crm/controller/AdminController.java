@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.sql.Date;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -628,9 +629,9 @@ public class AdminController {
 	
 	
 	@GetMapping("/getAllProformaInvoice/{page}/{size}")
-	public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+	public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) Date startDate,@RequestParam(required = false) Date endDate) {
 
-		return salesService.getAllProformaInvoice(page ,size,admin,search);
+		return salesService.getAllProformaInvoice(page ,size,admin,search,startDate,endDate);
 
 	}
 	
