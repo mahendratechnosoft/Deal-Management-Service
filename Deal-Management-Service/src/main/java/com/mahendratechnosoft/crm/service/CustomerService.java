@@ -110,7 +110,7 @@ public class CustomerService {
 			if (role.equals("ROLE_ADMIN")) {
 				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
 
-			}else if(moduleAccess.iscustomerViewAll()) {
+			}else if(moduleAccess.isCustomerViewAll()) {
 				
 				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
 				

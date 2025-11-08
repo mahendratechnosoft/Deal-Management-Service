@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -465,6 +466,20 @@ public class EmployeeController {
 			return salesService.getPaymentByProformaInvoice(getPaymentByProformaInvoice);
 
 		}
+		
+		@GetMapping("/getNextProposalNumber")
+	    public ResponseEntity<Integer> getNextProposalNumber(@ModelAttribute("employee") Employee employee) {
+	        int nextNumber = salesService.getNextProposalNumberForAdmin(employee.getAdmin().getAdminId());
+	        return ResponseEntity.ok(nextNumber);
+	    }
+		
+		@GetMapping("/isProposalNumberUnique/{proposalNumber}")
+	    public ResponseEntity<Boolean> checkProposalNumberUnique(
+	    		@ModelAttribute Employee employee,
+	            @PathVariable int proposalNumber) {
 
+	        boolean isUnique = salesService.isProposalNumberUnique(employee.getAdmin().getAdminId(), proposalNumber);
+	        return ResponseEntity.ok(isUnique);
+	    }
     
 }

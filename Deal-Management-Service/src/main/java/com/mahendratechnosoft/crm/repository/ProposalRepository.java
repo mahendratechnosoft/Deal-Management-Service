@@ -40,5 +40,12 @@ public interface ProposalRepository extends JpaRepository<Proposal, String >{
 	Proposal findByProposalId(String proposalId);
 	
 	List<Proposal> findByRelatedToAndRelatedId(String relatedTo,String RelatedId);
+	
+	@Query("SELECT COALESCE(MAX(p.proposalNumber), 0) FROM Proposal p WHERE p.adminId = :adminId")
+    int findMaxProposalNumberByAdminId(String adminId);
+	
+	@Query("SELECT COUNT(p) > 0 FROM Proposal p WHERE p.adminId = :adminId AND p.proposalNumber = :proposalNumber")
+	boolean existsByAdminIdAndProposalNumber(String adminId, int proposalNumber);
+
 
 }
