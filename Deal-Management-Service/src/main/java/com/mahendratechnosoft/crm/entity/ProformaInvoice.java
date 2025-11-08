@@ -24,7 +24,7 @@ public class ProformaInvoice {
 	private double discount;
 	private String taxType;
 	private Date dueDate;
-	private Date invoiceDate;
+	private Date proformaInvoiceDate;
 	private double totalAmmount;
 	private double paidAmount;
 	private String status;
@@ -67,7 +67,7 @@ public class ProformaInvoice {
 
 	public ProformaInvoice(String proformaInvoiceId, String adminId, String employeeId, String proposalId,
 			String assignTo, String porformaInvoiceNumber, String currencyType, double discount, String taxType,
-			Date dueDate, Date invoiceDate, double totalAmmount, double paidAmount, String status, String relatedTo,
+			Date dueDate, Date proformaInvoiceDate, double totalAmmount, double paidAmount, String status, String relatedTo,
 			String relatedId, String companyName, String mobileNumber, String gstin, String panNumber, String email,
 			String billingStreet, String billingCity, String billingState, String billingCountry, String billingZipCode,
 			String shippingStreet, String shippingCity, String shippingState, String shippingCountry,
@@ -84,7 +84,7 @@ public class ProformaInvoice {
 		this.discount = discount;
 		this.taxType = taxType;
 		this.dueDate = dueDate;
-		this.invoiceDate = invoiceDate;
+		this.proformaInvoiceDate = proformaInvoiceDate;
 		this.totalAmmount = totalAmmount;
 		this.paidAmount = paidAmount;
 		this.status = status;
@@ -185,12 +185,14 @@ public class ProformaInvoice {
 		this.dueDate = dueDate;
 	}
 
-	public Date getInvoiceDate() {
-		return invoiceDate;
+   
+
+	public Date getProformaInvoiceDate() {
+		return proformaInvoiceDate;
 	}
 
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
+	public void setProformaInvoiceDate(Date proformaInvoiceDate) {
+		this.proformaInvoiceDate = proformaInvoiceDate;
 	}
 
 	public double getTotalAmmount() {
