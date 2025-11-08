@@ -18,6 +18,8 @@ public class AdminUpdateDto {
     
     private String signatureBase64;
     private String stampBase64;
+    private String companyEmail;
+    private String panNumber;
 
 	public String getName() {
 		return name;
@@ -121,6 +123,22 @@ public class AdminUpdateDto {
 
 	public void setStampBase64(String stampBase64) {
 		this.stampBase64 = stampBase64;
+	}
+
+	public String getCompanyEmail() {
+		return companyEmail;
+	}
+
+	public void setCompanyEmail(String companyEmail) {
+		this.companyEmail = companyEmail;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
 	}
     
     

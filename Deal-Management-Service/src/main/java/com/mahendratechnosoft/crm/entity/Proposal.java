@@ -16,7 +16,7 @@ public class Proposal {
 	private String adminId;
 	private String employeeId;
 	private String assignTo;
-	private String proposalNumber;
+	private int proposalNumber;
 	private String currencyType;
 	private double discount;
 	private String taxType;
@@ -55,7 +55,7 @@ public class Proposal {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Proposal(String proposalId, String adminId, String employeeId, String assignTo, String proposalNumber,
+	public Proposal(String proposalId, String adminId, String employeeId, String assignTo, int proposalNumber,
 			String currencyType, double discount, String taxType, Date dueDate, Date proposalDate, double totalAmmount,
 			String status, String subject, String relatedTo, String relatedId, String companyName, String mobileNumber,
 			String email, String street, String city, String state, String country, String zipCode) {
@@ -108,10 +108,10 @@ public class Proposal {
 	public void setAssignTo(String assignTo) {
 		this.assignTo = assignTo;
 	}
-	public String getProposalNumber() {
+	public int getProposalNumber() {
 		return proposalNumber;
 	}
-	public void setProposalNumber(String proposalNumber) {
+	public void setProposalNumber(int proposalNumber) {
 		this.proposalNumber = proposalNumber;
 	}
 	public String getCurrencyType() {

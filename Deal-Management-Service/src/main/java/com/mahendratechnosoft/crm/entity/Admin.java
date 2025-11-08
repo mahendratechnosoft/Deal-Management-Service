@@ -19,6 +19,7 @@ public class Admin {
 	private String adminId;
 	@Column(unique = true, nullable = false)
 	private String loginEmail;
+	private String companyEmail;
 	
 	@OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", unique = true)
@@ -47,6 +48,8 @@ public class Admin {
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] companyStamp;
+    
+    private String panNumber;
 	
 	public Admin() {
 		super();
@@ -209,6 +212,25 @@ public class Admin {
 
 	public void setCompanyStamp(byte[] companyStamp) {
 		this.companyStamp = companyStamp;
+	}
+
+
+	public String getCompanyEmail() {
+		return companyEmail;
+	}
+
+	public void setCompanyEmail(String companyEmail) {
+		this.companyEmail = companyEmail;
+	}
+
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
 	}
 	
 	

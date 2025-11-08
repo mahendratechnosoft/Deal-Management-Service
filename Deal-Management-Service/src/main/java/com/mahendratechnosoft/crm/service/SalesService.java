@@ -724,4 +724,13 @@ public class SalesService {
 		}
 
 	}
+	
+	public int getNextProposalNumberForAdmin(String adminId) {
+	    int maxNumber = proposalRepository.findMaxProposalNumberByAdminId(adminId);
+	    return maxNumber + 1; // Generate next proposal number
+	}
+	
+	public boolean isProposalNumberUnique(String adminId, int proposalNumber) {
+        return !proposalRepository.existsByAdminIdAndProposalNumber(adminId, proposalNumber);
+    }
 }

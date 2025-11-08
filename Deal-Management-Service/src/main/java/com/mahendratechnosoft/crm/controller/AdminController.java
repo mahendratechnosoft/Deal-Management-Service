@@ -112,10 +112,12 @@ public class AdminController {
         adminToUpdate.setAccountHolderName(updateDto.getAccountHolderName());
         adminToUpdate.setAccountNumber(updateDto.getAccountNumber());
         adminToUpdate.setIfscCode(updateDto.getIfscCode());
+        adminToUpdate.setCompanyEmail(updateDto.getCompanyEmail());
+        adminToUpdate.setPanNumber(updateDto.getPanNumber());
         
 
         String base64Image = updateDto.getLogoBase64();
-        if (base64Image != null && !base64Image.isEmpty()) {
+        if (base64Image != null) {
         	try {
         		byte[] logoBytes = Base64.getDecoder().decode(base64Image);
         		adminToUpdate.setLogo(logoBytes);
@@ -683,4 +685,19 @@ public class AdminController {
 		return salesService.getPaymentByProformaInvoice(proformcaInvoiceId);
 		
 	}
+	
+	@GetMapping("/getNextProposalNumber")
+    public ResponseEntity<Integer> getNextProposalNumber(@ModelAttribute Admin admin) {
+        int nextNumber = salesService.getNextProposalNumberForAdmin(admin.getAdminId());
+        return ResponseEntity.ok(nextNumber);
+    }
+	
+	@GetMapping("/isProposalNumberUnique/{proposalNumber}")
+    public ResponseEntity<Boolean> checkProposalNumberUnique(
+    		@ModelAttribute Admin admin,
+            @PathVariable int proposalNumber) {
+
+        boolean isUnique = salesService.isProposalNumberUnique(admin.getAdminId(), proposalNumber);
+        return ResponseEntity.ok(isUnique);
+    }
 }
