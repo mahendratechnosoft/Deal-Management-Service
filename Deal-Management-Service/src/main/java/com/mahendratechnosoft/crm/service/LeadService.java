@@ -143,11 +143,13 @@ public class LeadService {
 	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
  
-	        }else if(moduleAcces.isLeadViewAll()){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
-	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
-	        	
-	        }else {
+	        }
+//	        else if(moduleAcces.isLeadViewAll()){
+//	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+//	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
+//	        	
+//	        }
+	        else {
 	        	
 	        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,search, pageable);
 	        	countAndStatus = leadRepository.countLeadsByStatusByEmployeeId(employeeId);
