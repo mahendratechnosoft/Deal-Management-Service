@@ -206,11 +206,13 @@ public class SalesService {
 			if (role.equals("ROLE_ADMIN")) {
 				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
 
-			}else if(moduleAccess.isProposalViewAll()) {
-                
-				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
-				
-			} else {
+			}
+//			else if(moduleAccess.isProposalViewAll()) {
+//                
+//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
+//				
+//			} 
+			else {
 
 				proposalPage = proposalRepository.findByEmployeeId(employeeId, search, pageable);
 			}
