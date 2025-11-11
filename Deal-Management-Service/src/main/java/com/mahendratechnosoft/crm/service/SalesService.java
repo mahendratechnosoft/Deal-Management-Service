@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryDTO;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
@@ -735,4 +736,16 @@ public class SalesService {
 	public boolean isProposalNumberUnique(String adminId, int proposalNumber) {
         return !proposalRepository.existsByAdminIdAndProposalNumber(adminId, proposalNumber);
     }
+	
+	public ResponseEntity<?> getAllPerforma(String adminId) {
+		try {
+		List<ProformaInvoiceSummaryDTO> data=proformaInvoiceRepository.getAllPerfromaByAdmin(adminId);
+		
+	    return ResponseEntity.ok(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
 }

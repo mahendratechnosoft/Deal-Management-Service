@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -480,6 +479,12 @@ public class EmployeeController {
 
 	        boolean isUnique = salesService.isProposalNumberUnique(employee.getAdmin().getAdminId(), proposalNumber);
 	        return ResponseEntity.ok(isUnique);
+	    }
+		
+		@GetMapping("/getAllPerforma")
+	    public ResponseEntity<?> getAllPerforma(@ModelAttribute("employee") Employee employee) {
+	     
+	        return ResponseEntity.ok(salesService.getAllPerforma(employee.getAdmin().getAdminId()));
 	    }
     
 }
