@@ -700,4 +700,11 @@ public class AdminController {
         boolean isUnique = salesService.isProposalNumberUnique(admin.getAdminId(), proposalNumber);
         return ResponseEntity.ok(isUnique);
     }
+	
+	
+	@GetMapping("/getAllPerforma")
+    public ResponseEntity<?> getAllPerforma(@ModelAttribute Admin admin) {
+     
+        return ResponseEntity.ok(salesService.getAllPerforma(admin.getAdminId()));
+    }
 }
