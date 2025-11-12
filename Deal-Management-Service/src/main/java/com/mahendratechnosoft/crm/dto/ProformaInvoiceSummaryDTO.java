@@ -3,21 +3,49 @@ package com.mahendratechnosoft.crm.dto;
 public class ProformaInvoiceSummaryDTO {
 	
 	 private String proformaInvoiceId;
-	    private String porformaInvoiceNumber;
-	    private String relatedTo;
+	    private String proformaInvoiceNumber;
+	    private String companyName;
 	    private String relatedId;
 
-	    public ProformaInvoiceSummaryDTO(String proformaInvoiceId, String porformaInvoiceNumber, String relatedTo, String relatedId) {
+	    public ProformaInvoiceSummaryDTO(String proformaInvoiceId, String proformaInvoiceNumber, String companyName, String relatedId) {
 	        this.proformaInvoiceId = proformaInvoiceId;
-	        this.porformaInvoiceNumber = porformaInvoiceNumber;
-	        this.relatedTo = relatedTo;
+	        this.proformaInvoiceNumber = proformaInvoiceNumber;
+	        this.companyName = companyName;
 	        this.relatedId = relatedId;
 	    }
 
-	    // Getters
-	    public String getProformaInvoiceId() { return proformaInvoiceId; }
-	    public String getPorformaInvoiceNumber() { return porformaInvoiceNumber; }
-	    public String getRelatedTo() { return relatedTo; }
-	    public String getRelatedId() { return relatedId; }
+		public String getProformaInvoiceId() {
+			return proformaInvoiceId;
+		}
+
+		public void setProformaInvoiceId(String proformaInvoiceId) {
+			this.proformaInvoiceId = proformaInvoiceId;
+		}
+
+		public String getProformaInvoiceNumber() {
+			return proformaInvoiceNumber;
+		}
+
+		public void setProformaInvoiceNumber(String proformaInvoiceNumber) {
+			this.proformaInvoiceNumber = proformaInvoiceNumber;
+		}
+
+		public String getCompanyName() {
+			return companyName;
+		}
+
+		public void setCompanyName(String companyName) {
+			this.companyName = companyName;
+		}
+
+		public String getRelatedId() {
+			return relatedId;
+		}
+
+		public void setRelatedId(String relatedId) {
+			this.relatedId = relatedId;
+		}
+
+	   
 
 }
