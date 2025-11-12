@@ -53,8 +53,8 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 	@Query("""
 		    SELECT new com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryDTO(
 		        p.proformaInvoiceId,
-		        p.PorformaInvoiceNumber,
-		        p.relatedTo,
+		        p.proformaInvoiceNumber,
+		        p.companyName,
 		        p.relatedId
 		    )
 		    FROM ProformaInvoice p

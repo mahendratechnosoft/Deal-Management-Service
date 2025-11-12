@@ -19,7 +19,7 @@ public class ProformaInvoice {
 	private String employeeId;
 	private String proposalId;
 	private String assignTo;
-	private String PorformaInvoiceNumber;
+	private String proformaInvoiceNumber;
 	private String currencyType;
 	private double discount;
 	private String taxType;
@@ -66,7 +66,7 @@ public class ProformaInvoice {
 	}
 
 	public ProformaInvoice(String proformaInvoiceId, String adminId, String employeeId, String proposalId,
-			String assignTo, String porformaInvoiceNumber, String currencyType, double discount, String taxType,
+			String assignTo, String proformaInvoiceNumber, String currencyType, double discount, String taxType,
 			Date dueDate, Date proformaInvoiceDate, double totalAmmount, double paidAmount, String status, String relatedTo,
 			String relatedId, String companyName, String mobileNumber, String gstin, String panNumber, String email,
 			String billingStreet, String billingCity, String billingState, String billingCountry, String billingZipCode,
@@ -79,7 +79,7 @@ public class ProformaInvoice {
 		this.employeeId = employeeId;
 		this.proposalId = proposalId;
 		this.assignTo = assignTo;
-		PorformaInvoiceNumber = porformaInvoiceNumber;
+		this.proformaInvoiceNumber = proformaInvoiceNumber;
 		this.currencyType = currencyType;
 		this.discount = discount;
 		this.taxType = taxType;
@@ -355,12 +355,13 @@ public class ProformaInvoice {
 		this.shippingZipCode = shippingZipCode;
 	}
 
-	public String getPorformaInvoiceNumber() {
-		return PorformaInvoiceNumber;
+
+	public String getProformaInvoiceNumber() {
+		return proformaInvoiceNumber;
 	}
 
-	public void setPorformaInvoiceNumber(String porformaInvoiceNumber) {
-		PorformaInvoiceNumber = porformaInvoiceNumber;
+	public void setProformaInvoiceNumber(String proformaInvoiceNumber) {
+		this.proformaInvoiceNumber = proformaInvoiceNumber;
 	}
 
 	public String getNotes() {
