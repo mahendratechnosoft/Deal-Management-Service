@@ -4,8 +4,10 @@ import java.sql.Date;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class ProformaInvoice {
@@ -17,7 +19,7 @@ public class ProformaInvoice {
 	private String employeeId;
 	private String proposalId;
 	private String assignTo;
-	private String invoiceNumber;
+	private String PorformaInvoiceNumber;
 	private String currencyType;
 	private double discount;
 	private String taxType;
@@ -43,6 +45,20 @@ public class ProformaInvoice {
 	private String shippingState;
 	private String shippingCountry;
 	private String shippingZipCode;
+	@Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String notes;
+    
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String termsAndConditions;
+    
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] companySignature;
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] companyStamp;
 	
 	public ProformaInvoice() {
 		super();
@@ -55,14 +71,15 @@ public class ProformaInvoice {
 			String relatedId, String companyName, String mobileNumber, String gstin, String panNumber, String email,
 			String billingStreet, String billingCity, String billingState, String billingCountry, String billingZipCode,
 			String shippingStreet, String shippingCity, String shippingState, String shippingCountry,
-			String shippingZipCode) {
+			String shippingZipCode, String notes, String termsAndConditions, byte[] companySignature,
+			byte[] companyStamp) {
 		super();
 		this.proformaInvoiceId = proformaInvoiceId;
 		this.adminId = adminId;
 		this.employeeId = employeeId;
 		this.proposalId = proposalId;
 		this.assignTo = assignTo;
-		this.invoiceNumber = invoiceNumber;
+		PorformaInvoiceNumber = porformaInvoiceNumber;
 		this.currencyType = currencyType;
 		this.discount = discount;
 		this.taxType = taxType;
@@ -88,7 +105,13 @@ public class ProformaInvoice {
 		this.shippingState = shippingState;
 		this.shippingCountry = shippingCountry;
 		this.shippingZipCode = shippingZipCode;
+		this.notes = notes;
+		this.termsAndConditions = termsAndConditions;
+		this.companySignature = companySignature;
+		this.companyStamp = companyStamp;
 	}
+
+
 
 	public String getProformaInvoiceId() {
 		return proformaInvoiceId;
@@ -128,14 +151,6 @@ public class ProformaInvoice {
 
 	public void setAssignTo(String assignTo) {
 		this.assignTo = assignTo;
-	}
-
-	public String getInvoiceNumber() {
-		return invoiceNumber;
-	}
-
-	public void setInvoiceNumber(String invoiceNumber) {
-		this.invoiceNumber = invoiceNumber;
 	}
 
 	public String getCurrencyType() {
@@ -339,7 +354,45 @@ public class ProformaInvoice {
 	public void setShippingZipCode(String shippingZipCode) {
 		this.shippingZipCode = shippingZipCode;
 	}
-	
-	
+
+	public String getPorformaInvoiceNumber() {
+		return PorformaInvoiceNumber;
+	}
+
+	public void setPorformaInvoiceNumber(String porformaInvoiceNumber) {
+		PorformaInvoiceNumber = porformaInvoiceNumber;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getTermsAndConditions() {
+		return termsAndConditions;
+	}
+
+	public void setTermsAndConditions(String termsAndConditions) {
+		this.termsAndConditions = termsAndConditions;
+	}
+
+	public byte[] getCompanySignature() {
+		return companySignature;
+	}
+
+	public void setCompanySignature(byte[] companySignature) {
+		this.companySignature = companySignature;
+	}
+
+	public byte[] getCompanyStamp() {
+		return companyStamp;
+	}
+
+	public void setCompanyStamp(byte[] companyStamp) {
+		this.companyStamp = companyStamp;
+	}
 	
 }
