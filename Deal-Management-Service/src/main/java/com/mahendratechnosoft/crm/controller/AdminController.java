@@ -180,6 +180,13 @@ public class AdminController {
         return ResponseEntity.ok(updatedEmployee);
     }
     
+	@DeleteMapping("/deleteEmployee/{employeeId}")
+	public String deleteEmployee(@PathVariable String employeeId) {
+
+		return employeeService.deleteEmployee(employeeId);
+
+	}
+    
     
     // deals APIs
     
