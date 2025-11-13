@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
@@ -34,6 +35,8 @@ public class EmployeeService {
 	@Autowired
     private PasswordEncoder passwordEncoder;
 	
+	
+	
 	@Transactional
     public Employee createEmployee(EmployeeRegistrationDto request, Admin admin) {
         
@@ -50,7 +53,10 @@ public class EmployeeService {
         newUser.setExpiryDate(LocalDateTime.now().plusYears(1)); // Example expiry
         
         User savedUser = userRepository.save(newUser);
-
+        
+        ModuleAccess access=new ModuleAccess();
+        access.setLeadViewAll(true);
+   
         // 3. Create the new Employee
         Employee newEmployee = new Employee();
         newEmployee.setLoginEmail(request.getLoginEmail());
@@ -67,6 +73,8 @@ public class EmployeeService {
         newEmployee.setState(request.getState());
         newEmployee.setCity(request.getCity());
         newEmployee.setAdmin(admin); // The logged-in admin
+        newEmployee.setModuleAccess(access);
+      
 
         // 5. Handle the profile image (same as your Admin controller)
         String base64Image = request.getProfileImageBase64();
@@ -82,6 +90,8 @@ public class EmployeeService {
         // 6. Save the Employee
         Employee savedEmployee = employeeRepository.save(newEmployee);
         
+ 
+
         // 7. Return the safe DTO
         return savedEmployee;
     }
