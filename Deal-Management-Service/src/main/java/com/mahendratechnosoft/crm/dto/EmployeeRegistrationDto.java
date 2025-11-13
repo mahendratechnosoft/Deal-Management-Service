@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.dto;
 
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
+
 public class EmployeeRegistrationDto {
 	private String loginEmail;
     private String password; // We need the password for the new User
@@ -13,6 +15,7 @@ public class EmployeeRegistrationDto {
 	private String departmentName;
 	private String roleId;
 	private String roleName;
+	private ModuleAccess moduleAccess;
     
 	public String getLoginEmail() {
 		return loginEmail;
@@ -85,6 +88,12 @@ public class EmployeeRegistrationDto {
 	}
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+	public ModuleAccess getModuleAccess() {
+		return moduleAccess;
+	}
+	public void setModuleAccess(ModuleAccess moduleAccess) {
+		this.moduleAccess = moduleAccess;
 	}
     
     

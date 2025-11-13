@@ -55,7 +55,9 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		        p.proformaInvoiceId,
 		        p.proformaInvoiceNumber,
 		        p.companyName,
-		        p.relatedId
+		        p.relatedId,
+		        p.totalAmount,
+		        p.paidAmount
 		    )
 		    FROM ProformaInvoice p
 		    WHERE p.adminId = :adminId
