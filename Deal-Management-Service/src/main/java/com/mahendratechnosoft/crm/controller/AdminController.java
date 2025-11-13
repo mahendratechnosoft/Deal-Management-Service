@@ -31,6 +31,7 @@ import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -41,6 +42,7 @@ import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
@@ -77,6 +79,9 @@ public class AdminController {
 	
 	@Autowired
     private SalesService salesService;	
+	
+	@Autowired
+	private AttendanceService attendanceService;
 	
 	
     @ModelAttribute("admin")
@@ -707,4 +712,24 @@ public class AdminController {
      
         return ResponseEntity.ok(salesService.getAllPerforma(admin.getAdminId()));
     }
+	
+	@GetMapping("/getAttendanceBetween")
+	public ResponseEntity<?> getAttendanceBetween(@ModelAttribute("admin") Admin admin, @RequestParam String fromDate,
+			@RequestParam String toDate) {
+		return attendanceService.getAttendanceBetween(admin, fromDate, toDate);
+	}
+	
+	@PutMapping("/updateAttendance")
+    public ResponseEntity<?> updateAttendance(@RequestBody Attendance attendance) {
+     
+        return  attendanceService.updateAttendance(attendance);
+    }
+	
+	@DeleteMapping("/deleteAttendance/{attendanceId}")
+    public ResponseEntity<?> updateAttendance(@PathVariable String attendanceId ) {
+     
+        return  attendanceService.deleteAttendance(attendanceId);
+    }
+	
+	
 }
