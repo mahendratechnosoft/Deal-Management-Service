@@ -63,6 +63,9 @@ public class EmployeeService {
         newEmployee.setDepartmentName(request.getDepartmentName());
         newEmployee.setRoleId(request.getRoleId());
         newEmployee.setRoleName(request.getRoleName());
+        newEmployee.setCountry(request.getCountry());
+        newEmployee.setState(request.getState());
+        newEmployee.setCity(request.getCity());
         newEmployee.setAdmin(admin); // The logged-in admin
 
         // 5. Handle the profile image (same as your Admin controller)
@@ -86,6 +89,12 @@ public class EmployeeService {
 	public Employee updateEmployee(Employee employee) {
 	    Employee savedEmployee = employeeRepository.save(employee);
 	    return savedEmployee;
+	}
+	
+	
+	public String deleteEmployee(String employeeId) {
+	   employeeRepository.deleteById(employeeId);
+	    return "Delete Employee Successfully";
 	}
 	
 	public Page<Employee> getEmployeesByAdmin(Admin admin, String searchTerm, Pageable pageable) {
