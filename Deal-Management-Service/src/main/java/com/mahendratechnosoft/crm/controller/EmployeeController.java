@@ -23,6 +23,7 @@ import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Attendance;
+import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
@@ -533,6 +534,21 @@ public class EmployeeController {
 	    public ResponseEntity<?> updateAttendance(@PathVariable String attendanceId ) {
 	     
 	        return  attendanceService.deleteAttendance(attendanceId);
+	    }
+		
+		@GetMapping("/getNextProformaNumber")
+	    public ResponseEntity<Integer> getNextProformaNumber(@ModelAttribute("employee") Employee employee) {
+	        int nextNumber = salesService.getNextProformaNumberForAdmin(employee.getAdmin().getAdminId());
+	        return ResponseEntity.ok(nextNumber);
+	    }
+		
+		@GetMapping("/isProformaNumberUnique/{proformaNumber}")
+	    public ResponseEntity<Boolean> checkProformaNumberUnique(
+	    		@ModelAttribute("employee") Employee employee,
+	            @PathVariable int proformaNumber) {
+
+	        boolean isUnique = salesService.isProformaNumberUnique(employee.getAdmin().getAdminId(), proformaNumber);
+	        return ResponseEntity.ok(isUnique);
 	    }
     
 }

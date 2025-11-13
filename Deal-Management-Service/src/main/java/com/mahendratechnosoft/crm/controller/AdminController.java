@@ -739,4 +739,18 @@ public class AdminController {
     }
 	
 	
+	@GetMapping("/getNextProformaNumber")
+    public ResponseEntity<Integer> getNextProformaNumber(@ModelAttribute Admin admin) {
+        int nextNumber = salesService.getNextProformaNumberForAdmin(admin.getAdminId());
+        return ResponseEntity.ok(nextNumber);
+    }
+	
+	@GetMapping("/isProformaNumberUnique/{proformaNumber}")
+    public ResponseEntity<Boolean> checkProformaNumberUnique(
+    		@ModelAttribute Admin admin,
+            @PathVariable int proformaNumber) {
+
+        boolean isUnique = salesService.isProformaNumberUnique(admin.getAdminId(), proformaNumber);
+        return ResponseEntity.ok(isUnique);
+    }
 }

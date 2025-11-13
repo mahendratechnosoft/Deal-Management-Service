@@ -23,7 +23,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    WHERE p.adminId = :adminId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
 		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
-		    ORDER BY p.proposalId DESC
+		    ORDER BY p.proformaInvoiceId DESC
 		""")
 		Page<ProformaInvoice> findByAdminId(
 		        @Param("adminId") String adminId,
@@ -38,7 +38,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    WHERE p.employeeId = :employeeId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
 		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
-		    ORDER BY p.proposalId DESC
+		    ORDER BY p.proformaInvoiceId DESC
 		""")
 		Page<ProformaInvoice> findByEmployeeId(
 		        @Param("employeeId") String employeeId,
@@ -65,5 +65,12 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    ORDER BY p.proformaInvoiceId DESC
 		""")
 		List<ProformaInvoiceSummaryDTO> getAllPerfromaByAdmin(@Param("adminId") String adminIdd);
+
+	
+	@Query("SELECT COALESCE(MAX(p.proformaInvoiceNumber), 0) FROM ProformaInvoice p WHERE p.adminId = :adminId")
+	int findMaxProposalNumberByAdminId(String adminId);
+
+	@Query("SELECT COUNT(p) > 0 FROM ProformaInvoice p WHERE p.adminId = :adminId AND p.proformaInvoiceNumber = :proformaNumber")
+	boolean existsByAdminIdAndProformaNumber(String adminId, int proformaNumber);
 
 }

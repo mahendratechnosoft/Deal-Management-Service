@@ -746,4 +746,13 @@ public class SalesService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
 		}
 	}
+	
+	public int getNextProformaNumberForAdmin(String adminId) {
+	    int maxNumber = proformaInvoiceRepository.findMaxProposalNumberByAdminId(adminId);
+	    return maxNumber + 1;
+	}
+	
+	public boolean isProformaNumberUnique(String adminId, int proformaNumber) {
+        return !proformaInvoiceRepository.existsByAdminIdAndProformaNumber(adminId, proformaNumber);
+    }
 }
