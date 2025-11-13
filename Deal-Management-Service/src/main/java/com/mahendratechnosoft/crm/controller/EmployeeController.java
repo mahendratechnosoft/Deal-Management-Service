@@ -22,13 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
+import com.mahendratechnosoft.crm.repository.AttendanceRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
+import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
@@ -59,6 +62,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private SalesService salesService;
+	
+	@Autowired
+	private AttendanceService attendanceService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -485,6 +491,48 @@ public class EmployeeController {
 	    public ResponseEntity<?> getAllPerforma(@ModelAttribute("employee") Employee employee) {
 	     
 	        return ResponseEntity.ok(salesService.getAllPerforma(employee.getAdmin().getAdminId()));
+	    }
+		
+		
+		@PostMapping("/addAttendance/{status}")
+	    public ResponseEntity<?> addAttendance(@ModelAttribute("employee") Employee employee,@PathVariable boolean status) {
+	     
+	        return attendanceService.addAttendance(employee.getAdmin().getAdminId(),employee.getEmployeeId(),status);
+	    }
+		
+		@GetMapping("/getLatestTime")
+	    public ResponseEntity<?> getLatestTime(@ModelAttribute("employee") Employee employee) {
+	     
+	        return  attendanceService.getLatestTime(employee.getEmployeeId());
+	    }
+		
+		@GetMapping("/getAttendanceBetween")
+		public ResponseEntity<?> getAttendanceBetween( @ModelAttribute("employee") Employee employee,
+		        @RequestParam String fromDate, @RequestParam String toDate) {
+			
+			return  attendanceService.getAttendanceBetween(employee,fromDate,toDate);
+		}
+		
+		
+		@GetMapping("/getAttendanceBetweenForParticalurEmployee")
+		public ResponseEntity<?> getAttendanceBetweenForParticalurEmployee( @ModelAttribute("employee") Employee employee,
+		        @RequestParam String fromDate, @RequestParam String toDate) {
+			
+			return  attendanceService.getAttendanceBetweenForParticalurEmployee(employee.getEmployeeId(),fromDate,toDate);
+		}
+		
+		
+		
+		@PutMapping("/updateAttendance")
+	    public ResponseEntity<?> updateAttendance(@RequestBody Attendance attendance) {
+	     
+	        return  attendanceService.updateAttendance(attendance);
+	    }
+		
+		@DeleteMapping("/deleteAttendance/{attendanceId}")
+	    public ResponseEntity<?> updateAttendance(@PathVariable String attendanceId ) {
+	     
+	        return  attendanceService.deleteAttendance(attendanceId);
 	    }
     
 }
