@@ -19,10 +19,11 @@ public class ProformaInvoice {
 	private String employeeId;
 	private String proposalId;
 	private String assignTo;
-	private String proformaInvoiceNumber;
+	private int proformaInvoiceNumber;
 	private String currencyType;
 	private double discount;
 	private String taxType;
+	private double taxPercentage;
 	private Date dueDate;
 	private Date proformaInvoiceDate;
 	private double totalAmount;
@@ -66,12 +67,12 @@ public class ProformaInvoice {
 	}
 
 	public ProformaInvoice(String proformaInvoiceId, String adminId, String employeeId, String proposalId,
-			String assignTo, String proformaInvoiceNumber, String currencyType, double discount, String taxType,
+			String assignTo, int proformaInvoiceNumber, String currencyType, double discount, String taxType,
 			Date dueDate, Date proformaInvoiceDate, double totalAmount, double paidAmount, String status, String relatedTo,
 			String relatedId, String companyName, String mobileNumber, String gstin, String panNumber, String email,
 			String billingStreet, String billingCity, String billingState, String billingCountry, String billingZipCode,
 			String shippingStreet, String shippingCity, String shippingState, String shippingCountry,
-			String shippingZipCode, String notes, String termsAndConditions, byte[] companySignature,
+			String shippingZipCode, String notes, String termsAndConditions, byte[] companySignature, double taxPercentage,
 			byte[] companyStamp) {
 		super();
 		this.proformaInvoiceId = proformaInvoiceId;
@@ -109,6 +110,7 @@ public class ProformaInvoice {
 		this.termsAndConditions = termsAndConditions;
 		this.companySignature = companySignature;
 		this.companyStamp = companyStamp;
+		this.taxPercentage = taxPercentage;
 	}
 
 
@@ -356,11 +358,11 @@ public class ProformaInvoice {
 	}
 
 
-	public String getProformaInvoiceNumber() {
+	public int getProformaInvoiceNumber() {
 		return proformaInvoiceNumber;
 	}
 
-	public void setProformaInvoiceNumber(String proformaInvoiceNumber) {
+	public void setProformaInvoiceNumber(int proformaInvoiceNumber) {
 		this.proformaInvoiceNumber = proformaInvoiceNumber;
 	}
 
@@ -394,6 +396,14 @@ public class ProformaInvoice {
 
 	public void setCompanyStamp(byte[] companyStamp) {
 		this.companyStamp = companyStamp;
+	}
+
+	public double getTaxPercentage() {
+		return taxPercentage;
+	}
+
+	public void setTaxPercentage(double taxPercentage) {
+		this.taxPercentage = taxPercentage;
 	}
 	
 }
