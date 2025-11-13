@@ -585,10 +585,10 @@ public class SalesService {
 			
 			 ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
 				
-			 if (invoice.getTotalAmmount() == (invoice.getPaidAmount() + payment.getAmount())) {
+			 if (invoice.getTotalAmount() == (invoice.getPaidAmount() + payment.getAmount())) {
 
 					invoice.setStatus("Paid");
-				} else if (invoice.getTotalAmmount() < (invoice.getPaidAmount() + payment.getAmount())) {
+				} else if (invoice.getTotalAmount() < (invoice.getPaidAmount() + payment.getAmount())) {
 
 					invoice.setStatus("Partially Paid");
 				}
@@ -618,7 +618,7 @@ public class SalesService {
 			
 		    ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
 			
-	        double totalAmount = invoice.getTotalAmmount();
+	        double totalAmount = invoice.getTotalAmount();
 	        double paidAmount = payment.getTotalProformaInvoicePaidAmount();
 
 	        if ( totalAmount == paidAmount ) {
