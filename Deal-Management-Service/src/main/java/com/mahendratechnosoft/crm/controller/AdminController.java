@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
@@ -47,9 +48,12 @@ import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
+import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.SalesService;
 import com.mahendratechnosoft.crm.service.SettingServices;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -83,6 +87,8 @@ public class AdminController {
 	@Autowired
 	private AttendanceService attendanceService;
 	
+	@Autowired
+    private ExcelService excelService;
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -754,4 +760,21 @@ public class AdminController {
         boolean isUnique = salesService.isProformaNumberUnique(admin.getAdminId(), proformaNumber);
         return ResponseEntity.ok(isUnique);
     }
+	
+	@GetMapping("/leadTemplateExcel")
+    public void downloadExcel(HttpServletResponse response) throws Exception {
+        excelService.generateExcel(response);
+    }
+	
+	
+	@PostMapping("/importLeads")
+	public ResponseEntity<?> importLeads(@RequestParam("file") MultipartFile file,@ModelAttribute("admin") Admin admin) {
+	    try {
+	        List<Leads> imported = excelService.importLeadsFromExcel(file,admin);
+	        return ResponseEntity.ok("Successfully imported " + imported.size() + " leads.");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(500).body("Failed to import: " + e.getMessage());
+	    }
+	}
+
 }

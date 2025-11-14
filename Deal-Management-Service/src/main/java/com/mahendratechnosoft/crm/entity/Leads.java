@@ -40,7 +40,7 @@ public class Leads {
 	private String city;
 	private String zipCode;
 	private String description;
-
+	private LocalDateTime followUp;
 	private LocalDateTime createdDate;
 	private LocalDateTime updatedDate;
 	@Column(columnDefinition = "json")
@@ -284,6 +284,14 @@ public class Leads {
 
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+
+	public LocalDateTime getFollowUp() {
+		return followUp;
+	}
+
+	public void setFollowUp(LocalDateTime followUp) {
+		this.followUp = followUp;
 	}
 
 	
