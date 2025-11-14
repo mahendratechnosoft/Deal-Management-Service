@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
@@ -37,8 +38,11 @@ import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
+import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.SalesService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/employee")
@@ -66,6 +70,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private AttendanceService attendanceService;
+	
+	@Autowired
+	private ExcelService excelService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -550,5 +557,21 @@ public class EmployeeController {
 	        boolean isUnique = salesService.isProformaNumberUnique(employee.getAdmin().getAdminId(), proformaNumber);
 	        return ResponseEntity.ok(isUnique);
 	    }
+		
+		@GetMapping("/leadTemplateExcel")
+	    public void downloadExcel(HttpServletResponse response) throws Exception {
+	        excelService.generateExcel(response);
+	    }
+		
+		
+		@PostMapping("/importLeads")
+		public ResponseEntity<?> importLeads(@RequestParam("file") MultipartFile file,@ModelAttribute("employee") Employee employee) {
+		    try {
+		        List<Leads> imported = excelService.importLeadsFromExcel(file,employee);
+		        return ResponseEntity.ok("Successfully imported " + imported.size() + " leads.");
+		    } catch (Exception e) {
+		        return ResponseEntity.status(500).body("Failed to import: " + e.getMessage());
+		    }
+		}
     
 }
