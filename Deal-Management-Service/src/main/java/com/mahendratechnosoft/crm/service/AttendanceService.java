@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,12 +116,53 @@ public class AttendanceService {
 	                         Collectors.toList()
 	                 ));
 
-	         return ResponseEntity.ok(groupedByDate);
+	         // ✅ Calculate Total Working Time
+	         // -------------------------------
+	         long totalDuration = 0;
+
+	         for (List<Attendance> dayRecords : groupedByDate.values()) {
+
+	             // Sort by timestamp
+	             dayRecords.sort(Comparator.comparingLong(Attendance::getTimeStamp));
+
+	             Long checkInTime = null;
+
+	             for (Attendance a : dayRecords) {
+	                 if (a.isStatus()) {
+	                     // CHECK-IN
+	                     checkInTime = a.getTimeStamp();
+	                 } else if (!a.isStatus() && checkInTime != null) {
+	                     // CHECK-OUT
+	                     long checkOut = a.getTimeStamp();
+	                     totalDuration += (checkOut - checkInTime);
+	                     checkInTime = null; // reset for next session
+	                 }
+	             }
+	         }
+
+	         // Convert milliseconds → HH:mm:ss
+	         String totalTimeFormatted = formatDuration(totalDuration);
+
+	         Map<String, Object> response = new LinkedHashMap<>();
+	         response.put("attendance", groupedByDate);
+	         response.put("totalWorkingTime", totalTimeFormatted);
+
+	         return ResponseEntity.ok(response);
+
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
 	    }
+	}
+	
+	private String formatDuration(long millis) {
+	    long seconds = millis / 1000;
+	    long hrs = seconds / 3600;
+	    long mins = (seconds % 3600) / 60;
+	    long secs = seconds % 60;
+
+	    return String.format("%02d:%02d:%02d", hrs, mins, secs);
 	}
 
 	
