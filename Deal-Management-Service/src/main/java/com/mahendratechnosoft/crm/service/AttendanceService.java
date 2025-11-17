@@ -168,14 +168,13 @@ public class AttendanceService {
 
 	
 	
-	public ResponseEntity<?> getAttendanceBetween(Object loginUser, String fromDate,String toDate) {
+	public ResponseEntity<?> getAttendanceBetween(Object loginUser, String fromDate,String toDate,String employeeId) {
 
 	    try {
 	    	
 	    	
 	    	String role = "ROLE_EMPLOYEE";
 			String adminId = null;
-			String employeeId = null;
 		    List<AttendanceEmployeeDTO> records = null;
 			if (loginUser instanceof Admin admin) {
 				role = admin.getUser().getRole();
@@ -199,13 +198,17 @@ public class AttendanceService {
 	                 .toInstant()
 	                 .toEpochMilli() - 1;
 	         
-	         if (role.equals("ROLE_ADMIN")) {
+	        if(employeeId!=null) {
+	        	
+	        	records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
+	        	
+	        }else  if (role.equals("ROLE_ADMIN")) {
 	        	 
 	        	 records = attendanceRepository.findAttendanceBetweenByAdmin(adminId, fromTime, toTime);
 	        	 
 	         }else {
 	        	 
-	        	   records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
+	        	 records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
 	         }
 
 	       

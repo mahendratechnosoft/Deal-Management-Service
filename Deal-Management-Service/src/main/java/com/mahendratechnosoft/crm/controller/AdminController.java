@@ -727,9 +727,9 @@ public class AdminController {
     }
 	
 	@GetMapping("/getAttendanceBetween")
-	public ResponseEntity<?> getAttendanceBetween(@ModelAttribute("admin") Admin admin, @RequestParam String fromDate,
+	public ResponseEntity<?> getAttendanceBetween(@ModelAttribute("admin") Admin admin, @RequestParam String fromDate,@RequestParam(required = false) String employeeId,
 			@RequestParam String toDate) {
-		return attendanceService.getAttendanceBetween(admin, fromDate, toDate);
+		return attendanceService.getAttendanceBetween(admin, fromDate, toDate,employeeId);
 	}
 	
 	@PutMapping("/updateAttendance")
