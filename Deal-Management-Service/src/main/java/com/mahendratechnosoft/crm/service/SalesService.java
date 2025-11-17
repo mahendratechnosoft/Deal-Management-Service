@@ -33,18 +33,13 @@ import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
-import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
-import com.mahendratechnosoft.crm.repository.InvoiceRepository;
-import com.mahendratechnosoft.crm.repository.PaymentsRepository;
-import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
-import com.mahendratechnosoft.crm.repository.ProformaInvoiceRepository;
-import com.mahendratechnosoft.crm.repository.ProposalContentRepository;
-import com.mahendratechnosoft.crm.repository.ProposalRepository;
-
+import com.mahendratechnosoft.crm.repository.*;
 import jakarta.transaction.Transactional;
 
 @Service
 public class SalesService {
+
+    private final AttendanceRepository attendanceRepository;
 
 	@Autowired
 	private ProposalRepository proposalRepository;
@@ -66,6 +61,11 @@ public class SalesService {
 	
     @Autowired
 	private PaymentsRepository paymentsRepository;
+
+
+    SalesService(AttendanceRepository attendanceRepository) {
+        this.attendanceRepository = attendanceRepository;
+    }
 	
 
 	public ResponseEntity<?> createProposal(ProposalDto proposalDto, Object loginUser) {
@@ -154,7 +154,7 @@ public class SalesService {
 
 			ProposalDto response = new ProposalDto();
 			response.setProposalInfo(proposalRepository.findByProposalId(proposalId));
-			response.setProposalContent(proposalContentRepository.findByProposalId(proposalId));
+			response.setProposalContent(proposalContentRepository.findByProposalIdOrderByCreatedAt(proposalId));
 
 			return ResponseEntity.ok(response);
 
@@ -420,7 +420,7 @@ public class SalesService {
 
 			ProformaInvoice invoice = invoiceDto.getProformaInvoiceInfo();
 			invoice.setAdminId(adminId);
-			if(invoice.getEmployeeId()==null) {
+			if(invoice.getEmployeeId()==null || invoice.getEmployeeId().isEmpty()) {
 				invoice.setEmployeeId(employeeId);
 			}
 			proformaInvoiceRepository.save(invoice);
@@ -491,7 +491,7 @@ public class SalesService {
 			
 			ProformaInvoiceDto response=new ProformaInvoiceDto();
 			response.setProformaInvoiceInfo(proformaInvoiceRepository.findByProformaInvoiceId(proformaInvoiceId));
-            response.setProformaInvoiceContents(proformaInvoiceContentRepository.findByProformaInvoiceId(proformaInvoiceId));
+            response.setProformaInvoiceContents(proformaInvoiceContentRepository.findByProformaInvoiceIdOrderByCreatedAt(proformaInvoiceId));
 			
 			return ResponseEntity.ok(response);
 

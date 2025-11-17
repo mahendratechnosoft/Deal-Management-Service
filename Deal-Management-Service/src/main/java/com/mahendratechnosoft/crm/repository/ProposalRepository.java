@@ -18,7 +18,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, String >{
 		    SELECT p FROM Proposal p
 		    WHERE p.adminId = :adminId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
-		    ORDER BY p.proposalId DESC
+		    ORDER BY p.createdAt DESC
 		""")
 		Page<Proposal> findByAdminId(
 		        @Param("adminId") String adminId,
@@ -30,7 +30,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, String >{
 		    SELECT p FROM Proposal p 
 		    WHERE p.employeeId = :employeeId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
-		    ORDER BY p.proposalId DESC
+		    ORDER BY p.createdAt DESC
 		""")
 		Page<Proposal> findByEmployeeId(
 		        @Param("employeeId") String employeeId,
