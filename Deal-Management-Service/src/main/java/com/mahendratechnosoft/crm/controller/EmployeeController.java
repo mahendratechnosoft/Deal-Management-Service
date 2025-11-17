@@ -515,10 +515,10 @@ public class EmployeeController {
 	    }
 		
 		@GetMapping("/getAttendanceBetween")
-		public ResponseEntity<?> getAttendanceBetween( @ModelAttribute("employee") Employee employee,
+		public ResponseEntity<?> getAttendanceBetween( @ModelAttribute("employee") Employee employee,@RequestParam(required = false) String employeeId,
 		        @RequestParam String fromDate, @RequestParam String toDate) {
 			
-			return  attendanceService.getAttendanceBetween(employee,fromDate,toDate);
+			return  attendanceService.getAttendanceBetween(employee,fromDate,toDate,employeeId);
 		}
 		
 		
