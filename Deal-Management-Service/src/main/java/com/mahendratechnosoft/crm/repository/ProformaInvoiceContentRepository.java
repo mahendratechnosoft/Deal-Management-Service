@@ -8,5 +8,5 @@ import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 
 public interface ProformaInvoiceContentRepository extends JpaRepository<ProformaInvoiceContent, String>{
 
-	List<ProformaInvoiceContent> findByProformaInvoiceId(String proformaInvoiceId);
+	List<ProformaInvoiceContent> findByProformaInvoiceIdOrderByCreatedAt(String proformaInvoiceId);
 }

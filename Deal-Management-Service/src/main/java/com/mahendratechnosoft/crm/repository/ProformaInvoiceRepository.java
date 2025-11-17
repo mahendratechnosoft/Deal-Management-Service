@@ -23,7 +23,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    WHERE p.adminId = :adminId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
 		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
-		    ORDER BY p.proformaInvoiceId DESC
+		    ORDER BY p.createdAt DESC
 		""")
 		Page<ProformaInvoice> findByAdminId(
 		        @Param("adminId") String adminId,
@@ -38,7 +38,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    WHERE p.employeeId = :employeeId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
 		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
-		    ORDER BY p.proformaInvoiceId DESC
+		    ORDER BY p.createdAt DESC
 		""")
 		Page<ProformaInvoice> findByEmployeeId(
 		        @Param("employeeId") String employeeId,
@@ -62,7 +62,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    FROM ProformaInvoice p
 		    WHERE p.adminId = :adminId
 		      
-		    ORDER BY p.proformaInvoiceId DESC
+		    ORDER BY p.createdAt DESC
 		""")
 		List<ProformaInvoiceSummaryDTO> getAllPerfromaByAdmin(@Param("adminId") String adminIdd);
 

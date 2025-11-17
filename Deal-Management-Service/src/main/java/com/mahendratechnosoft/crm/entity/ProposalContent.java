@@ -1,10 +1,14 @@
 package com.mahendratechnosoft.crm.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class ProposalContent {
@@ -19,6 +23,13 @@ public class ProposalContent {
 	private String description;
 	private int quantity;
 	private double rate;
+	private LocalDateTime createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+    }
+    
 	public ProposalContent(String proposalContentId, String proposalId, String item, String description, int quantity,
 			double rate) {
 		super();
@@ -69,7 +80,13 @@ public class ProposalContent {
 	public void setRate(double rate) {
 		this.rate = rate;
 	}
-	
-	
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+	
 }

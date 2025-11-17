@@ -1,6 +1,8 @@
 package com.mahendratechnosoft.crm.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -8,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class ProformaInvoice {
@@ -60,6 +63,12 @@ public class ProformaInvoice {
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] companyStamp;
+    private LocalDateTime createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+    }
 	
 	public ProformaInvoice() {
 		super();
@@ -404,6 +413,14 @@ public class ProformaInvoice {
 
 	public void setTaxPercentage(double taxPercentage) {
 		this.taxPercentage = taxPercentage;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 }

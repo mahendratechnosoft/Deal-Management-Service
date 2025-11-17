@@ -1,10 +1,14 @@
 package com.mahendratechnosoft.crm.entity;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class ProformaInvoiceContent {
@@ -19,6 +23,13 @@ public class ProformaInvoiceContent {
 	private int quantity;
 	private double rate;
 	private String sacCode;
+	
+	private LocalDateTime createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+    }
 	
 	public ProformaInvoiceContent() {
 		super();
@@ -92,10 +103,13 @@ public class ProformaInvoiceContent {
 	public void setSacCode(String sacCode) {
 		this.sacCode = sacCode;
 	}
-	
-	
 
-	
-	
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 	
 }

@@ -8,6 +8,6 @@ import com.mahendratechnosoft.crm.entity.ProposalContent;
 
 public interface ProposalContentRepository extends JpaRepository<ProposalContent, String > {
 	
-	List<ProposalContent> findByProposalId(String proposalId);
+	List<ProposalContent> findByProposalIdOrderByCreatedAt(String proposalId);
 
 }
