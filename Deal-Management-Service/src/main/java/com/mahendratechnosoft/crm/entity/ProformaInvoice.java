@@ -3,6 +3,7 @@ package com.mahendratechnosoft.crm.entity;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -422,5 +423,16 @@ public class ProformaInvoice {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	@Override
+	public String toString() {
+		return "ProformaInvoice [discount=" + discount + ", taxType=" + taxType + ", taxPercentage=" + taxPercentage
+				+ ", dueDate=" + dueDate + ", proformaInvoiceDate=" + proformaInvoiceDate + ", totalAmount="
+				+ totalAmount + ", paidAmount=" + paidAmount + ", status=" + status + ", companyName=" + companyName
+				+ "]";
+	}
+
+	
+	
 	
 }

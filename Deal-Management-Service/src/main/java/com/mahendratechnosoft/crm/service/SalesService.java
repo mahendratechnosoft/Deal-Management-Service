@@ -586,13 +586,10 @@ public class SalesService {
 			 ProformaInvoice invoice= proformaInvoiceRepository.findByProformaInvoiceId(payment.getProformaInvoiceId());
 				
 			 if (invoice.getTotalAmount() == (invoice.getPaidAmount() + payment.getAmount())) {
-
 					invoice.setStatus("Paid");
-				} else if (invoice.getTotalAmount() < (invoice.getPaidAmount() + payment.getAmount())) {
-
+				} else if (invoice.getTotalAmount() > (invoice.getPaidAmount() + payment.getAmount())) {
 					invoice.setStatus("Partially Paid");
 				}
-			 
 			 invoice.setPaidAmount(invoice.getPaidAmount()+payment.getAmount());
 			
 			 proformaInvoiceRepository.save(invoice);
