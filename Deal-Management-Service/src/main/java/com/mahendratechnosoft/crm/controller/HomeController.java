@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +24,13 @@ import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.User;
+import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.security.JwtUtil;
+import com.mahendratechnosoft.crm.service.DonorService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.UserService;
 
@@ -59,6 +62,9 @@ public class HomeController {
     
     @Autowired
     private LeadService leadService;
+    
+    @Autowired
+    private DonorService donorService;
     
 
     @PostMapping("/register")
@@ -124,6 +130,14 @@ public class HomeController {
         }
         return leadService.createLead(dto, "Form Genrated");
     }
+    
+    
+	@PostMapping("/createDonor")
+	public ResponseEntity<?> createDonar(@RequestBody Donors request) {
+		
+		return donorService.createDonor(request);
+		
+	}
 
 
 }

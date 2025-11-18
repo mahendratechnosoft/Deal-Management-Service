@@ -42,11 +42,14 @@ import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
+import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
+import com.mahendratechnosoft.crm.service.DonorService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.LeadService;
@@ -89,6 +92,9 @@ public class AdminController {
 	
 	@Autowired
     private ExcelService excelService;
+	
+	@Autowired
+	private DonorService donorService;
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -775,5 +781,74 @@ public class AdminController {
 	        return ResponseEntity.status(500).body("Failed to import: " + e.getMessage());
 	    }
 	}
+	
+	
+	
+	@PostMapping("/createDonor")
+	public ResponseEntity<?> createDonar(@ModelAttribute("admin") Admin admin,@RequestBody Donors request) {
+		 request.setAdminId(admin.getAdminId());
+		 request.setCreatedBy(admin.getName());
+		return donorService.createDonor(request);
+		
+	}
+	
+	
+	
+	@GetMapping("/getAllDonarList/{page}/{size}")
+	public ResponseEntity<?> getAllDonarList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return donorService.getAllDonarList(page ,size,admin,search);
+
+	}
+	
+	
+
+	@GetMapping("/getDonorById/{donorId}")
+    public ResponseEntity<?> getDonorById(@PathVariable String donorId ) {
+     
+        return  donorService.getDonarById(donorId);
+    }
+	
+	@PutMapping("/updateDonor")
+	public ResponseEntity<?> updateeDonor(@ModelAttribute("admin") Admin admin,@RequestBody Donors request) {
+		 request.setAdminId(admin.getAdminId());
+		 request.setCreatedBy(admin.getName());
+		return donorService.updateDonor(request);
+		
+	}
+	
+	
+	@PutMapping("/updateDonorStatus")
+	public ResponseEntity<?> updateDonorStatus(@ModelAttribute("admin") Admin admin,@RequestBody Map<String,String> request) {
+		
+		return donorService.updateDonorStatus(request);
+		
+	}
+	
+	@GetMapping("/getAllSelectedDonarList/{page}/{size}")
+	public ResponseEntity<?> getAllSelectedDonarList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return donorService.getAllSelectedDonarList(page ,size,admin,search);
+
+	}
+	
+	
+	
+	
+	@PostMapping("/createSample")
+	public ResponseEntity<?> createSample(@ModelAttribute("admin") Admin admin,@RequestBody DonorSample request) {
+		
+		return donorService.createDonorSample(request);
+		
+	}
+	
+	
+	@GetMapping("/getAllDonarSampleList/{page}/{size}/{donorId}")
+	public ResponseEntity<?> getAllDonarSampleList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String donorId) {
+
+		return donorService.getAllDonarSampleList(page ,size,search,donorId);
+
+	}
+	
 
 }
