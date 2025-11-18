@@ -44,6 +44,7 @@ import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -847,6 +848,22 @@ public class AdminController {
 	public ResponseEntity<?> getAllDonarSampleList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String donorId) {
 
 		return donorService.getAllDonarSampleList(page ,size,search,donorId);
+
+	}
+	
+	@PostMapping("/createSampleReport")
+	public ResponseEntity<?> createSampleReport(@ModelAttribute("admin") Admin admin,@RequestBody SampleReport request) {
+		
+		return donorService.createSampleReport(request);
+		
+	}
+	
+	
+	
+	@GetMapping("/getAllSampleReportList/{page}/{size}/{sampleId}")
+	public ResponseEntity<?> getAllSampleReportList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String sampleId) {
+
+		return donorService.getAllSampleReportList(page ,size,search,sampleId);
 
 	}
 	

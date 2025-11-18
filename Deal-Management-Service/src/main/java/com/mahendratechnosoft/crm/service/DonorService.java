@@ -19,8 +19,10 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.repository.DonorSampleRepository;
 import com.mahendratechnosoft.crm.repository.DonorsRepository;
+import com.mahendratechnosoft.crm.repository.SampleReportRepository;
 
 @Service
 public class DonorService {
@@ -30,6 +32,10 @@ public class DonorService {
 	
 	@Autowired
 	private DonorSampleRepository donorSampleRepository;
+	
+	@Autowired
+	private SampleReportRepository sampleReportRepository;
+	
 	
 	public ResponseEntity<?> createDonor( Donors request) {
 
@@ -268,5 +274,52 @@ public class DonorService {
 		}
 
 	}
+	
+	
+	
+	
+	public ResponseEntity<?> createSampleReport( SampleReport request) {
+
+		try {
+			
+			sampleReportRepository.save(request);
+			
+			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getAllSampleReportList(int page, int size, String search, String donorId) {
+
+		try {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<SampleReport> sampleReportPage = null;
+
+			sampleReportPage = sampleReportRepository.findByDonorId(donorId, search, pageable);
+
+		
+			Map<String, Object> response = new HashMap<>();
+
+			response.put("SampleReportList", sampleReportPage.getContent());
+			response.put("currentPage", sampleReportPage.getNumber());
+
+			response.put("totalPages", sampleReportPage.getTotalPages());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
 
 }
