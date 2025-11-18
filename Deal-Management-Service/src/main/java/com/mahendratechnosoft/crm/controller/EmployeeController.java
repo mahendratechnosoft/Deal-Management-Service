@@ -473,10 +473,10 @@ public class EmployeeController {
 
 		}
 
-		@GetMapping("/getPaymentsByProformaInvoice/{proformcaInvoiceId}")
-		public ResponseEntity<?> getPaymentByProformaInvoice(@PathVariable String getPaymentByProformaInvoice) {
+		@GetMapping("/getPaymentsByProformaInvoice/{proformaInvoiceId}")
+		public ResponseEntity<?> getPaymentByProformaInvoice(@PathVariable String proformaInvoiceId) {
 
-			return salesService.getPaymentByProformaInvoice(getPaymentByProformaInvoice);
+			return salesService.getPaymentByProformaInvoice(proformaInvoiceId);
 
 		}
 		
