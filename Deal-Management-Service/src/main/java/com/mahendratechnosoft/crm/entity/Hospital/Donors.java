@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Transient;
 
 @Entity
@@ -64,6 +65,13 @@ public class Donors {
 	private String status;
 	private String city;
 	private String pincode;
+	@Column(unique = true)
+	private String uin;
+
+	@PrePersist
+	public void generateUIN() {
+	    this.uin = "UIN-" + System.currentTimeMillis();  // Example: UIN-1737104525511
+	}
 //	
 	@Lob
     @Column(columnDefinition = "MEDIUMBLOB")
@@ -531,6 +539,14 @@ public class Donors {
 
 	public void setFullLengthImageData(String fullLengthImageData) {
 		this.fullLengthImageData = fullLengthImageData;
+	}
+
+	public String getUin() {
+		return uin;
+	}
+
+	public void setUin(String uin) {
+		this.uin = uin;
 	}
 	
 	
