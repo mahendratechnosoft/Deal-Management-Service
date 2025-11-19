@@ -54,8 +54,7 @@ public class EmployeeService {
         
         User savedUser = userRepository.save(newUser);
         
-        ModuleAccess access=new ModuleAccess();
-        access.setLeadViewAll(true);
+       
    
         // 3. Create the new Employee
         Employee newEmployee = new Employee();
@@ -73,7 +72,7 @@ public class EmployeeService {
         newEmployee.setState(request.getState());
         newEmployee.setCity(request.getCity());
         newEmployee.setAdmin(admin); // The logged-in admin
-        newEmployee.setModuleAccess(access);
+        newEmployee.setModuleAccess(request.getModuleAccess());
       
 
         // 5. Handle the profile image (same as your Admin controller)
