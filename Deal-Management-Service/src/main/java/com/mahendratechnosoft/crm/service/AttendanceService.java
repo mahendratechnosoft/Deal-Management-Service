@@ -273,7 +273,7 @@ public class AttendanceService {
 			
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-				adminId=employee.getEmployeeId();
+				adminId= employee.getAdmin().getAdminId();
 				
 			}
 			attendance.setAdminId(adminId);
