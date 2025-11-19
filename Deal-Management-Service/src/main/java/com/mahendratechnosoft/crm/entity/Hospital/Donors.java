@@ -33,7 +33,7 @@ public class Donors {
 	private double height;
 	private double weight;
 	private String religion;
-	private String booldGroup;
+	private String bloodGroup;
 	private String bsl;
 	private String HIV;
 	private String HBSAG;
@@ -95,7 +95,7 @@ public class Donors {
 	public Donors(String donorId, String adminId, String employeeId, String createdBy, long createdDateTime,
 			String name, int age, Date dateOfBirth, String address, String phoneNumber, String adharCardNo,
 			String marriedStatus, int maleKidsCount, int femaleKidsCount, double height, double weight, String religion,
-			String booldGroup, String bsl, String hIV, String hBSAG, String vDRL, String hCV, String hBElectrophoresis,
+			String bloodGroup, String bsl, String hIV, String hBSAG, String vDRL, String hCV, String hBElectrophoresis,
 			String sRCreatinine, String cMV, int brotherAge, String brotherProfession, int brotherKidsCount,
 			String brotherIllness, int sisterAge, String sisterProfession, String sisterKidsCount, String sisterIllness,
 			boolean hospitalAdmissionStatus, String hospitalAdmissionReason, boolean surgeryStatus,
@@ -119,7 +119,7 @@ public class Donors {
 		this.height = height;
 		this.weight = weight;
 		this.religion = religion;
-		this.booldGroup = booldGroup;
+		this.bloodGroup = bloodGroup;
 		this.bsl = bsl;
 		HIV = hIV;
 		HBSAG = hBSAG;
@@ -285,12 +285,13 @@ public class Donors {
 		this.religion = religion;
 	}
 
-	public String getBooldGroup() {
-		return booldGroup;
+
+	public String getBloodGroup() {
+		return bloodGroup;
 	}
 
-	public void setBooldGroup(String booldGroup) {
-		this.booldGroup = booldGroup;
+	public void setBloodGroup(String bloodGroup) {
+		this.bloodGroup = bloodGroup;
 	}
 
 	public String getBsl() {
