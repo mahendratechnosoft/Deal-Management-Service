@@ -250,6 +250,41 @@ public class DonorService {
 
 	}
 	
+	
+	public ResponseEntity<?> updateDonorSample( DonorSample request) {
+
+		try {
+			
+			donorSampleRepository.save(request);
+			
+			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	
+	public ResponseEntity<?> deleteSample( String sampleId) {
+
+		try {
+			
+			donorSampleRepository.deleteById(sampleId);
+			
+			return ResponseEntity.ok("Deleted Successfully");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
 	public ResponseEntity<?> getAllDonarSampleList(int page, int size, String search, String donorId) {
 
 		try {
@@ -285,6 +320,38 @@ public class DonorService {
 			sampleReportRepository.save(request);
 			
 			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	public ResponseEntity<?> updateSampleReport( SampleReport request) {
+
+		try {
+			
+			sampleReportRepository.save(request);
+			
+			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	public ResponseEntity<?> deleteSampleReport( String sampleReportId) {
+
+		try {
+			
+			sampleReportRepository.deleteById(sampleReportId);
+			
+			return ResponseEntity.ok("Deleted Successfully");
 
 		} catch (Exception e) {
 
