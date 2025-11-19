@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.lang.foreign.Linker.Option;
 import java.sql.Date;
 import java.util.Base64;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.repository.ProposalRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
@@ -63,6 +65,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
+    private final ProposalRepository proposalRepository;
 	
 	@Autowired
     private AdminRepository adminRepository;
@@ -96,6 +100,10 @@ public class AdminController {
 	
 	@Autowired
 	private DonorService donorService;
+
+    AdminController(ProposalRepository proposalRepository) {
+        this.proposalRepository = proposalRepository;
+    }
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -897,6 +905,8 @@ public class AdminController {
 		return donorService.getAllSampleReportList(page ,size,search,sampleId);
 
 	}
-	
-
+	@PostMapping("/convertProposalToProforma/{proposalId}")
+	public ResponseEntity<?> convertProposalToProforma(@PathVariable String proposalId){
+		return salesService.convertProposalToProforma(proposalId);
+	}
 }
