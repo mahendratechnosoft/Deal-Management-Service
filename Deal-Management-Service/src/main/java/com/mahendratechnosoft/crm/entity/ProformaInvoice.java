@@ -66,6 +66,9 @@ public class ProformaInvoice {
     private byte[] companyStamp;
     private LocalDateTime createdAt;
     
+    private int invoiceNumber;
+    private Date invoiceDate;
+    
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
@@ -422,6 +425,22 @@ public class ProformaInvoice {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public int getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(int invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
+	public Date getInvoiceDate() {
+		return invoiceDate;
+	}
+
+	public void setInvoiceDate(Date invoiceDate) {
+		this.invoiceDate = invoiceDate;
 	}
 
 	@Override
