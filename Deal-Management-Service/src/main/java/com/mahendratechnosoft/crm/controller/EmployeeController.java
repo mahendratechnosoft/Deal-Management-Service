@@ -532,9 +532,9 @@ public class EmployeeController {
 		
 		
 		@PutMapping("/updateAttendance")
-	    public ResponseEntity<?> updateAttendance(@RequestBody Attendance attendance) {
+	    public ResponseEntity<?> updateAttendance(@ModelAttribute("employee") Employee employee,@RequestBody Attendance attendance) {
 	     
-	        return  attendanceService.updateAttendance(attendance);
+	        return  attendanceService.updateAttendance(employee,attendance);
 	    }
 		
 		@DeleteMapping("/deleteAttendance/{attendanceId}")

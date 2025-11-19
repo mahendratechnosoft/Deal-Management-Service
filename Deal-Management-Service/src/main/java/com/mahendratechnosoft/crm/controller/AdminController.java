@@ -740,9 +740,9 @@ public class AdminController {
 	}
 	
 	@PutMapping("/updateAttendance")
-    public ResponseEntity<?> updateAttendance(@RequestBody Attendance attendance) {
+    public ResponseEntity<?> updateAttendance(@ModelAttribute("admin") Admin admin,@RequestBody Attendance attendance) {
      
-        return  attendanceService.updateAttendance(attendance);
+        return  attendanceService.updateAttendance(admin ,attendance);
     }
 	
 	@DeleteMapping("/deleteAttendance/{attendanceId}")

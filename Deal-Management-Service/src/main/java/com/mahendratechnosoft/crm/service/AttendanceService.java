@@ -262,11 +262,23 @@ public class AttendanceService {
 
 	
 
-	public ResponseEntity<?> updateAttendance(@RequestBody Attendance attendance) {
+	public ResponseEntity<?> updateAttendance(Object loginUser,@RequestBody Attendance attendance) {
 
 		try {
           
 			
+			String adminId = null;
+			String employeeId=attendance.getEmployeeId();
+		    
+			if (loginUser instanceof Admin admin) {
+			
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId=employee.getEmployeeId();
+				
+			}
+			attendance.setAdminId(adminId);
+			attendance.setEmployeeId(employeeId);
 			attendanceRepository.save(attendance);
 			
 			return ResponseEntity.ok(attendance);
