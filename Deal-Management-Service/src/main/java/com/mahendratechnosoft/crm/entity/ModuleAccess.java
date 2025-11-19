@@ -48,6 +48,15 @@ public class ModuleAccess {
 	private boolean paymentcreate;
 	private boolean paymentDelete;
 	private boolean paymentEdit;
+	
+	
+	private boolean timeSheetAccess;
+	private boolean timeSheetViewAll;
+	private boolean timeSheetCreate;
+	private boolean timeSheetDelete;
+	private boolean timeSheetEdit;
+	
+	
 	public String getModuleAccessId() {
 		return moduleAccessId;
 	}
@@ -246,5 +255,37 @@ public class ModuleAccess {
 	public void setPaymentEdit(boolean paymentEdit) {
 		this.paymentEdit = paymentEdit;
 	}
+	public boolean isTimeSheetAccess() {
+		return timeSheetAccess;
+	}
+	public void setTimeSheetAccess(boolean timeSheetAccess) {
+		this.timeSheetAccess = timeSheetAccess;
+	}
+	public boolean isTimeSheetViewAll() {
+		return timeSheetViewAll;
+	}
+	public void setTimeSheetViewAll(boolean timeSheetViewAll) {
+		this.timeSheetViewAll = timeSheetViewAll;
+	}
+	public boolean isTimeSheetCreate() {
+		return timeSheetCreate;
+	}
+	public void setTimeSheetCreate(boolean timeSheetCreate) {
+		this.timeSheetCreate = timeSheetCreate;
+	}
+	public boolean isTimeSheetDelete() {
+		return timeSheetDelete;
+	}
+	public void setTimeSheetDelete(boolean timeSheetDelete) {
+		this.timeSheetDelete = timeSheetDelete;
+	}
+	public boolean isTimeSheetEdit() {
+		return timeSheetEdit;
+	}
+	public void setTimeSheetEdit(boolean timeSheetEdit) {
+		this.timeSheetEdit = timeSheetEdit;
+	}
+	
+	
 	
 }
