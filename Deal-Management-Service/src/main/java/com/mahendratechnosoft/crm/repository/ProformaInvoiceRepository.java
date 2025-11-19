@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,5 +102,8 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 			@Param("employeeId") String employeeId, 
 			@Param("search") String search,
 	        Pageable pageable);
+
+
+	Optional<ProformaInvoice> findByProposalId(String proposalId);
 
 }
