@@ -361,7 +361,7 @@ public class EmployeeController {
 		@GetMapping("/getAllInvoice/{page}/{size}")
 		public ResponseEntity<?> getAllInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 
-			return salesService.getAllInvoice(page ,size,employee,search);
+			return salesService.getAllProformaAsInvoice(page ,size,employee,search);
 
 		}
 		

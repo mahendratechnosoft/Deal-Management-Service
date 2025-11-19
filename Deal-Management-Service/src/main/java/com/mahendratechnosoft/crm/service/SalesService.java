@@ -358,7 +358,6 @@ public class SalesService {
 				invoicePage = invoiceRepository.findByAdminId(adminId, search, pageable);
 
 			}else if(moduleAccess.isInvoiceViewAll()) {
-				
 				invoicePage = invoiceRepository.findByAdminId(adminId, search, pageable);
 				
 			} else {
@@ -589,6 +588,10 @@ public class SalesService {
 				
 			 if (invoice.getTotalAmount() == (invoice.getPaidAmount() + payment.getAmount())) {
 					invoice.setStatus("Paid");
+					if(invoice.getInvoiceNumber() == 0) {
+						invoice.setInvoiceNumber(generateInvoiceNumber(adminId));
+						invoice.setInvoiceDate(payment.getPaymentDate());
+					}
 				} else if (invoice.getTotalAmount() > (invoice.getPaidAmount() + payment.getAmount())) {
 					invoice.setStatus("Partially Paid");
 				}
@@ -622,6 +625,10 @@ public class SalesService {
 
 	        if ( totalAmount == paidAmount ) {
 	            invoice.setStatus("Paid");
+	            if(invoice.getInvoiceNumber() == 0) {
+					invoice.setInvoiceNumber(generateInvoiceNumber(invoice.getAdminId()));
+				}
+	            invoice.setInvoiceDate(payment.getPaymentDate());
 	        } else if (paidAmount > 0 && totalAmount > paidAmount) {
 	            invoice.setStatus("Partially Paid");
 	        } else {
@@ -629,7 +636,6 @@ public class SalesService {
 	        }
 			 
 			 invoice.setPaidAmount(payment.getTotalProformaInvoicePaidAmount());
-			 System.err.println(payment.getTotalProformaInvoicePaidAmount());
 			 proformaInvoiceRepository.save(invoice);
 
 			return ResponseEntity.ok(payment);
@@ -754,4 +760,55 @@ public class SalesService {
 	public boolean isProformaNumberUnique(String adminId, int proformaNumber) {
         return !proformaInvoiceRepository.existsByAdminIdAndProformaNumber(adminId, proformaNumber);
     }
+	
+	public int generateInvoiceNumber(String adminId) {
+		int invoiceNumber = proformaInvoiceRepository.findMaxInvoiceNumberByAdminId(adminId);
+		return invoiceNumber + 1;
+	}
+	
+	public ResponseEntity<?> getAllProformaAsInvoice(int page, int size, Object loginUser, String search) {
+
+		try {
+            ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			Page<ProformaInvoice> invoicePage = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+
+			// 2. Fetch paginated leads for company
+			Pageable pageable = PageRequest.of(page, size);
+			if (role.equals("ROLE_ADMIN")) {
+				invoicePage = proformaInvoiceRepository.findPaidInvoicesByAdminId(adminId, search, pageable);
+
+			}else if(moduleAccess.isInvoiceViewAll()) {
+				invoicePage = proformaInvoiceRepository.findPaidInvoicesByAdminId(adminId, search, pageable);
+				
+			} else {
+
+				invoicePage = proformaInvoiceRepository.findPaidInvoicesByEmployee(employeeId, search, pageable);
+			}
+			// 3. Prepare response
+			Map<String, Object> response = new HashMap<>();
+
+			response.put("invoiceList", invoicePage.getContent());
+			response.put("currentPage", invoicePage.getNumber());
+
+			response.put("totalPages", invoicePage.getTotalPages());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
 }

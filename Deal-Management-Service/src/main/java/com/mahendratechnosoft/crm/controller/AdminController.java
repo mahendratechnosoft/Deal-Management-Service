@@ -597,7 +597,7 @@ public class AdminController {
 	@GetMapping("/getAllInvoice/{page}/{size}")
 	public ResponseEntity<?> getAllInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 
-		return salesService.getAllInvoice(page ,size,admin,search);
+		return salesService.getAllProformaAsInvoice(page ,size,admin,search);
 
 	}
 	

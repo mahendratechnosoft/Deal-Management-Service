@@ -72,5 +72,34 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 
 	@Query("SELECT COUNT(p) > 0 FROM ProformaInvoice p WHERE p.adminId = :adminId AND p.proformaInvoiceNumber = :proformaNumber")
 	boolean existsByAdminIdAndProformaNumber(String adminId, int proformaNumber);
+	
+	@Query("SELECT COALESCE(MAX(p.invoiceNumber), 0) FROM ProformaInvoice p WHERE p.adminId = :adminId")
+	int findMaxInvoiceNumberByAdminId(String adminId);
+	
+	@Query("""
+			SELECT p FROM ProformaInvoice p 
+	        WHERE p.adminId = :adminId 
+	        AND p.invoiceNumber > 0 
+	        AND LOWER(p.status) = 'paid'
+		    AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
+		    Order BY p.invoiceNumber desc
+			""")
+	Page<ProformaInvoice> findPaidInvoicesByAdminId(
+			@Param("adminId") String adminId, 
+			@Param("search") String search,
+	        Pageable pageable);
+	
+	@Query("""
+			SELECT p FROM ProformaInvoice p 
+	        WHERE p.employeeId = :employeeId 
+	        AND p.invoiceNumber > 0 
+	        AND LOWER(p.status) = 'paid'
+		    AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
+		    Order BY p.invoiceNumber desc
+			""")
+	Page<ProformaInvoice> findPaidInvoicesByEmployee(
+			@Param("employeeId") String employeeId, 
+			@Param("search") String search,
+	        Pageable pageable);
 
 }
