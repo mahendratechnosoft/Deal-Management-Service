@@ -844,6 +844,21 @@ public class AdminController {
 		
 	}
 	
+	@PutMapping("/updateSample")
+	public ResponseEntity<?> updateSample(@RequestBody DonorSample request) {
+		
+		return donorService.updateDonorSample(request);
+		
+	}
+	
+	
+	@DeleteMapping("/deleteSample/{sampleId}")
+	public ResponseEntity<?> deleteSample(@PathVariable String sampleId) {
+		
+		return donorService.deleteSample(sampleId);
+		
+	}
+	
 	
 	@GetMapping("/getAllDonarSampleList/{page}/{size}/{donorId}")
 	public ResponseEntity<?> getAllDonarSampleList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String donorId) {
@@ -859,6 +874,21 @@ public class AdminController {
 		
 	}
 	
+	
+	@PutMapping("/updateSampleReport")
+	public ResponseEntity<?> updateSampleReport(@RequestBody SampleReport request) {
+		
+		return donorService.updateSampleReport(request);
+		
+	}
+	
+	
+	@DeleteMapping("/deleteSample/{sampleReportId}")
+	public ResponseEntity<?> deleteSampleReport(@PathVariable String sampleReportId) {
+		
+		return donorService.deleteSampleReport(sampleReportId);
+		
+	}
 	
 	
 	@GetMapping("/getAllSampleReportList/{page}/{size}/{sampleId}")
