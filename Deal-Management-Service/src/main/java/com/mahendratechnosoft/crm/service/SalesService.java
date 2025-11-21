@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.xmlbeans.impl.xb.xmlconfig.NamespaceList.Member2.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +28,14 @@ import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.InvoiceContent;
+import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
+import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.repository.*;
 import jakarta.transaction.Transactional;
 
@@ -61,6 +64,9 @@ public class SalesService {
 
 	@Autowired
 	private PaymentsRepository paymentsRepository;
+	
+	@Autowired
+	private ItemsRepository itemsRepository;
 
 	SalesService(AttendanceRepository attendanceRepository) {
 		this.attendanceRepository = attendanceRepository;
@@ -891,6 +897,111 @@ public class SalesService {
 		response.put("proformaId", savedProforma.getProformaInvoiceId());
 
 		return ResponseEntity.ok(response);
+	}
+	
+	
+	public ResponseEntity<?> createItem(Items item) {
+
+		try {
+
+			return ResponseEntity.ok(itemsRepository.save(item));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> updateItem(Items item) {
+
+		try {
+
+			return ResponseEntity.ok(itemsRepository.save(item));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getAllItems(Object loginUser, int page, int size, String search) {
+
+		try {
+
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+
+			Pageable pageable = PageRequest.of(page, size);
+			Page<Items> itemReportPage = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+
+			}
+
+			if (role.equals("ROLE_ADMIN")) {
+				itemReportPage = itemsRepository.findByAdminId(adminId, search, pageable);
+			} else {
+
+				itemReportPage = itemsRepository.findByEmployeeId(employeeId, search, pageable);
+			}
+
+			Map<String, Object> response = new HashMap<>();
+
+			response.put("itemList", itemReportPage.getContent());
+			response.put("currentPage", itemReportPage.getNumber());
+			response.put("totalPages", itemReportPage.getTotalPages());
+			response.put("totalItems", itemReportPage.getTotalElements());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
+	
+	
+	public ResponseEntity<?> getItemByItemId(String itemId) {
+
+		try {
+
+			return ResponseEntity.ok(itemsRepository.findById(itemId));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	
+	public ResponseEntity<?> deleteItemById(String itemId) {
+
+		try {
+			
+			itemsRepository.deleteById(itemId);
+
+			return ResponseEntity.ok("Deleted Successfully");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
 	}
 
 }

@@ -24,14 +24,13 @@ import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Attendance;
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
-import com.mahendratechnosoft.crm.repository.AttendanceRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -572,6 +571,43 @@ public class EmployeeController {
 		    } catch (Exception e) {
 		        return ResponseEntity.status(500).body("Failed to import: " + e.getMessage());
 		    }
+		}
+		
+		@PostMapping("/createItem")
+		public ResponseEntity<?> createItem(@ModelAttribute("employee") Employee employee,@RequestBody Items request) {
+			request.setAdminId(employee.getAdmin().getAdminId());
+			request.setEmployeeId(employee.getEmployeeId());
+			return salesService.createItem(request);
+			
+		}
+		
+		@PutMapping("/updateItem")
+		public ResponseEntity<?> updateItem(@RequestBody Items request) {
+			
+			return salesService.updateItem(request);
+			
+		}
+		
+		
+		@GetMapping("/getAllItems/{page}/{size}")
+		public ResponseEntity<?> getAllItems(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return salesService.getAllItems(employee,page ,size,search);
+
+		}
+		
+		@PutMapping("/getItemByItemId/{itemId}")
+		public ResponseEntity<?> getItemByItemId(@PathVariable String itemId) {
+			
+			return salesService.getItemByItemId(itemId);
+			
+		}
+
+		@DeleteMapping("/deleteItem/{itemId}")
+		public ResponseEntity<?> deleteItem(@PathVariable String itemId) {
+			
+			return salesService.deleteItemById(itemId);
+			
 		}
     
 }

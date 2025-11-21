@@ -38,6 +38,7 @@ import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Department;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
@@ -907,5 +908,43 @@ public class AdminController {
 	@PostMapping("/convertProposalToProforma/{proposalId}")
 	public ResponseEntity<?> convertProposalToProforma(@PathVariable String proposalId){
 		return salesService.convertProposalToProforma(proposalId);
+	}
+	
+
+	@PostMapping("/createItem")
+	public ResponseEntity<?> createItem(@ModelAttribute("admin") Admin admin,@RequestBody Items request) {
+		request.setAdminId(admin.getAdminId());
+	
+		return salesService.createItem(request);
+		
+	}
+	
+	@PutMapping("/updateItem")
+	public ResponseEntity<?> updateItem(@RequestBody Items request) {
+		
+		return salesService.updateItem(request);
+		
+	}
+	
+	
+	@GetMapping("/getAllItems/{page}/{size}")
+	public ResponseEntity<?> getAllItems(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return salesService.getAllItems(admin,page ,size,search);
+
+	}
+	
+	@GetMapping("/getItemByItemId/{itemId}")
+	public ResponseEntity<?> getItemByItemId(@PathVariable String itemId) {
+		
+		return salesService.getItemByItemId(itemId);
+		
+	}
+
+	@DeleteMapping("/deleteItem/{itemId}")
+	public ResponseEntity<?> deleteItem(@PathVariable String itemId) {
+		
+		return salesService.deleteItemById(itemId);
+		
 	}
 }
