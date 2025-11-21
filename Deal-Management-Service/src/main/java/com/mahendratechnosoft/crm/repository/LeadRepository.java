@@ -42,7 +42,7 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 	List<Object[]> countLeadsByStatusByEmployeeId(@Param("employeeId") String employeeId);
 	
 	
-	@Query("SELECT e.id, e.clientName FROM Leads e WHERE e.adminId = :adminId")
+	@Query("SELECT e.id, e.clientName FROM Leads e WHERE e.adminId = :adminId AND LOWER(e.status) <> 'converted'")
 	List<Object[]> LeadNameAndIdByAdminId(@Param("adminId") String adminId);
 	
 }

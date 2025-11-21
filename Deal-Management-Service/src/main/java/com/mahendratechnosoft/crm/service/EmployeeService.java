@@ -54,8 +54,7 @@ public class EmployeeService {
         
         User savedUser = userRepository.save(newUser);
         
-        ModuleAccess access=new ModuleAccess();
-        access.setLeadViewAll(true);
+       
    
         // 3. Create the new Employee
         Employee newEmployee = new Employee();
@@ -73,9 +72,10 @@ public class EmployeeService {
         newEmployee.setState(request.getState());
         newEmployee.setCity(request.getCity());
         newEmployee.setAdmin(admin); // The logged-in admin
-        newEmployee.setModuleAccess(access);
-      
-
+        if(request.getModuleAccess() != null) {
+        	newEmployee.setModuleAccess(request.getModuleAccess());
+        }
+        
         // 5. Handle the profile image (same as your Admin controller)
         String base64Image = request.getProfileImageBase64();
         if (base64Image != null && !base64Image.isEmpty()) {
@@ -90,11 +90,17 @@ public class EmployeeService {
         // 6. Save the Employee
         Employee savedEmployee = employeeRepository.save(newEmployee);
         
- 
+        if(savedEmployee.getModuleAccess() !=null) {
+        	ModuleAccess access = savedEmployee.getModuleAccess();
+        	access.setAdminId(admin.getAdminId());
+        	access.setEmployeeId(savedEmployee.getEmployeeId());
+        	employeeRepository.save(savedEmployee);
+        }
+        
 
         // 7. Return the safe DTO
         return savedEmployee;
-    }
+    }	
 	
 	public Employee updateEmployee(Employee employee) {
 	    Employee savedEmployee = employeeRepository.save(employee);
