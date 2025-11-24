@@ -114,7 +114,13 @@ public class CustomerService {
 				
 				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
 				
-			} else {
+			} 
+			else if(moduleAccess.isCustomerViewAll()) {
+				
+				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
+				
+			} 
+			else {
 
 				customerPage = customerRepository.findByEmployeeId(employeeId, search,pageable);
 			}
