@@ -90,15 +90,20 @@ public class HomeController {
             
             final String token = jwtUtil.generateToken(userDetails);
             String name;
+            String employeeId=null;
+            String adminId;
             if (user.getRole().equals("ROLE_ADMIN")) {
             	 Optional<Admin> admin=adminRepository.findByLoginEmail(user.getLoginEmail());
             	 name=admin.get().getName();
+            	 adminId=admin.get().getAdminId();
             }else {
             	Optional<Employee> employee=employeeRepository.findByLoginEmail(user.getLoginEmail());
             	name=employee.get().getName();
+            	adminId=employee.get().getAdmin().getAdminId();
+            	employeeId=employee.get().getEmployeeId();
             }
             
-            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name);
+            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name,employeeId,adminId);
             
             return ResponseEntity.ok(signInRespoonceDto);
 
