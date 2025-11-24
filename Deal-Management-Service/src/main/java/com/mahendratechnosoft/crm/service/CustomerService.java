@@ -110,12 +110,19 @@ public class CustomerService {
 			if (role.equals("ROLE_ADMIN")) {
 				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
 
-			}
-//			else if(moduleAccess.isCustomerViewAll()) {
-//				
-//				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
-//				
-//			} 
+			
+
+			}else if(moduleAccess.isCustomerViewAll()) {
+				
+				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
+				
+			} 
+			else if(moduleAccess.isCustomerViewAll()) {
+				
+				customerPage = customerRepository.findByAdminId(adminId,search, pageable);
+				
+			} 
+
 			else {
 
 				customerPage = customerRepository.findByEmployeeId(employeeId, search,pageable);

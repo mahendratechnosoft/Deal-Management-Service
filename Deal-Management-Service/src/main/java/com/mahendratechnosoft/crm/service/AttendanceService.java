@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import com.mahendratechnosoft.crm.dto.AttendanceEmployeeDTO;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Employee;
-import com.mahendratechnosoft.crm.entity.Payments;
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.repository.AttendanceRepository;
 
 @Service
@@ -171,7 +170,7 @@ public class AttendanceService {
 
 	    try {
 	    	
-	    	
+	    	ModuleAccess moduleAccess=null;
 	    	String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 		    List<AttendanceEmployeeDTO> records = null;
@@ -179,7 +178,8 @@ public class AttendanceService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId =employee.getAdmin().getAdminId();
+				moduleAccess=employee.getModuleAccess();
 				employeeId = employee.getEmployeeId();
 			}
 	    	
@@ -197,18 +197,22 @@ public class AttendanceService {
 	                 .toInstant()
 	                 .toEpochMilli() - 1;
 	         
-	        if(employeeId!=null) {
-	        	
-	        	records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
-	        	
-	        }else  if (role.equals("ROLE_ADMIN")) {
+	            if (role.equals("ROLE_ADMIN")) {
 	        	 
 	        	 records = attendanceRepository.findAttendanceBetweenByAdmin(adminId, fromTime, toTime);
 	        	 
-	         }else {
+	           }else if(moduleAccess.isTimeSheetViewAll()){
 	        	 
-	        	 records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
-	         }
+	        	 records = attendanceRepository.findAttendanceBetweenByAdmin(adminId, fromTime, toTime);
+	        	 
+				} else if (employeeId != null) {
+				
+					records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
+
+				} else {
+
+					records = attendanceRepository.findAttendanceBetweenByEmployee(employeeId, fromTime, toTime);
+				}
 
 	       
 

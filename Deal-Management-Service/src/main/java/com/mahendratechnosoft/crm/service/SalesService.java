@@ -199,7 +199,7 @@ public class SalesService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess = employee.getModuleAccess();
 			}
@@ -208,13 +208,17 @@ public class SalesService {
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
 				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
+ 
+			}else if (moduleAccess.isProposalViewAll()) {
+
+				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
 
 			}
-//			else if (moduleAccess.isProposalViewAll()) {
-//
-//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
-//
-//			} 
+			else if (moduleAccess.isProposalViewAll()) {
+
+				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
+
+			} 
 			else {
 
 				proposalPage = proposalRepository.findByEmployeeId(employeeId, search, pageable);
@@ -511,7 +515,7 @@ public class SalesService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess = employee.getModuleAccess();
 			}
@@ -526,12 +530,12 @@ public class SalesService {
 			if (role.equals("ROLE_ADMIN")) {
 				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, startDate, endDate, pageable);
 
-			} else if (moduleAccess.isProformaInvoiceEdit()) {
-
+			} else if (moduleAccess.isProformaInvoiceViewAll()) {
+				
 				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, startDate, endDate, pageable);
 
 			} else {
-
+                 
 				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search, startDate, endDate,
 						pageable);
 			}
@@ -674,7 +678,7 @@ public class SalesService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess = employee.getModuleAccess();
 			}
@@ -770,7 +774,7 @@ public class SalesService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+			    adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess = employee.getModuleAccess();
 			}

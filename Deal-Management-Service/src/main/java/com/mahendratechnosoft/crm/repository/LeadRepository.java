@@ -19,7 +19,7 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 			+ "          OR LOWER(l.clientName) LIKE LOWER(CONCAT('%', :search, '%'))"
 			+ "          OR LOWER(l.companyName) LIKE LOWER(CONCAT('%', :search, '%'))"
 			+ "      )"
-			+ " ORDER BY l.id DESC")
+			)
 	Page<Leads> findByAdminIdAndOptionalStatus( @Param("adminId") String adminId, @Param("status") String status,@Param("search") String search, Pageable pageable);
 
 	
@@ -28,8 +28,8 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 			+ "          :search IS NULL "
 			+ "          OR LOWER(l.clientName) LIKE LOWER(CONCAT('%', :search, '%'))"
 			+ "          OR LOWER(l.companyName) LIKE LOWER(CONCAT('%', :search, '%'))"
-			+ "      )"
-			+ "ORDER BY l.id DESC")
+			+ "      )")
+			
 	Page<Leads> findByEmployeeIdAndOptionalStatus( @Param("employeeId") String employeeId, @Param("status") String status,@Param("search") String search, Pageable pageable);
 
 	

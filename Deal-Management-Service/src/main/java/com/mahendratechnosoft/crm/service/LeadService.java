@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -137,19 +138,24 @@ public class LeadService {
 	        
 
 	        // 2. Fetch paginated leads for company
-	        Pageable pageable = PageRequest.of(page, size);
+	        Pageable pageable = PageRequest.of(page, size,Sort.by("createdDate").descending());
 	        List<Object[]> countAndStatus = null;
 	        if(role.equals("ROLE_ADMIN")){
 	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
  
+	        }else if(moduleAcces.isLeadViewAll()){
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
+	        	
 	        }
-//	        else if(moduleAcces.isLeadViewAll()){
-//	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
-//	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
-//	        	
-//	        }
+	        else if(moduleAcces.isLeadViewAll()){
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
+	        	
+	        }
 	        else {
+
 	        	
 	        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,search, pageable);
 	        	countAndStatus = leadRepository.countLeadsByStatusByEmployeeId(employeeId);
