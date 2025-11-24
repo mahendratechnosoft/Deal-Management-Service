@@ -10,13 +10,15 @@ public class SignInRespoonceDto {
 	private String role;
 	private LocalDateTime expiryDate;
 	private String loginUserName;
+	private String employeeId;
+	private String adminId;
 	public SignInRespoonceDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
 	public SignInRespoonceDto(String jwtToken, String userId, String loginEmail, String role,
-			LocalDateTime expiryDate,String loginUserName ) {
+			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ) {
 		super();
 		this.jwtToken = jwtToken;
 		this.userId = userId;
@@ -24,6 +26,8 @@ public class SignInRespoonceDto {
 		this.role = role;
 		this.expiryDate = expiryDate;
 		this.loginUserName=loginUserName;
+		this.employeeId=employeeId;
+		this.adminId=adminId;
 	}
 	
 	public String getJwtToken() {
@@ -63,6 +67,22 @@ public class SignInRespoonceDto {
 
 	public void setLoginUserName(String loginUserName) {
 		this.loginUserName = loginUserName;
+	}
+	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
 	}
 
 	@Override
