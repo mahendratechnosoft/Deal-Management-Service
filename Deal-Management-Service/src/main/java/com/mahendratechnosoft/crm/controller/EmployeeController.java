@@ -609,5 +609,10 @@ public class EmployeeController {
 			return salesService.deleteItemById(itemId);
 			
 		}
+		
+		@PostMapping("/convertProposalToProforma/{proposalId}")
+		public ResponseEntity<?> convertProposalToProforma(@PathVariable String proposalId){
+			return salesService.convertProposalToProforma(proposalId);
+		}
     
 }
