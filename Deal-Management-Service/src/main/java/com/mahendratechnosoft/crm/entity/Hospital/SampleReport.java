@@ -12,6 +12,7 @@ public class SampleReport {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String sampleReportId;
+	private String donorId;
 	private String sampleId;
 	private LocalDateTime dateAndTime;
 	private String  media;
@@ -143,6 +144,16 @@ public class SampleReport {
 
 	public void setAbnormality(String abnormality) {
 		this.abnormality = abnormality;
+	}
+
+
+	public String getDonorId() {
+		return donorId;
+	}
+
+
+	public void setDonorId(String donorId) {
+		this.donorId = donorId;
 	}
 	
 	
