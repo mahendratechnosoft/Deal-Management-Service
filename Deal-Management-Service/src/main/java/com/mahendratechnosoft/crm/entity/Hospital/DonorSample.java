@@ -10,6 +10,7 @@ public class DonorSample {
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String donorSampleId;
+	private String sampleReportId;
 	private String donorId;
 	private String tankNo;
 	private String caneNo;
@@ -87,6 +88,14 @@ public class DonorSample {
 
 	public void setDonorId(String donorId) {
 		this.donorId = donorId;
+	}
+
+	public String getSampleReportId() {
+		return sampleReportId;
+	}
+
+	public void setSampleReportId(String sampleReportId) {
+		this.sampleReportId = sampleReportId;
 	}
 	
 	

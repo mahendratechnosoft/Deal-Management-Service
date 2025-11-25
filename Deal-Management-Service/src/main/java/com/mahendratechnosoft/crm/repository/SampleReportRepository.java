@@ -13,12 +13,12 @@ public interface SampleReportRepository extends JpaRepository<SampleReport, Stri
 	
 	@Query("""
 		    SELECT p FROM SampleReport p
-		    WHERE p.sampleId = :sampleId 
+		    WHERE p.donorId = :donorId 
 		      AND (:search IS NULL OR LOWER(p.media) LIKE LOWER(CONCAT('%', :search, '%'))) 
 		    ORDER BY p.sampleReportId DESC
 		""")
 		Page<SampleReport> findByDonorId(
-		        @Param("sampleId") String sampleId,
+		        @Param("donorId") String donorId,
 		        @Param("search") String search,
 		        Pageable pageable);
 

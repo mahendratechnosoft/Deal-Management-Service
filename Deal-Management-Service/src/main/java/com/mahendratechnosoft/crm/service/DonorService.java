@@ -285,21 +285,21 @@ public class DonorService {
 
 	}
 	
-	public ResponseEntity<?> getAllDonarSampleList(int page, int size, String search, String donorId) {
+	public ResponseEntity<?> getAllDonarSampleList(int page, int size, String search, String sampleReportId) {
 
 		try {
 			Pageable pageable = PageRequest.of(page, size);
 			Page<DonorSample> donorPage = null;
 
-			donorPage = donorsRepository.findByDonorId(donorId, search, pageable);
+			donorPage = donorsRepository.findBySampleReportId(sampleReportId, search, pageable);
 
 		
 			Map<String, Object> response = new HashMap<>();
 
 			response.put("donarSampleList", donorPage.getContent());
 			response.put("currentPage", donorPage.getNumber());
-
 			response.put("totalPages", donorPage.getTotalPages());
+			response.put("totalNumberOfElement", donorPage.getTotalElements());
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {

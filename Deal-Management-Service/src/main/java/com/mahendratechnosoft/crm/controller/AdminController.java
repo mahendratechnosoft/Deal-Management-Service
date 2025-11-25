@@ -867,10 +867,10 @@ public class AdminController {
 	}
 	
 	
-	@GetMapping("/getAllDonarSampleList/{page}/{size}/{donorId}")
-	public ResponseEntity<?> getAllDonarSampleList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String donorId) {
+	@GetMapping("/getAllDonarSampleList/{page}/{size}/{sampleLReportId}")
+	public ResponseEntity<?> getAllDonarSampleList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String sampleLReportId) {
 
-		return donorService.getAllDonarSampleList(page ,size,search,donorId);
+		return donorService.getAllDonarSampleList(page ,size,search,sampleLReportId);
 
 	}
 	

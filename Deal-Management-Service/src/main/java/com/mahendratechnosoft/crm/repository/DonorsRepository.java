@@ -64,12 +64,12 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	
 	@Query("""
 		    SELECT p FROM DonorSample p
-		    WHERE p.donorId = :donorId 
+		    WHERE p.sampleReportId = :sampleReportId 
 		      AND (:search IS NULL OR LOWER(p.tankNo) LIKE LOWER(CONCAT('%', :search, '%'))) 
 		    ORDER BY p.donorSampleId DESC
 		""")
-		Page<DonorSample> findByDonorId(
-		        @Param("donorId") String donorId,
+		Page<DonorSample> findBySampleReportId(
+		        @Param("sampleReportId") String sampleReportId,
 		        @Param("search") String search,
 		        Pageable pageable);
 
