@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
@@ -613,6 +614,20 @@ public class EmployeeController {
 		@PostMapping("/convertProposalToProforma/{proposalId}")
 		public ResponseEntity<?> convertProposalToProforma(@PathVariable String proposalId){
 			return salesService.convertProposalToProforma(proposalId);
+		}
+		
+		@GetMapping("/getProformaInvoiceSummary")
+		public ResponseEntity<?> getProformaInvoiceSummary(@ModelAttribute("employee") Employee employee,
+				@RequestParam Date startDate, @RequestParam Date endDate) {
+
+			return ResponseEntity.ok(salesService.getProformaInvoiceSummary(employee, startDate, endDate));
+		}
+		
+		
+		@GetMapping("/getInvoiceTaxSummary")
+		public ResponseEntity<?> getInvoiceTaxSummary(@ModelAttribute("employee") Employee employee) {
+
+			return ResponseEntity.ok(salesService.getInvoiceTaxSummary(employee));
 		}
     
 }

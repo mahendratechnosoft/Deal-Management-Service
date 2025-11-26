@@ -30,6 +30,7 @@ import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -946,5 +947,20 @@ public class AdminController {
 		
 		return salesService.deleteItemById(itemId);
 		
+	}
+	
+	
+	@GetMapping("/getProformaInvoiceSummary")
+	public ResponseEntity<?> getProformaInvoiceSummary(@ModelAttribute("admin") Admin admin,
+			@RequestParam Date startDate, @RequestParam Date endDate) {
+
+		return ResponseEntity.ok(salesService.getProformaInvoiceSummary(admin, startDate, endDate));
+	}
+	
+	
+	@GetMapping("/getInvoiceTaxSummary")
+	public ResponseEntity<?> getInvoiceTaxSummary(@ModelAttribute("admin") Admin admin) {
+
+		return ResponseEntity.ok(salesService.getInvoiceTaxSummary(admin));
 	}
 }

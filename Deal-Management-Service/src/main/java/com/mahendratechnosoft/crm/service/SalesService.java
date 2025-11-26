@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.xmlbeans.impl.xb.xmlconfig.NamespaceList.Member2.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryDTO;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
@@ -35,8 +35,16 @@ import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
-import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
-import com.mahendratechnosoft.crm.repository.*;
+import com.mahendratechnosoft.crm.repository.AttendanceRepository;
+import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
+import com.mahendratechnosoft.crm.repository.InvoiceRepository;
+import com.mahendratechnosoft.crm.repository.ItemsRepository;
+import com.mahendratechnosoft.crm.repository.PaymentsRepository;
+import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
+import com.mahendratechnosoft.crm.repository.ProformaInvoiceRepository;
+import com.mahendratechnosoft.crm.repository.ProposalContentRepository;
+import com.mahendratechnosoft.crm.repository.ProposalRepository;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -1007,5 +1015,95 @@ public class SalesService {
 		}
 
 	}
+	
+	
+	public ResponseEntity<?> getProformaInvoiceSummary(Object loginUser, Date startDate, Date endDate) {
+
+		try {
+
+			ModuleAccess moduleAccess = null;
+			String adminId = null;
+			String employeeId = null;
+			String role = "ROLE_EMPLOYEE";
+			ProformaInvoiceSummaryCountDTO proformaInvoiceSummaryCountDTO;
+			if (loginUser instanceof Admin admin) {
+                role="ROLE_ADMIN";
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+				moduleAccess = employee.getModuleAccess();
+			}
+			if (role.equals("ROLE_ADMIN")   ) {
+				proformaInvoiceSummaryCountDTO=	proformaInvoiceRepository.getInvoiceSummary(adminId,employeeId, startDate, endDate);
+			}else if(moduleAccess.isProformaInvoiceViewAll()) {
+				proformaInvoiceSummaryCountDTO=	proformaInvoiceRepository.getInvoiceSummary(adminId,null, startDate, endDate);
+			} else {
+				proformaInvoiceSummaryCountDTO=	proformaInvoiceRepository.getInvoiceSummary(adminId,employeeId, startDate, endDate);
+			}
+
+			return ResponseEntity.ok(proformaInvoiceSummaryCountDTO);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getInvoiceTaxSummary(Object loginUser) {
+
+		try {
+
+			ModuleAccess moduleAccess = null;
+			String adminId = null;
+			String employeeId = null;
+			String role = "ROLE_EMPLOYEE";
+			if (loginUser instanceof Admin admin) {
+				role = "ROLE_ADMIN";
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+				moduleAccess = employee.getModuleAccess();
+			}
+
+			List<Object[]> queryResult = null;
+
+			if (role.equals("ROLE_ADMIN")) {
+				queryResult = proformaInvoiceRepository.fetchTotals(adminId, employeeId);
+			} else if (moduleAccess.isInvoiceViewAll()) {
+				queryResult = proformaInvoiceRepository.fetchTotals(adminId, null);
+			} else {
+				queryResult = proformaInvoiceRepository.fetchTotals(adminId, employeeId);
+			}
+
+			if (queryResult == null || queryResult.isEmpty()) {
+				return ResponseEntity.ok(Map.of("total_with_tax", 0, "total_without_tax", 0, "total_tax_amount", 0));
+			}
+
+			Object[] result = queryResult.get(0);
+
+			Double totalWithTax = result[0] == null ? 0.0 : ((Number) result[0]).doubleValue();
+			Double totalWithoutTax = result[1] == null ? 0.0 : ((Number) result[1]).doubleValue();
+			Double totalTaxAmount = result[2] == null ? 0.0 : ((Number) result[2]).doubleValue();
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("total_with_tax", totalWithTax);
+			map.put("total_without_tax", totalWithoutTax);
+			map.put("total_tax_amount", totalTaxAmount);
+
+			return ResponseEntity.ok(map);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+
 
 }
