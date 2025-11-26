@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryDTO;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.ProformaInvoice;
@@ -105,5 +106,35 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 
 
 	Optional<ProformaInvoice> findByProposalId(String proposalId);
+	
+	@Query("SELECT new com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO(" +
+	        "SUM(p.paidAmount), " +
+	        "SUM(p.totalAmount), " +
+	        "SUM(CASE WHEN p.dueDate IS NULL OR p.dueDate >= CURRENT_DATE THEN (p.totalAmount - p.paidAmount) ELSE 0 END), " +
+	        "SUM(CASE WHEN p.dueDate < CURRENT_DATE THEN (p.totalAmount - p.paidAmount) ELSE 0 END), " +
+	        "SUM(CASE WHEN p.dueDate < CURRENT_DATE AND LOWER(p.status) <> 'paid' THEN 1 ELSE 0 END), " +
+	        "SUM(CASE WHEN LOWER(p.status) = 'paid' THEN 1 ELSE 0 END), " +
+	        "SUM(CASE WHEN LOWER(p.status) = 'unpaid' THEN 1 ELSE 0 END), " +
+	        "SUM(CASE WHEN (p.dueDate IS NULL OR p.dueDate >= CURRENT_DATE) AND LOWER(p.status) = 'partially paid' THEN 1 ELSE 0 END) " +
+	        ") " +
+	        "FROM ProformaInvoice p " +
+	        "WHERE p.adminId = :adminId AND (:employeeId IS NULL OR p.employeeId = :employeeId )" +
+	        "AND p.proformaInvoiceDate BETWEEN :startDate AND :endDate")
+	ProformaInvoiceSummaryCountDTO getInvoiceSummary(@Param("adminId") String adminId,@Param("employeeId") String employeeId,
+	                                                 @Param("startDate") Date startDate,
+	                                                 @Param("endDate") Date endDate);
+	
+	
+	
+	@Query("SELECT " +
+		       "SUM(p.totalAmount), " +
+		       "SUM(p.totalAmount / (1 + (p.taxPercentage / 100))), " +
+		       "SUM(p.totalAmount - (p.totalAmount / (1 + (p.taxPercentage / 100)))) " +
+		       "FROM ProformaInvoice p " +
+		       "WHERE p.adminId = :adminId " +
+		       "AND (:employeeId IS NULL OR p.employeeId = :employeeId)")
+		List<Object[]> fetchTotals(@Param("adminId") String adminId,
+		                           @Param("employeeId") String employeeId);
+
 
 }
