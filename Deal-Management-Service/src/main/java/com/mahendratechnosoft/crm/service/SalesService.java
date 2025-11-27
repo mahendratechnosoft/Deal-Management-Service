@@ -238,7 +238,7 @@ public class SalesService {
 
 			response.put("proposalList", proposalPage.getContent());
 			response.put("currentPage", proposalPage.getNumber());
-
+			response.put("totalElements",proposalPage.getTotalElements());
 			response.put("totalPages", proposalPage.getTotalPages());
 
 			return ResponseEntity.ok(response);
@@ -433,6 +433,10 @@ public class SalesService {
 			if (invoice.getEmployeeId() == null || invoice.getEmployeeId().isEmpty()) {
 				invoice.setEmployeeId(employeeId);
 			}
+			
+			if(invoice.getTotalAmount() == invoice.getPaidAmount()) {
+				invoice.setStatus("Paid");
+			}
 			proformaInvoiceRepository.save(invoice);
 
 			List<ProformaInvoiceContent> invoiceContentAll = new ArrayList<>();
@@ -470,6 +474,15 @@ public class SalesService {
 
 			ProformaInvoice invoice = invoiceDto.getProformaInvoiceInfo();
 			invoice.setAdminId(adminId);
+			
+			if(invoice.getTotalAmount() == invoice.getPaidAmount()) {
+				invoice.setStatus("Paid");
+			}else if (invoice.getTotalAmount()>invoice.getPaidAmount() && invoice.getPaidAmount() != 0) {
+				invoice.setStatus("Partially Paid");
+			}else {
+				invoice.setStatus("Unpaid");
+			}
+			
 			proformaInvoiceRepository.save(invoice);
 
 			List<ProformaInvoiceContent> invoiceContentAll = new ArrayList<>();
@@ -554,7 +567,7 @@ public class SalesService {
 
 			response.put("ProformaInvoiceList", invoicePage.getContent());
 			response.put("currentPage", invoicePage.getNumber());
-
+			response.put("totalElements",invoicePage.getTotalElements());
 			response.put("totalPages", invoicePage.getTotalPages());
 
 			return ResponseEntity.ok(response);
@@ -806,7 +819,7 @@ public class SalesService {
 
 			response.put("invoiceList", invoicePage.getContent());
 			response.put("currentPage", invoicePage.getNumber());
-
+			response.put("totalElements",invoicePage.getTotalElements());
 			response.put("totalPages", invoicePage.getTotalPages());
 
 			return ResponseEntity.ok(response);
