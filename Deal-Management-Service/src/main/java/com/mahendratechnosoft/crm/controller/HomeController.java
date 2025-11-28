@@ -23,11 +23,13 @@ import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
+import com.mahendratechnosoft.crm.repository.ModuleAccessRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.security.JwtUtil;
 import com.mahendratechnosoft.crm.service.DonorService;
@@ -66,6 +68,9 @@ public class HomeController {
     @Autowired
     private DonorService donorService;
     
+	@Autowired
+	private ModuleAccessRepository moduleAccessRepository;
+    
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody AdminRegistrationDto registrationDto) {
@@ -92,18 +97,23 @@ public class HomeController {
             String name;
             String employeeId=null;
             String adminId;
+            ModuleAccess moduleAccess;
             if (user.getRole().equals("ROLE_ADMIN")) {
             	 Optional<Admin> admin=adminRepository.findByLoginEmail(user.getLoginEmail());
             	 name=admin.get().getName();
             	 adminId=admin.get().getAdminId();
+            	 
+            	 moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeId(adminId,null);
             }else {
             	Optional<Employee> employee=employeeRepository.findByLoginEmail(user.getLoginEmail());
             	name=employee.get().getName();
             	adminId=employee.get().getAdmin().getAdminId();
             	employeeId=employee.get().getEmployeeId();
+            	
+            	moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeId(adminId,employeeId);
             }
             
-            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name,employeeId,adminId);
+            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess);
             
             return ResponseEntity.ok(signInRespoonceDto);
 
