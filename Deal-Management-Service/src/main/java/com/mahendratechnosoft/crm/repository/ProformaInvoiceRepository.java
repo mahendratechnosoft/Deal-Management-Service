@@ -114,7 +114,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 	        "SUM(CASE WHEN p.dueDate < CURRENT_DATE THEN (p.totalAmount - p.paidAmount) ELSE 0 END), " +
 	        "SUM(CASE WHEN p.dueDate < CURRENT_DATE AND LOWER(p.status) <> 'paid' THEN 1 ELSE 0 END), " +
 	        "SUM(CASE WHEN LOWER(p.status) = 'paid' THEN 1 ELSE 0 END), " +
-	        "SUM(CASE WHEN LOWER(p.status) = 'unpaid' THEN 1 ELSE 0 END), " +
+	        "SUM(CASE WHEN (p.dueDate IS NULL OR p.dueDate >= CURRENT_DATE) AND LOWER(p.status) = 'unpaid' THEN 1 ELSE 0 END), " +
 	        "SUM(CASE WHEN (p.dueDate IS NULL OR p.dueDate >= CURRENT_DATE) AND LOWER(p.status) = 'partially paid' THEN 1 ELSE 0 END) " +
 	        ") " +
 	        "FROM ProformaInvoice p " +
