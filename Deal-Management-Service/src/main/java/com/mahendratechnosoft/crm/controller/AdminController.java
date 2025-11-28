@@ -959,8 +959,9 @@ public class AdminController {
 	
 	
 	@GetMapping("/getInvoiceTaxSummary")
-	public ResponseEntity<?> getInvoiceTaxSummary(@ModelAttribute("admin") Admin admin) {
+	public ResponseEntity<?> getInvoiceTaxSummary(@ModelAttribute("admin") Admin admin,
+			@RequestParam Date startDate, @RequestParam Date endDate) {
 
-		return ResponseEntity.ok(salesService.getInvoiceTaxSummary(admin));
+		return ResponseEntity.ok(salesService.getInvoiceTaxSummary(admin,startDate,endDate));
 	}
 }

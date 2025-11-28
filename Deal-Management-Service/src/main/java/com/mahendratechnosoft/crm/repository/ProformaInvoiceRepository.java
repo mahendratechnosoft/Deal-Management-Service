@@ -132,9 +132,13 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		       "SUM(p.totalAmount - (p.totalAmount / (1 + (p.taxPercentage / 100)))) " +
 		       "FROM ProformaInvoice p " +
 		       "WHERE p.adminId = :adminId " +
-		       "AND (:employeeId IS NULL OR p.employeeId = :employeeId)")
+		       "AND (:employeeId IS NULL OR p.employeeId = :employeeId)"+
+		       "And p.status = 'Paid'"+
+		       "AND p.invoiceDate BETWEEN :startDate AND :endDate")
 		List<Object[]> fetchTotals(@Param("adminId") String adminId,
-		                           @Param("employeeId") String employeeId);
+		                           @Param("employeeId") String employeeId,
+		                           @Param("startDate") Date startDate,
+                                   @Param("endDate") Date endDate);
 
 
 }

@@ -1066,7 +1066,7 @@ public class SalesService {
 	}
 	
 	
-	public ResponseEntity<?> getInvoiceTaxSummary(Object loginUser) {
+	public ResponseEntity<?> getInvoiceTaxSummary(Object loginUser, Date startDate, Date endDate) {
 
 		try {
 
@@ -1086,11 +1086,11 @@ public class SalesService {
 			List<Object[]> queryResult = null;
 
 			if (role.equals("ROLE_ADMIN")) {
-				queryResult = proformaInvoiceRepository.fetchTotals(adminId, employeeId);
+				queryResult = proformaInvoiceRepository.fetchTotals(adminId, employeeId,startDate,endDate);
 			} else if (moduleAccess.isInvoiceViewAll()) {
-				queryResult = proformaInvoiceRepository.fetchTotals(adminId, null);
+				queryResult = proformaInvoiceRepository.fetchTotals(adminId, null,startDate,endDate);
 			} else {
-				queryResult = proformaInvoiceRepository.fetchTotals(adminId, employeeId);
+				queryResult = proformaInvoiceRepository.fetchTotals(adminId, employeeId,startDate,endDate);
 			}
 
 			if (queryResult == null || queryResult.isEmpty()) {

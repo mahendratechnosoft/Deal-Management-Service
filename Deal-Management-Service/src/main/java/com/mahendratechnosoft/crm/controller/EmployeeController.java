@@ -625,9 +625,10 @@ public class EmployeeController {
 		
 		
 		@GetMapping("/getInvoiceTaxSummary")
-		public ResponseEntity<?> getInvoiceTaxSummary(@ModelAttribute("employee") Employee employee) {
+		public ResponseEntity<?> getInvoiceTaxSummary(@ModelAttribute("employee") Employee employee,
+				@RequestParam Date startDate, @RequestParam Date endDate) {
 
-			return ResponseEntity.ok(salesService.getInvoiceTaxSummary(employee));
+			return ResponseEntity.ok(salesService.getInvoiceTaxSummary(employee,startDate,endDate));
 		}
     
 }
