@@ -597,7 +597,7 @@ public class EmployeeController {
 
 		}
 		
-		@PutMapping("/getItemByItemId/{itemId}")
+		@GetMapping("/getItemByItemId/{itemId}")
 		public ResponseEntity<?> getItemByItemId(@PathVariable String itemId) {
 			
 			return salesService.getItemByItemId(itemId);
