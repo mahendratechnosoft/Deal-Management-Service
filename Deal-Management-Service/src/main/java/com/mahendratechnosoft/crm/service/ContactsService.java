@@ -19,7 +19,7 @@ public class ContactsService {
 	public ResponseEntity<?> createContact(Contacts contacts) {
 
 		try {
-			contacts.setStatus(true);
+//			contacts.setStatus(true);
 			return ResponseEntity.ok(contactsRepository.save(contacts));
 
 		} catch (Exception e) {

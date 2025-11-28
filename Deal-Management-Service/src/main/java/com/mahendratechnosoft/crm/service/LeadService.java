@@ -77,7 +77,7 @@ public class LeadService {
 		leadColumnRepository.save(leadColumn);
 
 		dto.setCreatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
-		dto.setUpdatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
+//		dto.setUpdatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
 		leadRepository.save(dto);
 		
 		
@@ -279,6 +279,7 @@ public class LeadService {
 			}
 
 			lead.setFields(lead.getFields());
+			lead.setUpdatedDate(ZonedDateTime.now(ZoneId.of("Asia/Kolkata")).toLocalDateTime());
 			leadRepository.save(lead);
 			
 		//	leadColumn.setAdminId(lead.getAdminId());
