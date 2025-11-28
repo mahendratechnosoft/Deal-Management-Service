@@ -2,6 +2,8 @@ package com.mahendratechnosoft.crm.dto;
 
 import java.time.LocalDateTime;
 
+import com.mahendratechnosoft.crm.entity.ModuleAccess;
+
 public class SignInRespoonceDto {
 	
 	private String jwtToken;
@@ -12,13 +14,14 @@ public class SignInRespoonceDto {
 	private String loginUserName;
 	private String employeeId;
 	private String adminId;
+	private ModuleAccess moduleAccess;
 	public SignInRespoonceDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
 	public SignInRespoonceDto(String jwtToken, String userId, String loginEmail, String role,
-			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ) {
+			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess) {
 		super();
 		this.jwtToken = jwtToken;
 		this.userId = userId;
@@ -28,6 +31,7 @@ public class SignInRespoonceDto {
 		this.loginUserName=loginUserName;
 		this.employeeId=employeeId;
 		this.adminId=adminId;
+		this.moduleAccess=moduleAccess;
 	}
 	
 	public String getJwtToken() {
@@ -83,6 +87,14 @@ public class SignInRespoonceDto {
 
 	public void setAdminId(String adminId) {
 		this.adminId = adminId;
+	}
+	
+	public ModuleAccess getModuleAccess() {
+		return moduleAccess;
+	}
+
+	public void setModuleAccess(ModuleAccess moduleAccess) {
+		this.moduleAccess = moduleAccess;
 	}
 
 	@Override
