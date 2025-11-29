@@ -46,6 +46,7 @@ import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
@@ -802,10 +803,11 @@ public class AdminController {
 	
 	
 	
-	@GetMapping("/getAllDonarList/{page}/{size}")
-	public ResponseEntity<?> getAllDonarList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+	@GetMapping("/getAllDonorList/{page}/{size}")
+	public ResponseEntity<?> getAllDonorList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,
+			@RequestParam(required = false) String search,@RequestParam(required = false) String status) {
 
-		return donorService.getAllDonarList(page ,size,admin,search);
+		return donorService.getAllDonorList(page ,size,admin,search,status);
 
 	}
 	
@@ -887,13 +889,7 @@ public class AdminController {
 		return donorService.updateDonorSample(request);
 		
 	}
-	
-	@GetMapping("/getAllSelectedDonarList/{page}/{size}")
-	public ResponseEntity<?> getAllSelectedDonarList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 
-		return donorService.getAllSelectedDonarList(page ,size,admin,search);
-
-	}
 	
 	
 	@GetMapping("/getSemenReportByDonorId/{donorId}")
@@ -908,7 +904,38 @@ public class AdminController {
      
         return  donorService.getSampleReportByDonorId(donorId);
     }
+	
+	
+	@PostMapping("/createFamilyInfo")
+	public ResponseEntity<?> createFamilyInfo(@ModelAttribute("admin") Admin admin, @RequestBody FamilyInfo request) {
+		request.setAdminId(admin.getAdminId());
+		return donorService.createFamilyInfo(request);
+		
+	}
+	
+	
+	
+	@GetMapping("/getAllFamilyList/{page}/{size}")
+	public ResponseEntity<?> getAllFamilyList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 
+		return donorService.getAllFamilyList(page ,size,admin,search);
+
+	}
+	
+	
+	
+	@GetMapping("/getFamilyById/{familyInfoId}")
+    public ResponseEntity<?> getFamilyById(@PathVariable String familyInfoId ) {
+        return  donorService.getFamilyInfoById(familyInfoId);
+    }
+
+	
+	@PutMapping("/updateFamilyInfo")
+	public ResponseEntity<?> updateFamilyInfo(@ModelAttribute("admin") Admin admin, @RequestBody FamilyInfo request) {
+		request.setAdminId(admin.getAdminId());
+		return donorService.updateFamilyInfo(request);
+		
+	}
 	
 	
 	// End donor api
