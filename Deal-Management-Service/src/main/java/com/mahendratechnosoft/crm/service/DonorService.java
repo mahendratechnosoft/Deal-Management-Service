@@ -20,11 +20,13 @@ import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorBloodReportRepositroy;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorFamilyInfoRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorsRepository;
+import com.mahendratechnosoft.crm.repository.Hospital.FamilyInfoRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.SampleReportRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.SemenReportRepository;
 
@@ -48,6 +50,9 @@ public class DonorService {
 	
 	@Autowired
 	private SampleReportRepository sampleReportRepository;
+	
+	@Autowired
+	private FamilyInfoRepository familyInfoRepository;
 	
 	
 	public ResponseEntity<?> createDonor( Donors request) {
@@ -90,7 +95,7 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> getAllDonarList(int page, int size, Object loginUser, String search) {
+	public ResponseEntity<?> getAllDonorList(int page, int size, Object loginUser, String search,String status) {
 
 		try {
             ModuleAccess moduleAccess=null;
@@ -110,7 +115,7 @@ public class DonorService {
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
-				donorPage = donorsRepository.findByAdminId(adminId, search, pageable);
+				donorPage = donorsRepository.findByAdminId(adminId, search,status, pageable);
 
 			}
 //			else if(moduleAccess.isProposalViewAll()) {
@@ -120,7 +125,7 @@ public class DonorService {
 //			} 
 			else {
 
-				donorPage = donorsRepository.findByEmployeeId(employeeId, search, pageable);
+				donorPage = donorsRepository.findByEmployeeId(employeeId, search,status, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new HashMap<>();
@@ -140,54 +145,7 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> getAllSelectedDonarList(int page, int size, Object loginUser, String search) {
 
-		try {
-            ModuleAccess moduleAccess=null;
-			String role = "ROLE_EMPLOYEE";
-			String adminId = null;
-			String employeeId = null;
-			Page<Donors> donorPage = null;
-			if (loginUser instanceof Admin admin) {
-				role = admin.getUser().getRole();
-				adminId = admin.getAdminId();
-			} else if (loginUser instanceof Employee employee) {
-
-				employeeId = employee.getEmployeeId();
-				moduleAccess=employee.getModuleAccess();
-			}
-
-			// 2. Fetch paginated leads for company
-			Pageable pageable = PageRequest.of(page, size);
-			if (role.equals("ROLE_ADMIN")) {
-				donorPage = donorsRepository.findByAdminIdSelected(adminId, search, pageable);
-
-			}
-//			else if(moduleAccess.isProposalViewAll()) {
-//                
-//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
-//				
-//			} 
-			else {
-
-				donorPage = donorsRepository.findByEmployeeIdSelected(employeeId, search, pageable);
-			}
-			// 3. Prepare response
-			Map<String, Object> response = new HashMap<>();
-
-			response.put("donarList", donorPage.getContent());
-			response.put("currentPage", donorPage.getNumber());
-
-			response.put("totalPages", donorPage.getTotalPages());
-
-			return ResponseEntity.ok(response);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
-		}
-
-	}
 	
 	
 	public ResponseEntity<?> getDonarById( String  donarId) {
@@ -429,5 +387,115 @@ public class DonorService {
 		}
 
 	}
+	
+	
+	public ResponseEntity<?> createFamilyInfo( FamilyInfo  request) {
+
+		try {
+			
+			return ResponseEntity.ok(familyInfoRepository.save(request));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getAllFamilyList(int page, int size, Object loginUser, String search) {
+
+		try {
+            ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			Page<FamilyInfo> familyInfoPage = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+
+			// 2. Fetch paginated leads for company
+			Pageable pageable = PageRequest.of(page, size);
+			if (role.equals("ROLE_ADMIN")) {
+				familyInfoPage = familyInfoRepository.findByAdminId(adminId, search, pageable);
+
+			}
+//			else if(moduleAccess.isProposalViewAll()) {
+//                
+//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
+//				
+//			} 
+			else {
+
+				familyInfoPage = familyInfoRepository.findByEmployeeId(employeeId, search, pageable);
+			}
+			// 3. Prepare response
+			Map<String, Object> response = new HashMap<>();
+			response.put("familyList", familyInfoPage.getContent());
+			response.put("currentPage", familyInfoPage.getNumber());
+			response.put("totalPages", familyInfoPage.getTotalPages());
+			response.put("totalElements", familyInfoPage.getTotalElements());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getFamilyById( String  familyInfoId) {
+
+		try {
+			
+			return ResponseEntity.ok(familyInfoRepository.findById(familyInfoId));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	public ResponseEntity<?> getFamilyInfoById( String  familyInfoId) {
+
+		try {
+			
+			return ResponseEntity.ok(familyInfoRepository.findById(familyInfoId));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+
+	public ResponseEntity<?> updateFamilyInfo( FamilyInfo  request) {
+
+		try {
+			
+			return ResponseEntity.ok(familyInfoRepository.save(request));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
 	
 }

@@ -143,20 +143,10 @@ public class SuperAdminController {
 		   
 		   adminRepository.save(adminInfo.get());
 		   
-		   ModuleAccess access=moduleAccessRepository.findByAdminIdAndEmployeeId(admin.getAdminId(),null);
-		   
-		   access.setCustomerAccess(admin.getModuleAccess().isCustomerAccess());
-		   access.setLeadAccess(admin.getModuleAccess().isLeadAccess());
-		   access.setProposalAccess(admin.getModuleAccess().isProposalAccess());
-		   access.setProformaInvoiceAccess(admin.getModuleAccess().isProformaInvoiceAccess());
-		   access.setInvoiceAccess(admin.getModuleAccess().isInvoiceAccess());
-		   access.setPaymentAccess(admin.getModuleAccess().isPaymentAccess());
-		   access.setTimeSheetAccess(admin.getModuleAccess().isTimeSheetAccess());
-		   
-		   moduleAccessRepository.save(access);
+		//   ModuleAccess access=moduleAccessRepository.findByAdminIdAndEmployeeId(admin.getAdminId(),null);
 		   
 			response.put("adminInfo",adminInfo);
-	     	response.put("moduleAccess", access);
+	     	response.put("moduleAccess",  moduleAccessRepository.save(admin.getModuleAccess()));
 
 
 			return ResponseEntity.ok(response);

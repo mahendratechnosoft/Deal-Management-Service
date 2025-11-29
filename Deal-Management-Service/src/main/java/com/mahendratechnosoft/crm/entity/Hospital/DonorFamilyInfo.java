@@ -22,9 +22,6 @@ public class DonorFamilyInfo {
 	private String sisterKidsCount;
 	private String sisterIllness;
 	
-//	@ManyToOne
-//	@JoinColumn(name = "donor_id")
-//	private Donors donor;
 	
 	public DonorFamilyInfo(String donorFamailyId, String donorId, int brotherAge, String brotherProfession,
 			int brotherKidsCount, String brotherIllness, int sisterAge, String sisterProfession, String sisterKidsCount,

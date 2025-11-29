@@ -18,59 +18,30 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	@Query("""
 		    SELECT p FROM Donors p
 		    WHERE p.adminId = :adminId 
-		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) And p.status!='selected'
+		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) 
+		     AND (:status IS NULL OR LOWER(p.status) = LOWER(:status))
 		    ORDER BY p.donorId DESC
 		""")
 		Page<Donors> findByAdminId(
 		        @Param("adminId") String adminId,
 		        @Param("search") String search,
+		        @Param("status") String status,
 		        Pageable pageable);
 	
 	
 	@Query("""
 		    SELECT p FROM Donors p
-		    WHERE p.adminId = :adminId 
-		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) And p.status!='selected'
+		    WHERE p.employeeId = :employeeId 
+		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) 
+		     AND (:status IS NULL OR LOWER(p.status) = LOWER(:status))
 		    ORDER BY p.donorId DESC
 		""")
 		Page<Donors> findByEmployeeId(
-		        @Param("adminId") String adminId,
+		        @Param("employeeId") String employeeId,
 		        @Param("search") String search,
-		        Pageable pageable);
-	
-	@Query("""
-		    SELECT p FROM Donors p
-		    WHERE p.adminId = :adminId 
-		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) And p.status='selected'
-		    ORDER BY p.donorId DESC
-		""")
-		Page<Donors> findByAdminIdSelected(
-		        @Param("adminId") String adminId,
-		        @Param("search") String search,
+		        @Param("status") String status,
 		        Pageable pageable);
 	
 	
-	@Query("""
-		    SELECT p FROM Donors p
-		    WHERE p.adminId = :adminId 
-		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) And p.status='selected'
-		    ORDER BY p.donorId DESC
-		""")
-		Page<Donors> findByEmployeeIdSelected(
-		        @Param("adminId") String adminId,
-		        @Param("search") String search,
-		        Pageable pageable);
 	
-	
-	@Query("""
-		    SELECT p FROM SampleReport p
-		    WHERE p.donorId = :donorId 
-		      AND (:search IS NULL OR LOWER(p.tankNo) LIKE LOWER(CONCAT('%', :search, '%'))) 
-		   
-		""")
-		Page<SampleReport> findBySampleReportId(
-		        @Param("donorId") String donorId,
-		        @Param("search") String search,
-		        Pageable pageable);
-
 }
