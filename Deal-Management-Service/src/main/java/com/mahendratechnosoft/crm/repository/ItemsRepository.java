@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,5 +34,9 @@ public interface ItemsRepository  extends JpaRepository<Items, String>{
 		        @Param("employeeId") String admiemployeeIdnId,
 		        @Param("search") String search,
 		        Pageable pageable);
+
+	@Query("SELECT i.itemId, i.name FROM Items i WHERE i.adminId = :adminId")
+	List<Object[]> findItemNameAndIdsByAdminId(String adminId);
+	
 
 }
