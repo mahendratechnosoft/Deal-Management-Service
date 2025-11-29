@@ -24,6 +24,8 @@ public class ProposalContent {
 	private int quantity;
 	private double rate;
 	private LocalDateTime createdAt;
+	
+	private String itemId;
     
     @PrePersist
     protected void onCreate() {
@@ -88,5 +90,14 @@ public class ProposalContent {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+	
 	
 }

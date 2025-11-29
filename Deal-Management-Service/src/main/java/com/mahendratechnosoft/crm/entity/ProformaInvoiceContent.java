@@ -23,6 +23,7 @@ public class ProformaInvoiceContent {
 	private int quantity;
 	private double rate;
 	private String sacCode;
+	private String itemId;
 	
 	private LocalDateTime createdAt;
     
@@ -111,5 +112,14 @@ public class ProformaInvoiceContent {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+	
 	
 }

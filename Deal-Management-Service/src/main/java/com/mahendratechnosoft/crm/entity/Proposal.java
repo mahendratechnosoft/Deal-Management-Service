@@ -54,6 +54,12 @@ public class Proposal {
 	@Lob
 	@Column(columnDefinition = "MEDIUMBLOB")
 	private byte[] companyStamp;
+	
+	@Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] attachmentFile;
+    private String attachmentFileName;
+    private String attachmentFileType;
 
 	private LocalDateTime createdAt;
 
@@ -328,6 +334,29 @@ public class Proposal {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-	
+
+	public byte[] getAttachmentFile() {
+		return attachmentFile;
+	}
+
+	public void setAttachmentFile(byte[] attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+
+	public String getAttachmentFileName() {
+		return attachmentFileName;
+	}
+
+	public void setAttachmentFileName(String attachmentFileName) {
+		this.attachmentFileName = attachmentFileName;
+	}
+
+	public String getAttachmentFileType() {
+		return attachmentFileType;
+	}
+
+	public void setAttachmentFileType(String attachmentFileType) {
+		this.attachmentFileType = attachmentFileType;
+	}
 	
 }

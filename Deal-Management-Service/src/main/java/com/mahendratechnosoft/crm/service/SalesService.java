@@ -1119,6 +1119,38 @@ public class SalesService {
 		}
 
 	}
+	
+	public ResponseEntity<?> getItemListWithNameAndId(Object loginUser) {
+	    try {
+	    	
+			String adminId = null;
+			if (loginUser instanceof Admin admin) {
+				
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				adminId = employee.getAdmin().getAdminId();
+				
+			}
+	    	
+	        List<Object[]> results = itemsRepository.findItemNameAndIdsByAdminId(adminId);
+
+	        // Convert to List<Map<String, Object>> for cleaner JSON output
+	        List<Map<String, Object>> list = results.stream().map(obj -> {
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("itemId", obj[0]);
+	            map.put("name", obj[1]);
+	            return map;
+	        }).toList();
+
+	        return ResponseEntity.ok(list);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("Error: " + e.getMessage());
+	    }
+	}
 
 
 }

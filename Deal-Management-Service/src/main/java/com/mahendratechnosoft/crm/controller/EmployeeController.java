@@ -630,5 +630,12 @@ public class EmployeeController {
 
 			return ResponseEntity.ok(salesService.getInvoiceTaxSummary(employee,startDate,endDate));
 		}
+		
+		@GetMapping("/getItemListWithNameAndId")
+		public ResponseEntity<?> getItemListWithNameAndId(@ModelAttribute("employee") Employee employee) {
+
+			return salesService.getItemListWithNameAndId(employee);
+
+		}
     
 }

@@ -970,4 +970,11 @@ public class AdminController {
 
 		return ResponseEntity.ok(salesService.getInvoiceTaxSummary(admin,startDate,endDate));
 	}
+	
+	@GetMapping("/getItemListWithNameAndId")
+	public ResponseEntity<?> getItemListWithNameAndId(@ModelAttribute("admin") Admin admin) {
+
+		return salesService.getItemListWithNameAndId(admin);
+
+	}
 }
