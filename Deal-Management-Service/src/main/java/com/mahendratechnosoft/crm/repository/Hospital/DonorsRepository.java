@@ -1,4 +1,4 @@
-package com.mahendratechnosoft.crm.repository;
+package com.mahendratechnosoft.crm.repository.Hospital;
 
 
 import org.springframework.data.domain.Page;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mahendratechnosoft.crm.entity.Invoice;
-import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
+import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 
 @Repository
@@ -63,13 +63,13 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	
 	
 	@Query("""
-		    SELECT p FROM DonorSample p
-		    WHERE p.sampleReportId = :sampleReportId 
+		    SELECT p FROM SampleReport p
+		    WHERE p.donorId = :donorId 
 		      AND (:search IS NULL OR LOWER(p.tankNo) LIKE LOWER(CONCAT('%', :search, '%'))) 
-		    ORDER BY p.donorSampleId DESC
+		   
 		""")
-		Page<DonorSample> findBySampleReportId(
-		        @Param("sampleReportId") String sampleReportId,
+		Page<SampleReport> findBySampleReportId(
+		        @Param("donorId") String donorId,
 		        @Param("search") String search,
 		        Pageable pageable);
 

@@ -20,36 +20,34 @@ public class Donors {
 	private String employeeId;
 	private String createdBy;
 	private long createdDateTime;
+	
+	//personal information
 	private String name;
 	private int age;
 	private Date dateOfBirth;
-	@Column(length = 5000)
-	private String address;
-	private String phoneNumber;
 	private String adharCardNo;
 	private String marriedStatus; // Yes/No
 	private int maleKidsCount;
 	private int femaleKidsCount;
 	private double height;
 	private double weight;
+	private String skinColor;
+	private String eyeColor;
+	private String education;
+	private String profession;
 	private String religion;
 	private String bloodGroup;
-	private String bsl;
-	private String HIV;
-	private String HBSAG;
-	private String VDRL;
-	private String HCV;
-	private String HBElectrophoresis;
-	private String SRCreatinine;
-	private String CMV;
-	private int brotherAge;
-	private String brotherProfession;
-	private int brotherKidsCount;
-	private String brotherIllness;
-	private int sisterAge;
-	private String sisterProfession;
-	private String sisterKidsCount;
-	private String sisterIllness;
+	
+	@Column(length = 5000)
+	private String address;
+	private String city;
+	private String pincode;
+	private String phoneNumber;
+	private String email;
+	@Column(unique = true)
+	private String uin;
+	
+	//Medical History
 	private boolean hospitalAdmissionStatus;
 	@Column(length = 500)
 	private String hospitalAdmissionReason;
@@ -62,11 +60,22 @@ public class Donors {
 	private boolean prolongedIllnessStatus;
 	@Column(length = 500)
 	private String prolongedIllnessReason;
+	
 	private String status;
-	private String city;
-	private String pincode;
-	@Column(unique = true)
-	private String uin;
+ 
+//	private String bloodGroup;
+//	private String bsl;
+//	private String HIV;
+//	private String HBSAG;
+//	private String VDRL;
+//	private String HCV;
+//	private String HBElectrophoresis;
+//	private String SRCreatinine;
+//	private String CMV;
+
+
+	
+	
 
 	@PrePersist
 	public void generateUIN() {
@@ -92,15 +101,15 @@ public class Donors {
 		// TODO Auto-generated constructor stub
 	}
 
+ 
+
 	public Donors(String donorId, String adminId, String employeeId, String createdBy, long createdDateTime,
-			String name, int age, Date dateOfBirth, String address, String phoneNumber, String adharCardNo,
-			String marriedStatus, int maleKidsCount, int femaleKidsCount, double height, double weight, String religion,
-			String bloodGroup, String bsl, String hIV, String hBSAG, String vDRL, String hCV, String hBElectrophoresis,
-			String sRCreatinine, String cMV, int brotherAge, String brotherProfession, int brotherKidsCount,
-			String brotherIllness, int sisterAge, String sisterProfession, String sisterKidsCount, String sisterIllness,
-			boolean hospitalAdmissionStatus, String hospitalAdmissionReason, boolean surgeryStatus,
+			String name, int age, Date dateOfBirth, String adharCardNo, String marriedStatus, int maleKidsCount,
+			int femaleKidsCount, double height, double weight, String skinColor, String eyeColor, String education,
+			String profession, String religion, String address, String city, String pincode, String phoneNumber,
+			String uin, boolean hospitalAdmissionStatus, String hospitalAdmissionReason, boolean surgeryStatus,
 			String surgeryReason, boolean bloodDonationStatus, String bloodDonationReason,
-			boolean prolongedIllnessStatus, String prolongedIllnessReason, String status, String city, String pincode) {
+			boolean prolongedIllnessStatus, String prolongedIllnessReason, String status,String bloodGroup,String email) {
 		super();
 		this.donorId = donorId;
 		this.adminId = adminId;
@@ -110,32 +119,22 @@ public class Donors {
 		this.name = name;
 		this.age = age;
 		this.dateOfBirth = dateOfBirth;
-		this.address = address;
-		this.phoneNumber = phoneNumber;
 		this.adharCardNo = adharCardNo;
 		this.marriedStatus = marriedStatus;
 		this.maleKidsCount = maleKidsCount;
 		this.femaleKidsCount = femaleKidsCount;
 		this.height = height;
 		this.weight = weight;
+		this.skinColor = skinColor;
+		this.eyeColor = eyeColor;
+		this.education = education;
+		this.profession = profession;
 		this.religion = religion;
-		this.bloodGroup = bloodGroup;
-		this.bsl = bsl;
-		HIV = hIV;
-		HBSAG = hBSAG;
-		VDRL = vDRL;
-		HCV = hCV;
-		HBElectrophoresis = hBElectrophoresis;
-		SRCreatinine = sRCreatinine;
-		CMV = cMV;
-		this.brotherAge = brotherAge;
-		this.brotherProfession = brotherProfession;
-		this.brotherKidsCount = brotherKidsCount;
-		this.brotherIllness = brotherIllness;
-		this.sisterAge = sisterAge;
-		this.sisterProfession = sisterProfession;
-		this.sisterKidsCount = sisterKidsCount;
-		this.sisterIllness = sisterIllness;
+		this.address = address;
+		this.city = city;
+		this.pincode = pincode;
+		this.phoneNumber = phoneNumber;
+		this.uin = uin;
 		this.hospitalAdmissionStatus = hospitalAdmissionStatus;
 		this.hospitalAdmissionReason = hospitalAdmissionReason;
 		this.surgeryStatus = surgeryStatus;
@@ -145,9 +144,11 @@ public class Donors {
 		this.prolongedIllnessStatus = prolongedIllnessStatus;
 		this.prolongedIllnessReason = prolongedIllnessReason;
 		this.status = status;
-		this.city = city;
-		this.pincode = pincode;
+		this.bloodGroup=bloodGroup;
+		this.email=email;
 	}
+
+
 
 	public String getDonorId() {
 		return donorId;
@@ -285,143 +286,6 @@ public class Donors {
 		this.religion = religion;
 	}
 
-
-	public String getBloodGroup() {
-		return bloodGroup;
-	}
-
-	public void setBloodGroup(String bloodGroup) {
-		this.bloodGroup = bloodGroup;
-	}
-
-	public String getBsl() {
-		return bsl;
-	}
-
-	public void setBsl(String bsl) {
-		this.bsl = bsl;
-	}
-
-	public String getHIV() {
-		return HIV;
-	}
-
-	public void setHIV(String hIV) {
-		HIV = hIV;
-	}
-
-	public String getHBSAG() {
-		return HBSAG;
-	}
-
-	public void setHBSAG(String hBSAG) {
-		HBSAG = hBSAG;
-	}
-
-	public String getVDRL() {
-		return VDRL;
-	}
-
-	public void setVDRL(String vDRL) {
-		VDRL = vDRL;
-	}
-
-	public String getHCV() {
-		return HCV;
-	}
-
-	public void setHCV(String hCV) {
-		HCV = hCV;
-	}
-
-	public String getHBElectrophoresis() {
-		return HBElectrophoresis;
-	}
-
-	public void setHBElectrophoresis(String hBElectrophoresis) {
-		HBElectrophoresis = hBElectrophoresis;
-	}
-
-	public String getSRCreatinine() {
-		return SRCreatinine;
-	}
-
-	public void setSRCreatinine(String sRCreatinine) {
-		SRCreatinine = sRCreatinine;
-	}
-
-	public String getCMV() {
-		return CMV;
-	}
-
-	public void setCMV(String cMV) {
-		CMV = cMV;
-	}
-
-	public int getBrotherAge() {
-		return brotherAge;
-	}
-
-	public void setBrotherAge(int brotherAge) {
-		this.brotherAge = brotherAge;
-	}
-
-	public String getBrotherProfession() {
-		return brotherProfession;
-	}
-
-	public void setBrotherProfession(String brotherProfession) {
-		this.brotherProfession = brotherProfession;
-	}
-
-	public int getBrotherKidsCount() {
-		return brotherKidsCount;
-	}
-
-	public void setBrotherKidsCount(int brotherKidsCount) {
-		this.brotherKidsCount = brotherKidsCount;
-	}
-
-	public String getBrotherIllness() {
-		return brotherIllness;
-	}
-
-	public void setBrotherIllness(String brotherIllness) {
-		this.brotherIllness = brotherIllness;
-	}
-
-	public int getSisterAge() {
-		return sisterAge;
-	}
-
-	public void setSisterAge(int sisterAge) {
-		this.sisterAge = sisterAge;
-	}
-
-	public String getSisterProfession() {
-		return sisterProfession;
-	}
-
-	public void setSisterProfession(String sisterProfession) {
-		this.sisterProfession = sisterProfession;
-	}
-
-	public String getSisterKidsCount() {
-		return sisterKidsCount;
-	}
-
-	public void setSisterKidsCount(String sisterKidsCount) {
-		this.sisterKidsCount = sisterKidsCount;
-	}
-
-	public String getSisterIllness() {
-		return sisterIllness;
-	}
-
-	public void setSisterIllness(String sisterIllness) {
-		this.sisterIllness = sisterIllness;
-	}
-
 	public boolean isHospitalAdmissionStatus() {
 		return hospitalAdmissionStatus;
 	}
@@ -548,6 +412,62 @@ public class Donors {
 
 	public void setUin(String uin) {
 		this.uin = uin;
+	}
+
+	public String getSkinColor() {
+		return skinColor;
+	}
+
+	public void setSkinColor(String skinColor) {
+		this.skinColor = skinColor;
+	}
+
+	public String getEyeColor() {
+		return eyeColor;
+	}
+
+	public void setEyeColor(String eyeColor) {
+		this.eyeColor = eyeColor;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getProfession() {
+		return profession;
+	}
+
+	public void setProfession(String profession) {
+		this.profession = profession;
+	}
+
+
+
+	public String getBloodGroup() {
+		return bloodGroup;
+	}
+
+
+
+	public void setBloodGroup(String bloodGroup) {
+		this.bloodGroup = bloodGroup;
+	}
+
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	

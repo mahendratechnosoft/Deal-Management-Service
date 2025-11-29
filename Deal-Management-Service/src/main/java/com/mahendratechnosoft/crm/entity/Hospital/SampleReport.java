@@ -1,165 +1,102 @@
 package com.mahendratechnosoft.crm.entity.Hospital;
 
-import java.time.LocalDateTime;
-
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 @Entity
 public class SampleReport {
-	
+
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private String sampleReportId;
 	private String donorId;
-	private String sampleId;
-	private LocalDateTime dateAndTime;
-	private String  media;
-	private double volumne;
-	private String spermConcentration;
-	private double million;
-	private String progressiveMotility;
-	private String morphology;
-	private String abnormality;
+	private String tankNo;
+	private String caneNo;
+	private String canisterNo;
+	private int numberOfVials;
+	private String remarks;
 	
-	
+//	@ManyToOne
+//	@JoinColumn(name = "donor_id")
+//	private Donors donor;
+
 	public SampleReport() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-
-	public SampleReport(String sampleReportId, String sampleId, LocalDateTime dateAndTime, String media, double volumne,
-			String spermConcentration, double million, String progressiveMotility, String morphology,
-			String abnormality) {
+	public SampleReport(String sampleReportId, String tankNo, String caneNo, String canisterNo, int numberOfVials,
+			String remarks) {
 		super();
 		this.sampleReportId = sampleReportId;
-		this.sampleId = sampleId;
-		this.dateAndTime = dateAndTime;
-		this.media = media;
-		this.volumne = volumne;
-		this.spermConcentration = spermConcentration;
-		this.million = million;
-		this.progressiveMotility = progressiveMotility;
-		this.morphology = morphology;
-		this.abnormality = abnormality;
+		this.tankNo = tankNo;
+		this.caneNo = caneNo;
+		this.canisterNo = canisterNo;
+		this.numberOfVials = numberOfVials;
+		this.remarks = remarks;
 	}
+
 
 
 	public String getSampleReportId() {
 		return sampleReportId;
 	}
 
-
 	public void setSampleReportId(String sampleReportId) {
 		this.sampleReportId = sampleReportId;
 	}
 
-
-	public String getSampleId() {
-		return sampleId;
+	public String getTankNo() {
+		return tankNo;
 	}
 
-
-	public void setSampleId(String sampleId) {
-		this.sampleId = sampleId;
+	public void setTankNo(String tankNo) {
+		this.tankNo = tankNo;
 	}
 
-
-	public LocalDateTime getDateAndTime() {
-		return dateAndTime;
+	public String getCaneNo() {
+		return caneNo;
 	}
 
-
-	public void setDateAndTime(LocalDateTime dateAndTime) {
-		this.dateAndTime = dateAndTime;
+	public void setCaneNo(String caneNo) {
+		this.caneNo = caneNo;
 	}
 
-
-	public String getMedia() {
-		return media;
+	public String getCanisterNo() {
+		return canisterNo;
 	}
 
-
-	public void setMedia(String media) {
-		this.media = media;
+	public void setCanisterNo(String canisterNo) {
+		this.canisterNo = canisterNo;
 	}
 
-
-	public double getVolumne() {
-		return volumne;
+	public int getNumberOfVials() {
+		return numberOfVials;
 	}
 
-
-	public void setVolumne(double volumne) {
-		this.volumne = volumne;
+	public void setNumberOfVials(int numberOfVials) {
+		this.numberOfVials = numberOfVials;
 	}
 
-
-	public String getSpermConcentration() {
-		return spermConcentration;
+	public String getRemarks() {
+		return remarks;
 	}
 
-
-	public void setSpermConcentration(String spermConcentration) {
-		this.spermConcentration = spermConcentration;
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
-
-
-	public double getMillion() {
-		return million;
-	}
-
-
-	public void setMillion(double million) {
-		this.million = million;
-	}
-
-
-	public String getProgressiveMotility() {
-		return progressiveMotility;
-	}
-
-
-	public void setProgressiveMotility(String progressiveMotility) {
-		this.progressiveMotility = progressiveMotility;
-	}
-
-
-	public String getMorphology() {
-		return morphology;
-	}
-
-
-	public void setMorphology(String morphology) {
-		this.morphology = morphology;
-	}
-
-
-	public String getAbnormality() {
-		return abnormality;
-	}
-
-
-	public void setAbnormality(String abnormality) {
-		this.abnormality = abnormality;
-	}
-
 
 	public String getDonorId() {
 		return donorId;
 	}
 
-
 	public void setDonorId(String donorId) {
 		this.donorId = donorId;
 	}
-	
-	
-	
-	
-	
+
 	
 
 }

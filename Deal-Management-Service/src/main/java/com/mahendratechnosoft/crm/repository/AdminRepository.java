@@ -47,7 +47,6 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
 		    Page<AdminInfoDto> findAllAdmins(String serach,Pageable pageable);
 	  
 	  
-	  Admin findByAdminId(String adminId);
 	  
 		@Query("SELECT a FROM Admin a JOIN FETCH a.user WHERE a.adminId = :adminId")
 	    Optional<Admin> findByAdmin(String adminId);
