@@ -1,4 +1,4 @@
-package com.mahendratechnosoft.crm.repository;
+package com.mahendratechnosoft.crm.repository.Hospital;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -6,20 +6,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
+import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 
-public interface SampleReportRepository extends JpaRepository<SampleReport, String >{
+public interface SemenReportRepository extends JpaRepository<SemenReport, String >{
 	
 	
 	@Query("""
-		    SELECT p FROM SampleReport p
+		    SELECT p FROM SemenReport p
 		    WHERE p.donorId = :donorId 
 		      AND (:search IS NULL OR LOWER(p.media) LIKE LOWER(CONCAT('%', :search, '%'))) 
 		    ORDER BY p.sampleReportId DESC
 		""")
-		Page<SampleReport> findByDonorId(
+		Page<SemenReport> findByDonorId(
 		        @Param("donorId") String donorId,
 		        @Param("search") String search,
 		        Pageable pageable);
+	
+	
+	SemenReport findByDonorId(String donorId);
 
 }

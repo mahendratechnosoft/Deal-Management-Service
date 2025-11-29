@@ -30,7 +30,6 @@ import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
-import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -44,11 +43,12 @@ import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
-import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
+import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
-import com.mahendratechnosoft.crm.repository.ProposalRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
@@ -67,7 +67,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final ProposalRepository proposalRepository;
 	
 	@Autowired
     private AdminRepository adminRepository;
@@ -102,9 +101,6 @@ public class AdminController {
 	@Autowired
 	private DonorService donorService;
 
-    AdminController(ProposalRepository proposalRepository) {
-        this.proposalRepository = proposalRepository;
-    }
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -794,6 +790,7 @@ public class AdminController {
 	}
 	
 	
+	// donor code start
 	
 	@PostMapping("/createDonor")
 	public ResponseEntity<?> createDonar(@ModelAttribute("admin") Admin admin,@RequestBody Donors request) {
@@ -836,6 +833,61 @@ public class AdminController {
 		
 	}
 	
+	@GetMapping("/getDonorFamilyInfo/{donorId}")
+    public ResponseEntity<?> getDonorFamilyInfo(@PathVariable String donorId ) {
+     
+        return  donorService.getDonorFamilyInfo(donorId);
+    }
+	
+	
+	@PutMapping("/updateDonorFamilyInfo")
+	public ResponseEntity<?> updateDonorFamilyInfo(@RequestBody List<DonorFamilyInfo> request) {
+		
+		return donorService.updateDonorFamilyInfo(request);
+		
+	}
+	
+	@DeleteMapping("/deleteDonorFamilyInfo/{donorFamilyId}")
+    public ResponseEntity<?> deleteDonorFamilyInfo(@PathVariable String donorFamilyId ) {
+     
+        return  donorService.deleteDonorFamilyInfo(donorFamilyId);
+    }
+	
+	@PutMapping("/updateDonorBloodReport")
+	public ResponseEntity<?> updateDonorBloodReport(@RequestBody List<DonorBloodReport> request) {
+		
+		return donorService.updateDonorBloodReport(request);
+		
+	}
+	
+	
+	@GetMapping("/getDonorBloodReport/{donorId}")
+    public ResponseEntity<?> getDonorBloodReport(@PathVariable String donorId ) {
+     
+        return  donorService.getDonorBloodReport(donorId);
+    }
+	
+	@DeleteMapping("/deleteDonorBloodReport/{bloodReportId}")
+    public ResponseEntity<?> deleteDonorBloodReport(@PathVariable String bloodReportId ) {
+     
+        return  donorService.deleteDonorBloodReport(bloodReportId);
+    }
+	
+	
+	@PutMapping("/updateSemenReport")
+	public ResponseEntity<?> updateSemenReport(@RequestBody SemenReport request) {
+		
+		return donorService.updateDonorSemenReport(request);
+		
+	}
+	
+	@PutMapping("/updateSampleReport")
+	public ResponseEntity<?> updateSample(@RequestBody SampleReport request) {
+		
+		return donorService.updateDonorSample(request);
+		
+	}
+	
 	@GetMapping("/getAllSelectedDonarList/{page}/{size}")
 	public ResponseEntity<?> getAllSelectedDonarList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
 
@@ -844,68 +896,23 @@ public class AdminController {
 	}
 	
 	
-	
-	
-	@PostMapping("/createSample")
-	public ResponseEntity<?> createSample(@ModelAttribute("admin") Admin admin,@RequestBody DonorSample request) {
-		
-		return donorService.createDonorSample(request);
-		
-	}
-	
-	@PutMapping("/updateSample")
-	public ResponseEntity<?> updateSample(@RequestBody DonorSample request) {
-		
-		return donorService.updateDonorSample(request);
-		
-	}
-	
-	
-	@DeleteMapping("/deleteSample/{sampleId}")
-	public ResponseEntity<?> deleteSample(@PathVariable String sampleId) {
-		
-		return donorService.deleteSample(sampleId);
-		
-	}
-	
-	
-	@GetMapping("/getAllDonarSampleList/{page}/{size}/{sampleLReportId}")
-	public ResponseEntity<?> getAllDonarSampleList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String sampleLReportId) {
+	@GetMapping("/getSemenReportByDonorId/{donorId}")
+    public ResponseEntity<?> getSemenReportByDonorId(@PathVariable String donorId ) {
+     
+        return  donorService.getSemenReportByDonorId(donorId);
+    }
 
-		return donorService.getAllDonarSampleList(page ,size,search,sampleLReportId);
+	
+	@GetMapping("/getSampleReportByDonorId/{donorId}")
+    public ResponseEntity<?> getSampleReportByDonorId(@PathVariable String donorId ) {
+     
+        return  donorService.getSampleReportByDonorId(donorId);
+    }
 
-	}
-	
-	@PostMapping("/createSampleReport")
-	public ResponseEntity<?> createSampleReport(@ModelAttribute("admin") Admin admin,@RequestBody SampleReport request) {
-		
-		return donorService.createSampleReport(request);
-		
-	}
 	
 	
-	@PutMapping("/updateSampleReport")
-	public ResponseEntity<?> updateSampleReport(@RequestBody SampleReport request) {
-		
-		return donorService.updateSampleReport(request);
-		
-	}
+	// End donor api
 	
-	
-	@DeleteMapping("/deleteSample/{sampleReportId}")
-	public ResponseEntity<?> deleteSampleReport(@PathVariable String sampleReportId) {
-		
-		return donorService.deleteSampleReport(sampleReportId);
-		
-	}
-	
-	
-	@GetMapping("/getAllSampleReportList/{page}/{size}/{sampleId}")
-	public ResponseEntity<?> getAllSampleReportList( @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@PathVariable String sampleId) {
-
-		return donorService.getAllSampleReportList(page ,size,search,sampleId);
-
-	}
 	@PostMapping("/convertProposalToProforma/{proposalId}")
 	public ResponseEntity<?> convertProposalToProforma(@PathVariable String proposalId){
 		return salesService.convertProposalToProforma(proposalId);

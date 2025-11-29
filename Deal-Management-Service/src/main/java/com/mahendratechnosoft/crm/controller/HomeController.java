@@ -94,17 +94,17 @@ public class HomeController {
             User user = userRepository.findByLoginEmail(adminRegistrationDto.getUsername()).get();
             
             final String token = jwtUtil.generateToken(userDetails);
-            String name;
+            String name=null;
             String employeeId=null;
-            String adminId;
-            ModuleAccess moduleAccess;
+            String adminId=null;
+            ModuleAccess moduleAccess=null;
             if (user.getRole().equals("ROLE_ADMIN")) {
             	 Optional<Admin> admin=adminRepository.findByLoginEmail(user.getLoginEmail());
             	 name=admin.get().getName();
             	 adminId=admin.get().getAdminId();
             	 
             	 moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeId(adminId,null);
-            }else {
+            }else if(user.getRole().equals("ROLE_EMPLOYEE")){
             	Optional<Employee> employee=employeeRepository.findByLoginEmail(user.getLoginEmail());
             	name=employee.get().getName();
             	adminId=employee.get().getAdmin().getAdminId();

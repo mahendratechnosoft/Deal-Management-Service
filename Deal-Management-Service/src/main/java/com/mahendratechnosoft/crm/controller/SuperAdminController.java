@@ -1,6 +1,7 @@
 package com.mahendratechnosoft.crm.controller;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -128,18 +129,19 @@ public class SuperAdminController {
 
 		try {
 			
-			Map<String, Object> response = new HashMap<String, Object>();
+			Map<String, Object> response = new LinkedHashMap<String, Object>();
 
 
-		   Admin adminInfo=adminRepository.findByAdminId(admin.getAdminId());
+		   Optional<Admin> adminInfo=adminRepository.findByAdmin(admin.getAdminId());
 		   
-		   adminInfo.setCompanyEmail(admin.getCompanyEmail());
-		   adminInfo.setName(admin.getName());
-		   adminInfo.setCompanyName(admin.getCompanyName());
-		   adminInfo.setPhone(admin.getPhone());
-		   adminInfo.setAddress(admin.getAddress());
-		   adminInfo.setGstNumber(adminInfo.getGstNumber());
+		   adminInfo.get().setCompanyEmail(admin.getCompanyEmail());
+		   adminInfo.get().setName(admin.getName());
+		   adminInfo.get().setCompanyName(admin.getCompanyName());
+		   adminInfo.get().setPhone(admin.getPhone());
+		   adminInfo.get().setAddress(admin.getAddress());
+		   adminInfo.get().setGstNumber(admin.getGstNumber());
 		   
+		   adminRepository.save(adminInfo.get());
 		   
 		   ModuleAccess access=moduleAccessRepository.findByAdminIdAndEmployeeId(admin.getAdminId(),null);
 		   

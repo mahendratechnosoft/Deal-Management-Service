@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.service;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,17 +13,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
-import com.mahendratechnosoft.crm.entity.Hospital.DonorSample;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
-import com.mahendratechnosoft.crm.repository.DonorSampleRepository;
-import com.mahendratechnosoft.crm.repository.DonorsRepository;
-import com.mahendratechnosoft.crm.repository.SampleReportRepository;
+import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
+import com.mahendratechnosoft.crm.repository.Hospital.DonorBloodReportRepositroy;
+import com.mahendratechnosoft.crm.repository.Hospital.DonorFamilyInfoRepository;
+import com.mahendratechnosoft.crm.repository.Hospital.DonorsRepository;
+import com.mahendratechnosoft.crm.repository.Hospital.SampleReportRepository;
+import com.mahendratechnosoft.crm.repository.Hospital.SemenReportRepository;
 
 @Service
 public class DonorService {
@@ -31,7 +35,16 @@ public class DonorService {
 	private DonorsRepository donorsRepository;
 	
 	@Autowired
-	private DonorSampleRepository donorSampleRepository;
+	private SampleReportRepository donorSampleRepository;
+	
+	@Autowired
+	private SemenReportRepository semenReportRepository;
+	
+	@Autowired
+	private DonorFamilyInfoRepository donorFamilyInfoRepository;
+	
+	@Autowired
+	private DonorBloodReportRepositroy donoBloodReportRepositroy;
 	
 	@Autowired
 	private SampleReportRepository sampleReportRepository;
@@ -181,6 +194,7 @@ public class DonorService {
 
 		try {
 			
+			
 			return ResponseEntity.ok(donorsRepository.findById(donarId));
 
 		} catch (Exception e) {
@@ -195,10 +209,109 @@ public class DonorService {
 	public ResponseEntity<?> updateDonor( Donors request) {
 
 		try {
-			request.setStatus("New Donor");
 			donorsRepository.save(request);
 			
 			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	
+	public ResponseEntity<?> getDonorFamilyInfo( String  donarId) {
+
+		try {
+			
+			return ResponseEntity.ok(donorFamilyInfoRepository.findByDonorId(donarId));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	
+	
+	public ResponseEntity<?> deleteDonorFamilyInfo( String  donarFamailyId) {
+
+		try {
+			donorFamilyInfoRepository.deleteById(donarFamailyId);
+			return ResponseEntity.ok("Deleted Successfully");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> deleteDonorBloodReport( String  bloodReportId) {
+
+		try {
+			donoBloodReportRepositroy.deleteById(bloodReportId);
+			return ResponseEntity.ok("Deleted Successfully");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	
+	
+	public ResponseEntity<?> updateDonorFamilyInfo(List<DonorFamilyInfo> request) {
+
+		try {
+
+			donorFamilyInfoRepository.saveAll(request);
+
+			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> updateDonorBloodReport(List<DonorBloodReport> request) {
+
+		try {
+
+			donoBloodReportRepositroy.saveAll(request);
+
+			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	
+	public ResponseEntity<?> getDonorBloodReport( String  donarId) {
+
+		try {
+			
+			return ResponseEntity.ok(donoBloodReportRepositroy.findByDonorId(donarId));
 
 		} catch (Exception e) {
 
@@ -234,7 +347,10 @@ public class DonorService {
 	
 	
 	
-	public ResponseEntity<?> createDonorSample( DonorSample request) {
+
+	
+	
+	public ResponseEntity<?> updateDonorSample( SampleReport request) {
 
 		try {
 			
@@ -251,73 +367,11 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> updateDonorSample( DonorSample request) {
+	public ResponseEntity<?> updateDonorSemenReport( SemenReport request) {
 
 		try {
 			
-			donorSampleRepository.save(request);
-			
-			return ResponseEntity.ok(request);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
-		}
-
-	}
-	
-	
-	
-	public ResponseEntity<?> deleteSample( String sampleId) {
-
-		try {
-			
-			donorSampleRepository.deleteById(sampleId);
-			
-			return ResponseEntity.ok("Deleted Successfully");
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
-		}
-
-	}
-	
-	public ResponseEntity<?> getAllDonarSampleList(int page, int size, String search, String sampleReportId) {
-
-		try {
-			Pageable pageable = PageRequest.of(page, size);
-			Page<DonorSample> donorPage = null;
-
-			donorPage = donorsRepository.findBySampleReportId(sampleReportId, search, pageable);
-
-		
-			Map<String, Object> response = new HashMap<>();
-
-			response.put("donarSampleList", donorPage.getContent());
-			response.put("currentPage", donorPage.getNumber());
-			response.put("totalPages", donorPage.getTotalPages());
-			response.put("totalNumberOfElement", donorPage.getTotalElements());
-
-			return ResponseEntity.ok(response);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
-		}
-
-	}
-	
-	
-	
-	
-	public ResponseEntity<?> createSampleReport( SampleReport request) {
-
-		try {
-			
-			sampleReportRepository.save(request);
+			semenReportRepository.save(request);
 			
 			return ResponseEntity.ok(request);
 
@@ -345,13 +399,13 @@ public class DonorService {
 
 	}
 	
-	public ResponseEntity<?> deleteSampleReport( String sampleReportId) {
+	
+	
+	public ResponseEntity<?> getSemenReportByDonorId( String  donarId) {
 
 		try {
 			
-			sampleReportRepository.deleteById(sampleReportId);
-			
-			return ResponseEntity.ok("Deleted Successfully");
+			return ResponseEntity.ok(semenReportRepository.findByDonorId(donarId));
 
 		} catch (Exception e) {
 
@@ -362,31 +416,18 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> getAllSampleReportList(int page, int size, String search, String donorId) {
+	public ResponseEntity<?> getSampleReportByDonorId( String  donarId) {
 
 		try {
-			Pageable pageable = PageRequest.of(page, size);
-			Page<SampleReport> sampleReportPage = null;
+			
+			return ResponseEntity.ok(donorSampleRepository.findByDonorId(donarId));
 
-			sampleReportPage = sampleReportRepository.findByDonorId(donorId, search, pageable);
-
-		
-			Map<String, Object> response = new HashMap<>();
-
-			response.put("SampleReportList", sampleReportPage.getContent());
-			response.put("currentPage", sampleReportPage.getNumber());
-
-			response.put("totalPages", sampleReportPage.getTotalPages());
-
-			return ResponseEntity.ok(response);
 		} catch (Exception e) {
-			e.printStackTrace();
 
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
 		}
 
 	}
 	
-	
-
 }
