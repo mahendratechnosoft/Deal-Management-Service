@@ -45,7 +45,7 @@ public class ModuleAccess {
 	
 	private boolean paymentAccess;
 	private boolean paymentViewAll;
-	private boolean paymentcreate;
+	private boolean paymentCreate;
 	private boolean paymentDelete;
 	private boolean paymentEdit;
 	
@@ -62,6 +62,14 @@ public class ModuleAccess {
 	private boolean donorDelete;
 	private boolean donorEdit;
 	
+	private boolean itemAccess;
+	private boolean itemViewAll;
+	private boolean itemCreate;
+	private boolean itemDelete;
+	private boolean itemEdit;
+	
+	private boolean employeeAccess;
+    private boolean setting;	
 	public String getModuleAccessId() {
 		return moduleAccessId;
 	}
@@ -242,11 +250,11 @@ public class ModuleAccess {
 	public void setPaymentViewAll(boolean paymentViewAll) {
 		this.paymentViewAll = paymentViewAll;
 	}
-	public boolean isPaymentcreate() {
-		return paymentcreate;
+	public boolean isPaymentCreate() {
+		return paymentCreate;
 	}
-	public void setPaymentcreate(boolean paymentcreate) {
-		this.paymentcreate = paymentcreate;
+	public void setPaymentcreate(boolean paymentCreate) {
+		this.paymentCreate = paymentCreate;
 	}
 	public boolean isPaymentDelete() {
 		return paymentDelete;
@@ -319,6 +327,51 @@ public class ModuleAccess {
 	}
 	public void setDonorEdit(boolean donorEdit) {
 		this.donorEdit = donorEdit;
+	}
+	public boolean isItemAccess() {
+		return itemAccess;
+	}
+	public void setItemAccess(boolean itemAccess) {
+		this.itemAccess = itemAccess;
+	}
+	public boolean isItemViewAll() {
+		return itemViewAll;
+	}
+	public void setItemViewAll(boolean itemViewAll) {
+		this.itemViewAll = itemViewAll;
+	}
+	public boolean isItemCreate() {
+		return itemCreate;
+	}
+	public void setItemCreate(boolean itemCreate) {
+		this.itemCreate = itemCreate;
+	}
+	public boolean isItemDelete() {
+		return itemDelete;
+	}
+	public void setItemDelete(boolean itemDelete) {
+		this.itemDelete = itemDelete;
+	}
+	public boolean isItemEdit() {
+		return itemEdit;
+	}
+	public void setItemEdit(boolean itemEdit) {
+		this.itemEdit = itemEdit;
+	}
+	public boolean isEmployeeAccess() {
+		return employeeAccess;
+	}
+	public void setEmployeeAccess(boolean employeeAccess) {
+		this.employeeAccess = employeeAccess;
+	}
+	public boolean isSetting() {
+		return setting;
+	}
+	public void setSetting(boolean setting) {
+		this.setting = setting;
+	}
+	public void setPaymentCreate(boolean paymentCreate) {
+		this.paymentCreate = paymentCreate;
 	}
 	
 	
