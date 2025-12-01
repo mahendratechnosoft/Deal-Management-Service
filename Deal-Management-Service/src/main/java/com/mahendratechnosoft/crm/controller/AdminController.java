@@ -616,10 +616,8 @@ public class AdminController {
 	}
 	
 	
-	@GetMapping("/checkCustomerIsExist")
-	public ResponseEntity<?> getInvoiceByCustomerId(@RequestBody Map<String, String> request ) {
-
-		String companyName = request.get("companyName");
+	@GetMapping("/checkCustomerIsExist/{companyName}")
+	public ResponseEntity<?> checkCustomerIsExist( @PathVariable String companyName) {
         return customerService.checkCustomerExist(companyName);
 
 	}
