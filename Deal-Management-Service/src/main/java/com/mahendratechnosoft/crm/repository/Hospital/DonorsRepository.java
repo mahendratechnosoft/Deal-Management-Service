@@ -1,6 +1,8 @@
 package com.mahendratechnosoft.crm.repository.Hospital;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -73,4 +75,14 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		        @Param("religion") String religion,
 		        @Param("profession") String profession,
 		        Pageable pageable);
+	
+	@Query("SELECT COUNT(d) FROM Donors d WHERE d.uin LIKE :prefix%")
+	int countUinByPrefix(@Param("prefix") String prefix);
+	
+	
+	@Query("SELECT d.status, COUNT(d) FROM Donors d " +
+		       "WHERE d.status IN ('New Donor', 'Donor', 'Qualified', 'Shortlisted') " +
+		       "GROUP BY d.status")
+		List<Object[]> getDonorCountByStatus();
+
 }

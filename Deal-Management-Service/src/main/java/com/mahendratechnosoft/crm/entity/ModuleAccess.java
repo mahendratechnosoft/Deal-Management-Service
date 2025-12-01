@@ -364,15 +364,17 @@ public class ModuleAccess {
 	public void setEmployeeAccess(boolean employeeAccess) {
 		this.employeeAccess = employeeAccess;
 	}
+
+	public void setPaymentCreate(boolean paymentCreate) {
+		this.paymentCreate = paymentCreate;
+	}
 	public boolean isSettingAccess() {
 		return settingAccess;
 	}
 	public void setSettingAccess(boolean settingAccess) {
 		this.settingAccess = settingAccess;
 	}
-	public void setPaymentCreate(boolean paymentCreate) {
-		this.paymentCreate = paymentCreate;
-	}
+	
 	
 	
 	

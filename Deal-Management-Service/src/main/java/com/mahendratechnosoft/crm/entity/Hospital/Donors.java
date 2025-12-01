@@ -62,26 +62,7 @@ public class Donors {
 	private String prolongedIllnessReason;
 	
 	private String status;
- 
-//	private String bloodGroup;
-//	private String bsl;
-//	private String HIV;
-//	private String HBSAG;
-//	private String VDRL;
-//	private String HCV;
-//	private String HBElectrophoresis;
-//	private String SRCreatinine;
-//	private String CMV;
-
-
 	
-	
-
-	@PrePersist
-	public void generateUIN() {
-	    this.uin = "UIN-" + System.currentTimeMillis();  // Example: UIN-1737104525511
-	}
-//	
 	@Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] selfeImage;

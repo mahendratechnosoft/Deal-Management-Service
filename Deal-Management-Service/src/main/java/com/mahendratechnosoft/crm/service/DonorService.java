@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -286,15 +288,41 @@ public class DonorService {
 		try {
 	
 			String donorId=request.get("donorId");
-	        String donarStatus=request.get("status");
+	        String donorStatus=request.get("status");
 	        
-	        Optional<Donors> donar=donorsRepository.findById(donorId);
+	        Optional<Donors> donorOpt=donorsRepository.findById(donorId);
 			
-	        donar.get().setStatus(donarStatus);
+	        Donors donor = donorOpt.get();
+	        donor.setStatus(donorStatus);
 	        
-	        donorsRepository.save(donar.get());
+	        if (donor.getUin() == null || donor.getUin().isEmpty()) {
+
+	            // Current date
+	        	LocalDate today = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+
+	            String day = String.format("%02d", today.getDayOfMonth());
+	            String month = String.format("%02d", today.getMonthValue());
+	            String year = String.valueOf(today.getYear()).substring(2); // last 2 digits
+
+	            // Prefix for counting: DN DD MM YY
+	            String prefix = "DN " + day + " " + month + " " + year;
+
+	            // Count already existing UINs for today
+	            int count = donorsRepository.countUinByPrefix(prefix);
+
+	            // Serial number (001, 002, 003...)
+	            String serial = String.format("%03d", count + 1);
+
+	            // Final UIN
+	            String uin = prefix + " " + serial;
+
+	            donor.setUin(uin);
+	        }
+	        
+	        
+	        donorsRepository.save(donor);
 			
-			return ResponseEntity.ok(donar);
+			return ResponseEntity.ok(donor);
 
 		} catch (Exception e) {
 
@@ -393,6 +421,27 @@ public class DonorService {
 	public ResponseEntity<?> createFamilyInfo( FamilyInfo  request) {
 
 		try {
+			   // Current date
+        	LocalDate today = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+
+            String day = String.format("%02d", today.getDayOfMonth());
+            String month = String.format("%02d", today.getMonthValue());
+            String year = String.valueOf(today.getYear()).substring(2); // last 2 digits
+
+            // Prefix for counting: DN DD MM YY
+            String prefix = "RC " + day + " " + month + " " + year;
+
+            // Count already existing UINs for today
+            int count = familyInfoRepository.countUinByPrefix(prefix);
+
+            // Serial number (001, 002, 003...)
+            String serial = String.format("%03d", count + 1);
+
+            // Final UIN
+            String uin = prefix + " " + serial;
+
+            request.setUin(uin);
+			
 			
 			return ResponseEntity.ok(familyInfoRepository.save(request));
 
@@ -562,6 +611,32 @@ public class DonorService {
 		try {
 			
 			return ResponseEntity.ok(familyInfoRepository.findByAdminId(adminId));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getDonorStatusCount() {
+
+		try {
+
+			List<Object[]> results = donorsRepository.getDonorCountByStatus();
+	        
+	        Map<String, Long> response = new HashMap<>();
+	        
+	        for (Object[] row : results) {
+	            String status = (String) row[0];
+	            Long count = (Long) row[1];
+	            response.put(status, count);
+	        }
+
+	        return ResponseEntity.ok(response);
+
 
 		} catch (Exception e) {
 

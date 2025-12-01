@@ -814,6 +814,13 @@ public class AdminController {
 
 	}
 	
+	@GetMapping("/getDonorStatusCount")
+    public ResponseEntity<?> getDonorStatusCount() {
+     
+        return  donorService.getDonorStatusCount();
+    }
+	
+	
 	
 
 	@GetMapping("/getDonorById/{donorId}")
