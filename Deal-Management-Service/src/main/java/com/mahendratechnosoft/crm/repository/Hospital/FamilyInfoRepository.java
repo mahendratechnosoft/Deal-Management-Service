@@ -40,6 +40,7 @@ public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> 
 		       "FROM FamilyInfo fi WHERE fi.adminId = :adminId")
 		List<FamilyInfoDto> findByAdminId(@Param("adminId") String adminId);
 
-	
+	@Query("SELECT COUNT(d) FROM FamilyInfo d WHERE d.uin LIKE :prefix%")
+	int countUinByPrefix(@Param("prefix") String prefix);
 
 }

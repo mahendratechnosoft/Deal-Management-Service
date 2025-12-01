@@ -47,7 +47,7 @@ public class Role {
 	
 	private boolean paymentAccess;
 	private boolean paymentViewAll;
-	private boolean paymentcreate;
+	private boolean paymentCreate;
 	private boolean paymentDelete;
 	private boolean paymentEdit;
 	
@@ -57,6 +57,22 @@ public class Role {
 	private boolean timeSheetCreate;
 	private boolean timeSheetDelete;
 	private boolean timeSheetEdit;
+	
+	
+	private boolean donorAccess;
+	private boolean donorViewAll;
+	private boolean donorCreate;
+	private boolean donorDelete;
+	private boolean donorEdit;
+	
+	private boolean itemAccess;
+	private boolean itemViewAll;
+	private boolean itemCreate;
+	private boolean itemDelete;
+	private boolean itemEdit;
+	
+	private boolean employeeAccess;
+    private boolean settingAccess;
 	
 	public Role() {
 		super();
@@ -255,11 +271,11 @@ public class Role {
 	public void setPaymentViewAll(boolean paymentViewAll) {
 		this.paymentViewAll = paymentViewAll;
 	}
-	public boolean isPaymentcreate() {
-		return paymentcreate;
+	public boolean isPaymentCreate() {
+		return paymentCreate;
 	}
 	public void setPaymentcreate(boolean paymentcreate) {
-		this.paymentcreate = paymentcreate;
+		this.paymentCreate = paymentcreate;
 	}
 	public boolean isPaymentDelete() {
 		return paymentDelete;
@@ -302,6 +318,78 @@ public class Role {
 	}
 	public void setTimeSheetEdit(boolean timeSheetEdit) {
 		this.timeSheetEdit = timeSheetEdit;
+	}
+	public boolean isDonorAccess() {
+		return donorAccess;
+	}
+	public void setDonorAccess(boolean donorAccess) {
+		this.donorAccess = donorAccess;
+	}
+	public boolean isDonorViewAll() {
+		return donorViewAll;
+	}
+	public void setDonorViewAll(boolean donorViewAll) {
+		this.donorViewAll = donorViewAll;
+	}
+	public boolean isDonorCreate() {
+		return donorCreate;
+	}
+	public void setDonorCreate(boolean donorCreate) {
+		this.donorCreate = donorCreate;
+	}
+	public boolean isDonorDelete() {
+		return donorDelete;
+	}
+	public void setDonorDelete(boolean donorDelete) {
+		this.donorDelete = donorDelete;
+	}
+	public boolean isDonorEdit() {
+		return donorEdit;
+	}
+	public void setDonorEdit(boolean donorEdit) {
+		this.donorEdit = donorEdit;
+	}
+	public boolean isItemAccess() {
+		return itemAccess;
+	}
+	public void setItemAccess(boolean itemAccess) {
+		this.itemAccess = itemAccess;
+	}
+	public boolean isItemViewAll() {
+		return itemViewAll;
+	}
+	public void setItemViewAll(boolean itemViewAll) {
+		this.itemViewAll = itemViewAll;
+	}
+	public boolean isItemCreate() {
+		return itemCreate;
+	}
+	public void setItemCreate(boolean itemCreate) {
+		this.itemCreate = itemCreate;
+	}
+	public boolean isItemDelete() {
+		return itemDelete;
+	}
+	public void setItemDelete(boolean itemDelete) {
+		this.itemDelete = itemDelete;
+	}
+	public boolean isItemEdit() {
+		return itemEdit;
+	}
+	public void setItemEdit(boolean itemEdit) {
+		this.itemEdit = itemEdit;
+	}
+	public boolean isEmployeeAccess() {
+		return employeeAccess;
+	}
+	public void setEmployeeAccess(boolean employeeAccess) {
+		this.employeeAccess = employeeAccess;
+	}
+	public boolean isSettingAccess() {
+		return settingAccess;
+	}
+	public void setSettingAccess(boolean settingAccess) {
+		this.settingAccess = settingAccess;
 	}
 
 	
