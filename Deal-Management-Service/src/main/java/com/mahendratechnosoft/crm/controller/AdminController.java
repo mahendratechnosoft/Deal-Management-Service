@@ -935,6 +935,27 @@ public class AdminController {
 	}
 	
 	
+	@GetMapping("/getAllMatchingDonorList/{page}/{size}")
+	public ResponseEntity<?> getAllMatchingDonorList(@ModelAttribute("admin") Admin admin, @PathVariable int page,
+			@PathVariable int size, @RequestParam(required = false) String search,
+			@RequestParam(required = false) String bloodGroup,@RequestParam(required = false) String city,
+			@RequestParam(required = false ) String  height,@RequestParam(required = false) String weight,
+			@RequestParam(required = false) String skinColor,@RequestParam(required = false) String eyeColor,
+			@RequestParam(required = false) String religion,@RequestParam(required = false) String education,
+			@RequestParam(required = false) String profession) {
+
+		return donorService.getAllMatchingDonorList(page, size, admin, search, bloodGroup,city,height,weight,
+				skinColor,eyeColor,religion,education,profession);
+
+	}
+	
+	
+	@GetMapping("/getFamilyList")
+    public ResponseEntity<?> getFamilyList(@ModelAttribute("admin") Admin admin ) {
+        return  donorService.getFamilyList(admin.getAdminId());
+    }
+
+	
 	// End donor api
 	
 	@PostMapping("/convertProposalToProforma/{proposalId}")

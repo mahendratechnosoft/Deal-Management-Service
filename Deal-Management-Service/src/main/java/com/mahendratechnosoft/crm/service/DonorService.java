@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.service;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -496,6 +497,79 @@ public class DonorService {
 
 	}
 	
+	
+	public ResponseEntity<?> getAllMatchingDonorList(int page, int size, Object loginUser, String search,String bloodGroup,String city,
+			String  height,String weight,String skinColor,String eyeColor,String religion,String education,String profession) {
+
+		try {
+            ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			double heightDigital=0.0;
+			double weightDigital=0.0;
+			if(height!=null) {
+				heightDigital = Double.parseDouble(height);
+			}
+			if(weight!=null) {
+				  weightDigital = Double.parseDouble(weight);
+			}
+			Page<Donors> donorPage = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+
+			// 2. Fetch paginated leads for company
+			Pageable pageable = PageRequest.of(page, size);
+			if (role.equals("ROLE_ADMIN")) {
+				donorPage = donorsRepository.findByMatchingDonorAdminId(adminId, search,bloodGroup,city,heightDigital,weightDigital,skinColor,
+						                                               eyeColor,religion,profession, pageable);
+
+			}
+//			else if(moduleAccess.isProposalViewAll()) {
+//                
+//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
+//				
+//			} 
+			else {
+
+			//	donorPage = donorsRepository.findByEmployeeId(employeeId, search,status, pageable);
+			}
+			// 3. Prepare response
+			Map<String, Object> response = new LinkedHashMap<>();
+
+			response.put("donarList", donorPage.getContent());
+			response.put("currentPage", donorPage.getNumber());
+			response.put("totalPages", donorPage.getTotalPages());
+			response.put("totalElements", donorPage.getTotalElements());
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	public ResponseEntity<?> getFamilyList( String  adminId) {
+
+		try {
+			
+			return ResponseEntity.ok(familyInfoRepository.findByAdminId(adminId));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
 	
 	
 }

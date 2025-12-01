@@ -43,5 +43,34 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		        Pageable pageable);
 	
 	
-	
+	@Query("""
+		    SELECT p FROM Donors p
+		    WHERE p.adminId = :adminId 
+		    AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) 
+		    AND (:bloodGroup IS NULL OR LOWER(p.bloodGroup) = LOWER(:bloodGroup))
+		    AND (:city IS NULL OR LOWER(p.city) = LOWER(:city))
+		    
+		  
+		    AND (:height = 0 OR p.height = :height)
+		    AND (:weight = 0 OR p.weight = :weight)
+		    
+		    
+		    AND (:skinColor IS NULL OR LOWER(p.skinColor) = LOWER(:skinColor))
+		    AND (:eyeColor IS NULL OR LOWER(p.eyeColor) = LOWER(:eyeColor))
+		    AND (:religion IS NULL OR LOWER(p.religion) = LOWER(:religion))
+		    AND (:profession IS NULL OR LOWER(p.profession) = LOWER(:profession))
+		    ORDER BY p.donorId DESC
+		""")
+		Page<Donors> findByMatchingDonorAdminId(
+		        @Param("adminId") String adminId,
+		        @Param("search") String search,
+		        @Param("bloodGroup") String bloodGroup,
+		        @Param("city") String city,
+		        @Param("height") double height,
+		        @Param("weight") double weight,
+		        @Param("skinColor") String skinColor,
+		        @Param("eyeColor") String eyeColor,
+		        @Param("religion") String religion,
+		        @Param("profession") String profession,
+		        Pageable pageable);
 }
