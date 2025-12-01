@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,8 +21,12 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 			+ "          OR LOWER(l.clientName) LIKE LOWER(CONCAT('%', :search, '%'))"
 			+ "          OR LOWER(l.companyName) LIKE LOWER(CONCAT('%', :search, '%'))"
 			+ "      )"
+			+ "AND (:fromDate IS NULL OR l.createdDate >= :fromDate)"
+			+ "AND (:toDate   IS NULL OR l.createdDate <= :toDate)"
 			)
-	Page<Leads> findByAdminIdAndOptionalStatus( @Param("adminId") String adminId, @Param("status") String status,@Param("search") String search, Pageable pageable);
+	Page<Leads> findByAdminIdAndOptionalStatus( @Param("adminId") String adminId, @Param("status") String status,
+			@Param("search") String search, @Param("fromDate") LocalDateTime fromDate,@Param("toDate") LocalDateTime toDate,
+			Pageable pageable);
 
 	
 	@Query("SELECT l FROM Leads l WHERE l.employeeId = :employeeId AND (:status IS NULL OR l.status = :status) "

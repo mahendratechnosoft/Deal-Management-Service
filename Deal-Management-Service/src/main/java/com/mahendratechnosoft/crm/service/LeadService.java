@@ -1,5 +1,9 @@
 package com.mahendratechnosoft.crm.service;
 
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -104,7 +108,20 @@ public class LeadService {
 	}
 
 	
-	public ResponseEntity<?> getAllLeads(int page ,int size,Object loginUser,String leadStatus,String search) {
+	public ResponseEntity<?> getAllLeads(int page ,int size,Object loginUser,
+			String leadStatus,String search, String startDate, String endDate) {
+		
+		LocalDateTime fromDate = null;
+		LocalDateTime toDate = null;
+
+		if (startDate != null && !startDate.isEmpty()) {
+		    fromDate = LocalDate.parse(startDate).atStartOfDay();
+		}
+
+		if (endDate != null && !endDate.isEmpty()) {
+		    toDate = LocalDate.parse(endDate).atTime(LocalTime.MAX);
+		}
+        
 
 	    try {
 	    	  ModuleAccess moduleAcces=null;
@@ -141,17 +158,17 @@ public class LeadService {
 	        Pageable pageable = PageRequest.of(page, size,Sort.by("createdDate").descending());
 	        List<Object[]> countAndStatus = null;
 	        if(role.equals("ROLE_ADMIN")){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search,fromDate,toDate, pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
  
 
 	        }else if(moduleAcces.isLeadViewAll()){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, fromDate,toDate,pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
 	        	
 	        }
 	        else if(moduleAcces.isLeadViewAll()){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, pageable);
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, fromDate,toDate,pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
 	        	
 	        }
