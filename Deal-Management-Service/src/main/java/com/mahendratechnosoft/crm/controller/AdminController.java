@@ -258,9 +258,15 @@ public class AdminController {
 	
 	
 	@GetMapping("/getAllLeads/{page}/{size}")
-	public ResponseEntity<?> getAllLeads(@ModelAttribute("admin") Admin admin,@PathVariable int page ,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) String leadStatus) {
+	public ResponseEntity<?> getAllLeads(@ModelAttribute("admin") Admin admin,
+			@PathVariable int page ,
+			@PathVariable int size,
+			@RequestParam(required = false) String search,
+			@RequestParam(required = false) String leadStatus,
+			@RequestParam(required = false) String startDate,
+	        @RequestParam(required = false) String endDate) {
 
-	  return  leadService.getAllLeads(page, size,admin,leadStatus,search);
+	  return  leadService.getAllLeads(page, size,admin,leadStatus,search,startDate, endDate);
 	}
 	
 	@GetMapping("/getLeadStatusAndCount")
