@@ -1,11 +1,14 @@
 package com.mahendratechnosoft.crm.repository.Hospital;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 
 public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> {
@@ -32,5 +35,11 @@ public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> 
 			""")
 	Page<FamilyInfo> findByAdminId(@Param("adminId") String adminId, @Param("search") String search,
 			 Pageable pageable);
+	
+	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin) " +
+		       "FROM FamilyInfo fi WHERE fi.adminId = :adminId")
+		List<FamilyInfoDto> findByAdminId(@Param("adminId") String adminId);
+
+	
 
 }
