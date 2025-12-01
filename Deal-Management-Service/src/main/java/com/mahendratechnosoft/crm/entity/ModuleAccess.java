@@ -56,6 +56,11 @@ public class ModuleAccess {
 	private boolean timeSheetDelete;
 	private boolean timeSheetEdit;
 	
+	private boolean donorAccess;
+	private boolean donorViewAll;
+	private boolean donorCreate;
+	private boolean donorDelete;
+	private boolean donorEdit;
 	
 	public String getModuleAccessId() {
 		return moduleAccessId;
@@ -284,6 +289,36 @@ public class ModuleAccess {
 	}
 	public void setTimeSheetEdit(boolean timeSheetEdit) {
 		this.timeSheetEdit = timeSheetEdit;
+	}
+	public boolean isDonorAccess() {
+		return donorAccess;
+	}
+	public void setDonorAccess(boolean donorAccess) {
+		this.donorAccess = donorAccess;
+	}
+	public boolean isDonorViewAll() {
+		return donorViewAll;
+	}
+	public void setDonorViewAll(boolean donorViewAll) {
+		this.donorViewAll = donorViewAll;
+	}
+	public boolean isDonorCreate() {
+		return donorCreate;
+	}
+	public void setDonorCreate(boolean donorCreate) {
+		this.donorCreate = donorCreate;
+	}
+	public boolean isDonorDelete() {
+		return donorDelete;
+	}
+	public void setDonorDelete(boolean donorDelete) {
+		this.donorDelete = donorDelete;
+	}
+	public boolean isDonorEdit() {
+		return donorEdit;
+	}
+	public void setDonorEdit(boolean donorEdit) {
+		this.donorEdit = donorEdit;
 	}
 	
 	
