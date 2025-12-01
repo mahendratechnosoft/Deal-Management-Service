@@ -69,7 +69,7 @@ public class ModuleAccess {
 	private boolean itemEdit;
 	
 	private boolean employeeAccess;
-    private boolean setting;	
+    private boolean settingAccess;	
 	public String getModuleAccessId() {
 		return moduleAccessId;
 	}
@@ -364,11 +364,11 @@ public class ModuleAccess {
 	public void setEmployeeAccess(boolean employeeAccess) {
 		this.employeeAccess = employeeAccess;
 	}
-	public boolean isSetting() {
-		return setting;
+	public boolean isSettingAccess() {
+		return settingAccess;
 	}
-	public void setSetting(boolean setting) {
-		this.setting = setting;
+	public void setSettingAccess(boolean settingAccess) {
+		this.settingAccess = settingAccess;
 	}
 	public void setPaymentCreate(boolean paymentCreate) {
 		this.paymentCreate = paymentCreate;
