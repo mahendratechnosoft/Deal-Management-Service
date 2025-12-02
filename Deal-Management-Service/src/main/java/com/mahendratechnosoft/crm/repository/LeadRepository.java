@@ -23,6 +23,7 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 			+ "      )"
 			+ "AND (:fromDate IS NULL OR l.createdDate >= :fromDate)"
 			+ "AND (:toDate   IS NULL OR l.createdDate <= :toDate)"
+			+ "order By l.createdDate desc"
 			)
 	Page<Leads> findByAdminIdAndOptionalStatus( @Param("adminId") String adminId, @Param("status") String status,
 			@Param("search") String search, @Param("fromDate") LocalDateTime fromDate,@Param("toDate") LocalDateTime toDate,
