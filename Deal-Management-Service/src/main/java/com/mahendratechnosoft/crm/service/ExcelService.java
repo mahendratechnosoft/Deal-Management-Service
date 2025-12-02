@@ -3,8 +3,10 @@ package com.mahendratechnosoft.crm.service;
 
 
 
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +20,13 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mahendratechnosoft.crm.dto.AttendanceEmployeeDTO;
 import com.mahendratechnosoft.crm.entity.ActivityLogs;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
@@ -43,6 +45,8 @@ public class ExcelService {
 
 	@Autowired
 	private ActivityLogsRepository activityLogsRepository;
+	
+	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 	
 	public void generateExcel(HttpServletResponse response) throws Exception {
 
@@ -210,6 +214,109 @@ public class ExcelService {
 	        default:
 	            return "";
 	    }
+	}
+	
+	public void generateLeadExcel(HttpServletResponse response, List<Leads> leadsList) throws Exception {
+
+	    XSSFWorkbook workbook = new XSSFWorkbook();
+	    XSSFSheet sheet = workbook.createSheet("Leads");
+
+	    CellStyle headerStyle = workbook.createCellStyle();
+	    XSSFFont headerFont = workbook.createFont();
+	    headerFont.setBold(true);
+	    headerFont.setFontHeight(12);
+	    headerStyle.setFont(headerFont);
+	    headerStyle.setAlignment(HorizontalAlignment.CENTER);
+	    headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+	    setBorder(headerStyle); 
+
+	    CellStyle dataStyle = workbook.createCellStyle();
+	    setBorder(dataStyle);
+
+
+	    CellStyle totalStyle = workbook.createCellStyle();
+	    totalStyle.setFont(headerFont);
+	    setBorder(totalStyle);
+
+
+	    String[] headers = {
+	        "Client Name", "Company Name", "Email", "Primary Number", "Secondary Number",
+	        "Status", "Source", "Industry","Street","City", "State", "Country", "Zip Code", 
+	        "Created Date", "Follow Up", "Website"
+	    };
+
+
+	    Row headerRow = sheet.createRow(0);
+	    for (int i = 0; i < headers.length; i++) {
+	        Cell cell = headerRow.createCell(i);
+	        cell.setCellValue(headers[i]);
+	        cell.setCellStyle(headerStyle);
+	    }
+
+	    int rowCount = 1;
+
+	    for (Leads lead : leadsList) {
+	        Row row = sheet.createRow(rowCount++);
+	        
+	        String createdDateStr = (lead.getCreatedDate() != null) ? lead.getCreatedDate().format(dtf) : "";
+	        String followUpStr = (lead.getFollowUp() != null) ? lead.getFollowUp().format(dtf) : "";
+
+	        createCell(row, 0, lead.getClientName(), dataStyle);
+	        createCell(row, 1, lead.getCompanyName(), dataStyle);
+	        createCell(row, 2, lead.getEmail(), dataStyle);
+	        createCell(row, 3, lead.getMobileNumber(), dataStyle);
+	        createCell(row, 4, lead.getPhoneNumber(), dataStyle);
+	        createCell(row, 5, lead.getStatus(), dataStyle);
+	        createCell(row, 6, lead.getSource(), dataStyle);
+	        createCell(row, 7, lead.getIndustry(), dataStyle);
+	        createCell(row, 8, lead.getStreet(), dataStyle);
+	        createCell(row, 9, lead.getCity(), dataStyle);
+	        createCell(row, 10, lead.getState(), dataStyle);
+	        createCell(row, 11, lead.getCountry(), dataStyle);
+	        createCell(row, 12, lead.getZipCode(), dataStyle);
+	        createCell(row, 13, createdDateStr, dataStyle);
+	        createCell(row, 14, followUpStr, dataStyle);
+	        createCell(row, 15, lead.getWebsite(), dataStyle);
+	    }
+
+	    
+	    for (int i = 0; i < headers.length; i++) {
+	        sheet.autoSizeColumn(i);
+	    }
+
+	    response.setContentType("application/octet-stream");
+	    String headerKey = "Content-Disposition";
+	    String headerValue = "attachment; filename=leads_export_" + System.currentTimeMillis() + ".xlsx";
+	    response.setHeader(headerKey, headerValue);
+
+	    ServletOutputStream outputStream = response.getOutputStream();
+	    workbook.write(outputStream);
+	    workbook.close();
+	    outputStream.close();
+	}
+
+	private void setBorder(CellStyle style) {
+	    style.setBorderBottom(BorderStyle.THIN);
+	    style.setBorderTop(BorderStyle.THIN);
+	    style.setBorderRight(BorderStyle.THIN);
+	    style.setBorderLeft(BorderStyle.THIN);
+	}
+
+	private void createCell(Row row, int columnCount, Object value, CellStyle style) {
+	    Cell cell = row.createCell(columnCount);
+	    
+	    if (value instanceof Double) {
+	        cell.setCellValue((Double) value);
+	    } else if (value instanceof Integer) {
+	        cell.setCellValue((Integer) value);
+	    } else if (value instanceof Boolean) {
+	        cell.setCellValue((Boolean) value);
+	    } else {
+	        cell.setCellValue(value != null ? value.toString() : "");
+	    }
+
+	    cell.setCellStyle(style);
 	}
 
 

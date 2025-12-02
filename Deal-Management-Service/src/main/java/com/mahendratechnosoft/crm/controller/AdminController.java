@@ -1037,4 +1037,14 @@ public class AdminController {
 		return salesService.getItemListWithNameAndId(admin);
 
 	}
+	
+	@GetMapping("/leadExcelExport")
+    public void leadExcelExport(
+    		HttpServletResponse response,
+    		@ModelAttribute("admin") Admin admin,
+			@RequestParam(required = false) String leadStatus,
+			@RequestParam(required = false) String startDate,
+	        @RequestParam(required = false) String endDate) throws Exception {
+        leadService.generateLeadExcel(response, admin, leadStatus, startDate, endDate);
+    }
 }

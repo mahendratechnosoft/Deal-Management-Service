@@ -42,10 +42,13 @@ import com.mahendratechnosoft.crm.repository.LeadColumnRepository;
 import com.mahendratechnosoft.crm.repository.LeadRepository;
 import com.mahendratechnosoft.crm.repository.LeadStatusRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 
 @Service
 public class LeadService {
+
+    private final ExcelService excelService;
 	
 
 	@Autowired
@@ -61,6 +64,11 @@ public class LeadService {
 
 	@Autowired
     private ActivityLogsRepository activityLogsRepository;
+
+
+    LeadService(ExcelService excelService) {
+        this.excelService = excelService;
+    }
 
 
 	@Transactional
@@ -155,7 +163,7 @@ public class LeadService {
 	        
 
 	        // 2. Fetch paginated leads for company
-	        Pageable pageable = PageRequest.of(page, size,Sort.by("createdDate").descending());
+	        Pageable pageable = PageRequest.of(page, size);
 	        List<Object[]> countAndStatus = null;
 	        if(role.equals("ROLE_ADMIN")){
 	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search,fromDate,toDate, pageable);
@@ -633,6 +641,56 @@ public class LeadService {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("Error: " + e.getMessage());
 	    }
+	}
+	
+	public void generateLeadExcel(HttpServletResponse response,
+			Object loginUser, String leadStatus,
+			String startDate, String endDate) throws Exception{
+		
+		LocalDateTime fromDate = null;
+		LocalDateTime toDate = null;
+
+		if (startDate != null && !startDate.isEmpty()) {
+		    fromDate = LocalDate.parse(startDate).atStartOfDay();
+		}
+
+		if (endDate != null && !endDate.isEmpty()) {
+		    toDate = LocalDate.parse(endDate).atTime(LocalTime.MAX);
+		}
+		
+		if(leadStatus.isBlank()) {
+			leadStatus = null;
+		}
+
+    	  ModuleAccess moduleAcces=null;
+    	  String role = "ROLE_EMPLOYEE";
+          String adminId = null;
+          String employeeId=null;
+          Page<Leads> leadPage=null;
+    	   if (loginUser instanceof Admin admin) {
+               role = admin.getUser().getRole();
+               adminId = admin.getAdminId();
+           } 
+           else if (loginUser instanceof Employee employee) {
+               
+        	   employeeId = employee.getEmployeeId();
+        	   adminId=employee.getAdmin().getAdminId();
+        	   moduleAcces=employee.getModuleAccess();
+        	   
+           }
+        
+        if(role.equals("ROLE_ADMIN")){
+        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,null,fromDate,toDate, Pageable.unpaged());
+
+        }
+        else if(moduleAcces.isLeadViewAll()){
+        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,null, fromDate,toDate,Pageable.unpaged());
+        }
+        else {
+        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,null, Pageable.unpaged());
+        }
+        
+        excelService.generateLeadExcel(response,leadPage.getContent());
 	}
 
 }

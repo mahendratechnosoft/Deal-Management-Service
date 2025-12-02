@@ -643,5 +643,15 @@ public class EmployeeController {
 			return salesService.getItemListWithNameAndId(employee);
 
 		}
+		
+		@GetMapping("/leadExcelExport")
+	    public void leadExcelExport(
+	    		HttpServletResponse response,
+	    		@ModelAttribute("employee") Employee employee,
+				@RequestParam(required = false) String leadStatus,
+				@RequestParam(required = false) String startDate,
+		        @RequestParam(required = false) String endDate) throws Exception {
+	        leadService.generateLeadExcel(response, employee, leadStatus, startDate, endDate);
+	    }
     
 }
