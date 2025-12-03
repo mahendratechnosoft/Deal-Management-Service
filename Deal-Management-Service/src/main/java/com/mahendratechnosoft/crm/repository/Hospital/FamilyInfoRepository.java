@@ -38,7 +38,11 @@ public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> 
 	
 	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin) " +
 		       "FROM FamilyInfo fi WHERE fi.adminId = :adminId")
-		List<FamilyInfoDto> findByAdminId(@Param("adminId") String adminId);
+	List<FamilyInfoDto> findByAdminId(@Param("adminId") String adminId);
+	
+	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin) " +
+		       "FROM FamilyInfo fi WHERE fi.employeeId = :employeeId")
+	List<FamilyInfoDto> findByEmployeeId(@Param("employeeId") String employeeId);
 
 	@Query("SELECT COUNT(d) FROM FamilyInfo d WHERE d.uin LIKE :prefix%")
 	int countUinByPrefix(@Param("prefix") String prefix);

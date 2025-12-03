@@ -76,13 +76,52 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		        @Param("profession") String profession,
 		        Pageable pageable);
 	
+	@Query("""
+		    SELECT p FROM Donors p
+		    WHERE p.employeeId = :employeeId 
+		    AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) 
+		    AND (:bloodGroup IS NULL OR LOWER(p.bloodGroup) = LOWER(:bloodGroup))
+		    AND (:city IS NULL OR LOWER(p.city) = LOWER(:city))
+		    
+		  
+		    AND (:height = 0 OR p.height = :height)
+		    AND (:weight = 0 OR p.weight = :weight)
+		    
+		    
+		    AND (:skinColor IS NULL OR LOWER(p.skinColor) = LOWER(:skinColor))
+		    AND (:eyeColor IS NULL OR LOWER(p.eyeColor) = LOWER(:eyeColor))
+		    AND (:religion IS NULL OR LOWER(p.religion) = LOWER(:religion))
+		    AND (:profession IS NULL OR LOWER(p.profession) = LOWER(:profession))
+		    ORDER BY p.donorId DESC
+		""")
+		Page<Donors> findByMatchingDonorEmployeeId(
+		        @Param("employeeId") String employeeId,
+		        @Param("search") String search,
+		        @Param("bloodGroup") String bloodGroup,
+		        @Param("city") String city,
+		        @Param("height") double height,
+		        @Param("weight") double weight,
+		        @Param("skinColor") String skinColor,
+		        @Param("eyeColor") String eyeColor,
+		        @Param("religion") String religion,
+		        @Param("profession") String profession,
+		        Pageable pageable);
+	
 	@Query("SELECT COUNT(d) FROM Donors d WHERE d.uin LIKE :prefix%")
 	int countUinByPrefix(@Param("prefix") String prefix);
 	
 	
 	@Query("SELECT d.status, COUNT(d) FROM Donors d " +
-		       "WHERE d.status IN ('New Donor', 'Donor', 'Qualified', 'Shortlisted','Selected') " +
+		       "WHERE d.status IN ('New Donor', 'Donor', 'Qualified', 'Shortlisted', 'Selected') " +
+		       "AND d.adminId = :adminId " +
 		       "GROUP BY d.status")
-		List<Object[]> getDonorCountByStatus();
+	List<Object[]> getDonorCountByStatus(@Param("adminId") String adminId);
+	
+	@Query("SELECT d.status, COUNT(d) FROM Donors d " +
+		       "WHERE d.status IN ('New Donor', 'Donor', 'Qualified', 'Shortlisted', 'Selected') " +
+		       "AND d.employeeId = :employeeId " +
+		       "GROUP BY d.status")
+	List<Object[]> getDonorCountByStatusWithEmployeeId(@Param("employeeId") String employeeId);
+
 
 }
