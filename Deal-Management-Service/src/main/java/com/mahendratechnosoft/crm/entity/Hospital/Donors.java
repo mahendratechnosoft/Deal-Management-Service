@@ -76,6 +76,8 @@ public class Donors {
 
 	@Transient
 	private String fullLengthImageData;
+	
+	private String geneticElements;
 
 	public Donors() {
 		super();
@@ -449,6 +451,18 @@ public class Donors {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+
+
+	public String getGeneticElements() {
+		return geneticElements;
+	}
+
+
+
+	public void setGeneticElements(String geneticElements) {
+		this.geneticElements = geneticElements;
 	}
 	
 	

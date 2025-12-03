@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 @Entity
 public class DonorBloodReport {
 	
@@ -24,6 +26,12 @@ public class DonorBloodReport {
 	private String SRCreatinine;
 	private String CMV;
 	private String reportType;
+	
+	@Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] attachmentFile;
+    private String attachmentFileName;
+    private String attachmentFileType;
 	
 	public DonorBloodReport() {
 		super();
@@ -150,8 +158,29 @@ public class DonorBloodReport {
 	public void setDonorId(String donorId) {
 		this.donorId = donorId;
 	}
-	
-	
-	
 
+	public byte[] getAttachmentFile() {
+		return attachmentFile;
+	}
+
+	public void setAttachmentFile(byte[] attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+
+	public String getAttachmentFileName() {
+		return attachmentFileName;
+	}
+
+	public void setAttachmentFileName(String attachmentFileName) {
+		this.attachmentFileName = attachmentFileName;
+	}
+
+	public String getAttachmentFileType() {
+		return attachmentFileType;
+	}
+
+	public void setAttachmentFileType(String attachmentFileType) {
+		this.attachmentFileType = attachmentFileType;
+	}
+	
 }
