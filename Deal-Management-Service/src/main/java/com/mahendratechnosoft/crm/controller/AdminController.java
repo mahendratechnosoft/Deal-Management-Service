@@ -815,9 +815,9 @@ public class AdminController {
 	}
 	
 	@GetMapping("/getDonorStatusCount")
-    public ResponseEntity<?> getDonorStatusCount() {
+    public ResponseEntity<?> getDonorStatusCount(@ModelAttribute("admin") Admin admin) {
      
-        return  donorService.getDonorStatusCount();
+        return  donorService.getDonorStatusCount(admin);
     }
 	
 	
@@ -831,9 +831,7 @@ public class AdminController {
 	
 	@PutMapping("/updateDonor")
 	public ResponseEntity<?> updateeDonor(@ModelAttribute("admin") Admin admin,@RequestBody Donors request) {
-		 request.setAdminId(admin.getAdminId());
-		 request.setCreatedBy(admin.getName());
-		return donorService.updateDonor(request);
+		return donorService.updateDonor(admin,request);
 		
 	}
 	
@@ -942,8 +940,7 @@ public class AdminController {
 	
 	@PutMapping("/updateFamilyInfo")
 	public ResponseEntity<?> updateFamilyInfo(@ModelAttribute("admin") Admin admin, @RequestBody FamilyInfo request) {
-		request.setAdminId(admin.getAdminId());
-		return donorService.updateFamilyInfo(request);
+		return donorService.updateFamilyInfo(admin,request);
 		
 	}
 	
@@ -965,7 +962,7 @@ public class AdminController {
 	
 	@GetMapping("/getFamilyList")
     public ResponseEntity<?> getFamilyList(@ModelAttribute("admin") Admin admin ) {
-        return  donorService.getFamilyList(admin.getAdminId());
+        return  donorService.getFamilyList(admin);
     }
 
 	

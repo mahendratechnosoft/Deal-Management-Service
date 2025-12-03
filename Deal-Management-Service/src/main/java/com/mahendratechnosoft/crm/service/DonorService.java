@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
@@ -110,7 +112,7 @@ public class DonorService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess=employee.getModuleAccess();
 			}
@@ -121,11 +123,10 @@ public class DonorService {
 				donorPage = donorsRepository.findByAdminId(adminId, search,status, pageable);
 
 			}
-//			else if(moduleAccess.isProposalViewAll()) {
-//                
-//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
-//				
-//			} 
+			else if(moduleAccess.isDonorViewAll()) {
+				donorPage = donorsRepository.findByAdminId(adminId, search, status,pageable);
+				
+			} 
 			else {
 
 				donorPage = donorsRepository.findByEmployeeId(employeeId, search,status, pageable);
@@ -167,9 +168,20 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> updateDonor( Donors request) {
+	public ResponseEntity<?> updateDonor( Object loginUser,Donors request) {
 
 		try {
+			String adminId = null;
+			String employeeId=request.getEmployeeId();
+		    
+			if (loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId= employee.getAdmin().getAdminId();
+				
+			}
+			request.setAdminId(adminId);
+			request.setEmployeeId(employeeId);
 			donorsRepository.save(request);
 			
 			return ResponseEntity.ok(request);
@@ -466,7 +478,7 @@ public class DonorService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess=employee.getModuleAccess();
 			}
@@ -475,13 +487,9 @@ public class DonorService {
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
 				familyInfoPage = familyInfoRepository.findByAdminId(adminId, search, pageable);
-
+			} else if(moduleAccess.isDonorViewAll()){
+				familyInfoPage = familyInfoRepository.findByAdminId(adminId, search, pageable);
 			}
-//			else if(moduleAccess.isProposalViewAll()) {
-//                
-//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
-//				
-//			} 
 			else {
 
 				familyInfoPage = familyInfoRepository.findByEmployeeId(employeeId, search, pageable);
@@ -532,10 +540,20 @@ public class DonorService {
 	}
 	
 
-	public ResponseEntity<?> updateFamilyInfo( FamilyInfo  request) {
+	public ResponseEntity<?> updateFamilyInfo(Object loginUser, FamilyInfo  request) {
 
 		try {
-			
+			String adminId = null;
+			String employeeId=request.getEmployeeId();
+		    
+			if (loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId= employee.getAdmin().getAdminId();
+				
+			}
+			request.setAdminId(adminId);
+			request.setEmployeeId(employeeId);
 			return ResponseEntity.ok(familyInfoRepository.save(request));
 
 		} catch (Exception e) {
@@ -568,26 +586,20 @@ public class DonorService {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
 			} else if (loginUser instanceof Employee employee) {
-
+				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 				moduleAccess=employee.getModuleAccess();
 			}
 
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
-			if (role.equals("ROLE_ADMIN")) {
+			if (role.equals("ROLE_ADMIN") || moduleAccess.isDonorViewAll()) {
 				donorPage = donorsRepository.findByMatchingDonorAdminId(adminId, search,bloodGroup,city,heightDigital,weightDigital,skinColor,
 						                                               eyeColor,religion,profession, pageable);
-
 			}
-//			else if(moduleAccess.isProposalViewAll()) {
-//                
-//				proposalPage = proposalRepository.findByAdminId(adminId, search, pageable);
-//				
-//			} 
 			else {
-
-			//	donorPage = donorsRepository.findByEmployeeId(employeeId, search,status, pageable);
+				donorPage = donorsRepository.findByMatchingDonorEmployeeId(employeeId, search,bloodGroup,city,heightDigital,weightDigital,skinColor,
+                        eyeColor,religion,profession, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new LinkedHashMap<>();
@@ -606,11 +618,34 @@ public class DonorService {
 
 	}
 	
-	public ResponseEntity<?> getFamilyList( String  adminId) {
+	public ResponseEntity<?> getFamilyList(Object loginUser) {
 
 		try {
 			
-			return ResponseEntity.ok(familyInfoRepository.findByAdminId(adminId));
+			ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+			
+			List<FamilyInfoDto> result = new LinkedList<>();
+			
+			if (role.equals("ROLE_ADMIN") || moduleAccess.isDonorViewAll()) {
+				result = familyInfoRepository.findByAdminId(adminId);
+			}
+			else {
+				result = familyInfoRepository.findByEmployeeId(employeeId);
+			}
+			
+			return ResponseEntity.ok(result);
 
 		} catch (Exception e) {
 
@@ -621,11 +656,34 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> getDonorStatusCount() {
+	public ResponseEntity<?> getDonorStatusCount(Object loginUser) {
 
 		try {
-
-			List<Object[]> results = donorsRepository.getDonorCountByStatus();
+			
+			ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+			
+			List<Object[]> results = new LinkedList<>();
+			
+			if (role.equals("ROLE_ADMIN")) {
+				results = donorsRepository.getDonorCountByStatus(adminId);
+			} else if(moduleAccess.isDonorViewAll()) {
+				results = donorsRepository.getDonorCountByStatus(adminId);
+			} 
+			else {
+				results = donorsRepository.getDonorCountByStatusWithEmployeeId(employeeId);
+			}
+			
 	        
 	        Map<String, Long> response = new HashMap<>();
 	        

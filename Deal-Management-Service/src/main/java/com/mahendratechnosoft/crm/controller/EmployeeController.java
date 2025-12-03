@@ -32,11 +32,18 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
+import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
+import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
+import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
+import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
+import com.mahendratechnosoft.crm.service.DonorService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.LeadService;
@@ -73,6 +80,10 @@ public class EmployeeController {
 	
 	@Autowired
 	private ExcelService excelService;
+	
+	@Autowired
+	private DonorService donorService;
+
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -653,5 +664,176 @@ public class EmployeeController {
 		        @RequestParam(required = false) String endDate) throws Exception {
 	        leadService.generateLeadExcel(response, employee, leadStatus, startDate, endDate);
 	    }
+		
+		
+		// donor code start
+		
+		@PostMapping("/createDonor")
+		public ResponseEntity<?> createDonar(@ModelAttribute("employee") Employee employee,@RequestBody Donors request) {
+			 request.setAdminId(employee.getAdmin().getAdminId());
+			 request.setEmployeeId(employee.getEmployeeId());
+			 request.setCreatedBy(employee.getName());
+			return donorService.createDonor(request);
+			
+		}
+		
+		
+		
+		@GetMapping("/getAllDonorList/{page}/{size}")
+		public ResponseEntity<?> getAllDonorList(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,
+				@RequestParam(required = false) String search,@RequestParam(required = false) String status) {
+
+			return donorService.getAllDonorList(page ,size,employee,search,status);
+
+		}
+		
+		@GetMapping("/getDonorStatusCount")
+	    public ResponseEntity<?> getDonorStatusCount(@ModelAttribute("employee") Employee employee) {
+	     
+	        return  donorService.getDonorStatusCount(employee);
+	    }
+
+		@GetMapping("/getDonorById/{donorId}")
+	    public ResponseEntity<?> getDonorById(@PathVariable String donorId ) {
+	     
+	        return  donorService.getDonarById(donorId);
+	    }
+		
+		@PutMapping("/updateDonor")
+		public ResponseEntity<?> updateeDonor(@ModelAttribute("employee") Employee employee,@RequestBody Donors request) {
+			return donorService.updateDonor(employee,request);
+		}
+		
+		
+		@PutMapping("/updateDonorStatus")
+		public ResponseEntity<?> updateDonorStatus(@RequestBody Map<String,String> request) {
+			
+			return donorService.updateDonorStatus(request);
+			
+		}
+		
+		@GetMapping("/getDonorFamilyInfo/{donorId}")
+	    public ResponseEntity<?> getDonorFamilyInfo(@PathVariable String donorId ) {
+	     
+	        return  donorService.getDonorFamilyInfo(donorId);
+	    }
+		
+		@PutMapping("/updateDonorFamilyInfo")
+		public ResponseEntity<?> updateDonorFamilyInfo(@RequestBody List<DonorFamilyInfo> request) {
+			
+			return donorService.updateDonorFamilyInfo(request);
+			
+		}
+		
+		@DeleteMapping("/deleteDonorFamilyInfo/{donorFamilyId}")
+	    public ResponseEntity<?> deleteDonorFamilyInfo(@PathVariable String donorFamilyId ) {
+	     
+	        return  donorService.deleteDonorFamilyInfo(donorFamilyId);
+	    }
+		
+		@PutMapping("/updateDonorBloodReport")
+		public ResponseEntity<?> updateDonorBloodReport(@RequestBody List<DonorBloodReport> request) {
+			
+			return donorService.updateDonorBloodReport(request);
+			
+		}
+		
+		
+		@GetMapping("/getDonorBloodReport/{donorId}")
+	    public ResponseEntity<?> getDonorBloodReport(@PathVariable String donorId ) {
+	     
+	        return  donorService.getDonorBloodReport(donorId);
+	    }
+		
+		@DeleteMapping("/deleteDonorBloodReport/{bloodReportId}")
+	    public ResponseEntity<?> deleteDonorBloodReport(@PathVariable String bloodReportId ) {
+	     
+	        return  donorService.deleteDonorBloodReport(bloodReportId);
+	    }
+		
+		
+		@PutMapping("/updateSemenReport")
+		public ResponseEntity<?> updateSemenReport(@RequestBody SemenReport request) {
+			
+			return donorService.updateDonorSemenReport(request);
+			
+		}
+		
+		@PutMapping("/updateSampleReport")
+		public ResponseEntity<?> updateSample(@RequestBody SampleReport request) {
+			
+			return donorService.updateDonorSample(request);
+			
+		}
+
+		
+		
+		@GetMapping("/getSemenReportByDonorId/{donorId}")
+	    public ResponseEntity<?> getSemenReportByDonorId(@PathVariable String donorId ) {
+	     
+	        return  donorService.getSemenReportByDonorId(donorId);
+	    }
+
+		
+		@GetMapping("/getSampleReportByDonorId/{donorId}")
+	    public ResponseEntity<?> getSampleReportByDonorId(@PathVariable String donorId ) {
+	     
+	        return  donorService.getSampleReportByDonorId(donorId);
+	    }
+		
+		
+		@PostMapping("/createFamilyInfo")
+		public ResponseEntity<?> createFamilyInfo(@ModelAttribute Employee employee, @RequestBody FamilyInfo request) {
+			request.setAdminId(employee.getAdmin().getAdminId());
+			request.setEmployeeId(employee.getEmployeeId());
+			return donorService.createFamilyInfo(request);
+		}
+		
+		
+		
+		@GetMapping("/getAllFamilyList/{page}/{size}")
+		public ResponseEntity<?> getAllFamilyList(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return donorService.getAllFamilyList(page ,size,employee,search);
+
+		}
+		
+		
+		
+		@GetMapping("/getFamilyById/{familyInfoId}")
+	    public ResponseEntity<?> getFamilyById(@PathVariable String familyInfoId ) {
+	        return  donorService.getFamilyInfoById(familyInfoId);
+	    }
+
+		
+		@PutMapping("/updateFamilyInfo")
+		public ResponseEntity<?> updateFamilyInfo(@ModelAttribute("employee") Employee employee, @RequestBody FamilyInfo request) {
+			return donorService.updateFamilyInfo(employee,request);
+			
+		}
+		
+		
+		@GetMapping("/getAllMatchingDonorList/{page}/{size}")
+		public ResponseEntity<?> getAllMatchingDonorList(@ModelAttribute("employee") Employee employee, @PathVariable int page,
+				@PathVariable int size, @RequestParam(required = false) String search,
+				@RequestParam(required = false) String bloodGroup,@RequestParam(required = false) String city,
+				@RequestParam(required = false ) String  height,@RequestParam(required = false) String weight,
+				@RequestParam(required = false) String skinColor,@RequestParam(required = false) String eyeColor,
+				@RequestParam(required = false) String religion,@RequestParam(required = false) String education,
+				@RequestParam(required = false) String profession) {
+
+			return donorService.getAllMatchingDonorList(page, size, employee, search, bloodGroup,city,height,weight,
+					skinColor,eyeColor,religion,education,profession);
+
+		}
+		
+		
+		@GetMapping("/getFamilyList")
+	    public ResponseEntity<?> getFamilyList(@ModelAttribute("employee") Employee employee) {
+	        return  donorService.getFamilyList(employee);
+	    }
+
+		
+		// End donor api
     
 }
