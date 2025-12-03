@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 @Entity
 public class SemenReport {
@@ -26,6 +28,12 @@ public class SemenReport {
 	private double progressiveMotilityC;
 	private String morphology;
 	private String abnormality;
+	
+	@Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] attachmentFile;
+    private String attachmentFileName;
+    private String attachmentFileType;
 	
 //	@ManyToOne
 //	@JoinColumn(name = "donor_id")
@@ -182,11 +190,36 @@ public class SemenReport {
 	public void setDonorId(String donorId) {
 		this.donorId = donorId;
 	}
-	
-	
-	
-	
-	
-	
 
+
+	public byte[] getAttachmentFile() {
+		return attachmentFile;
+	}
+
+
+	public void setAttachmentFile(byte[] attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+
+
+	public String getAttachmentFileName() {
+		return attachmentFileName;
+	}
+
+
+	public void setAttachmentFileName(String attachmentFileName) {
+		this.attachmentFileName = attachmentFileName;
+	}
+
+
+	public String getAttachmentFileType() {
+		return attachmentFileType;
+	}
+
+
+	public void setAttachmentFileType(String attachmentFileType) {
+		this.attachmentFileType = attachmentFileType;
+	}
+	
+	
 }
