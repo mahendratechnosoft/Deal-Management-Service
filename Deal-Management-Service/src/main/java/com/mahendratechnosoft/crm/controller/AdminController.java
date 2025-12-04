@@ -890,7 +890,7 @@ public class AdminController {
 	
 	
 	@PutMapping("/updateSemenReport")
-	public ResponseEntity<?> updateSemenReport(@RequestBody SemenReport request) {
+	public ResponseEntity<?> updateSemenReport(@RequestBody List<SemenReport> request) {
 		
 		return donorService.updateDonorSemenReport(request);
 		
@@ -954,12 +954,14 @@ public class AdminController {
 	public ResponseEntity<?> getAllMatchingDonorList(@ModelAttribute("admin") Admin admin, @PathVariable int page,
 			@PathVariable int size, @RequestParam(required = false) String search,
 			@RequestParam(required = false) String bloodGroup,@RequestParam(required = false) String city,
-			@RequestParam(required = false ) String  height,@RequestParam(required = false) String weight,
+			@RequestParam(required = false) String minHeight,@RequestParam(required = false) String maxHeight,
+	        @RequestParam(required = false) String minWeight,@RequestParam(required = false) String maxWeight,
 			@RequestParam(required = false) String skinColor,@RequestParam(required = false) String eyeColor,
 			@RequestParam(required = false) String religion,@RequestParam(required = false) String education,
 			@RequestParam(required = false) String profession) {
 
-		return donorService.getAllMatchingDonorList(page, size, admin, search, bloodGroup,city,height,weight,
+		return donorService.getAllMatchingDonorList(page, size, admin, search, bloodGroup,city,
+				minHeight, maxHeight, minWeight, maxWeight,
 				skinColor,eyeColor,religion,education,profession);
 
 	}

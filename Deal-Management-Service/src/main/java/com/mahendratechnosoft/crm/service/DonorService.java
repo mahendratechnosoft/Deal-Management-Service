@@ -366,11 +366,11 @@ public class DonorService {
 	}
 	
 	
-	public ResponseEntity<?> updateDonorSemenReport( SemenReport request) {
+	public ResponseEntity<?> updateDonorSemenReport( List<SemenReport> request) {
 
 		try {
 			
-			semenReportRepository.save(request);
+			semenReportRepository.saveAll(request);
 			
 			return ResponseEntity.ok(request);
 
@@ -566,21 +566,20 @@ public class DonorService {
 	
 	
 	public ResponseEntity<?> getAllMatchingDonorList(int page, int size, Object loginUser, String search,String bloodGroup,String city,
-			String  height,String weight,String skinColor,String eyeColor,String religion,String education,String profession) {
+			String minHeight, String maxHeight, String minWeight, String maxWeight,
+			String skinColor,String eyeColor,String religion,String education,String profession) {
 
 		try {
             ModuleAccess moduleAccess=null;
 			String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 			String employeeId = null;
-			double heightDigital=0.0;
-			double weightDigital=0.0;
-			if(height!=null) {
-				heightDigital = Double.parseDouble(height);
-			}
-			if(weight!=null) {
-				  weightDigital = Double.parseDouble(weight);
-			}
+			
+			Double minHeightVal = (minHeight != null && !minHeight.isEmpty()) ? Double.parseDouble(minHeight) : null;
+	        Double maxHeightVal = (maxHeight != null && !maxHeight.isEmpty()) ? Double.parseDouble(maxHeight) : null;
+	        Double minWeightVal = (minWeight != null && !minWeight.isEmpty()) ? Double.parseDouble(minWeight) : null;
+	        Double maxWeightVal = (maxWeight != null && !maxWeight.isEmpty()) ? Double.parseDouble(maxWeight) : null;
+			
 			Page<Donors> donorPage = null;
 			if (loginUser instanceof Admin admin) {
 				role = admin.getUser().getRole();
@@ -593,14 +592,15 @@ public class DonorService {
 
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
-			if (role.equals("ROLE_ADMIN") || moduleAccess.isDonorViewAll()) {
-				donorPage = donorsRepository.findByMatchingDonorAdminId(adminId, search,bloodGroup,city,heightDigital,weightDigital,skinColor,
-						                                               eyeColor,religion,profession, pageable);
-			}
-			else {
-				donorPage = donorsRepository.findByMatchingDonorEmployeeId(employeeId, search,bloodGroup,city,heightDigital,weightDigital,skinColor,
-                        eyeColor,religion,profession, pageable);
-			}
+			if (role.equals("ROLE_ADMIN") || (moduleAccess != null && moduleAccess.isDonorViewAll())) {
+	            donorPage = donorsRepository.findByMatchingDonorAdminId(adminId, search, bloodGroup, city, 
+	                    minHeightVal, maxHeightVal, minWeightVal, maxWeightVal, 
+	                    skinColor, eyeColor, religion, profession, pageable);
+	        } else {
+	            donorPage = donorsRepository.findByMatchingDonorEmployeeId(employeeId, search, bloodGroup, city, 
+	                    minHeightVal, maxHeightVal, minWeightVal, maxWeightVal, 
+	                    skinColor, eyeColor, religion, profession, pageable);
+	        }
 			// 3. Prepare response
 			Map<String, Object> response = new LinkedHashMap<>();
 

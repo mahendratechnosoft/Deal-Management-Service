@@ -10,6 +10,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -35,6 +36,9 @@ public class Task {
 	private String relatedToName;
 	private double hourlyRate;
 	private double estimatedHours;
+	@Column(length = 500)
+	private String description;
+	private String status;
 	
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -189,6 +193,22 @@ public class Task {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 }

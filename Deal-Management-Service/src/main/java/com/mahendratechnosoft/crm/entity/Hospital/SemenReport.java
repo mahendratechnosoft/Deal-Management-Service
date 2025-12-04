@@ -28,6 +28,8 @@ public class SemenReport {
 	private double progressiveMotilityC;
 	private String morphology;
 	private String abnormality;
+	private String stage;
+	private String msc;
 	
 	@Lob
     @Column(columnDefinition = "MEDIUMBLOB")
@@ -219,6 +221,26 @@ public class SemenReport {
 
 	public void setAttachmentFileType(String attachmentFileType) {
 		this.attachmentFileType = attachmentFileType;
+	}
+
+
+	public String getStage() {
+		return stage;
+	}
+
+
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
+
+
+	public String getMsc() {
+		return msc;
+	}
+
+
+	public void setMsc(String msc) {
+		this.msc = msc;
 	}
 	
 	

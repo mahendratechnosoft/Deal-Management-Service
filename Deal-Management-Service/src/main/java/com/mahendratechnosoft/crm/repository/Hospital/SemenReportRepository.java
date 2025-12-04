@@ -1,5 +1,7 @@
 package com.mahendratechnosoft.crm.repository.Hospital;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +25,6 @@ public interface SemenReportRepository extends JpaRepository<SemenReport, String
 		        Pageable pageable);
 	
 	
-	SemenReport findByDonorId(String donorId);
+	List<SemenReport> findByDonorId(String donorId);
 
 }

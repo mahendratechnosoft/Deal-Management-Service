@@ -20,8 +20,9 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	@Query("""
 		    SELECT p FROM Donors p
 		    WHERE p.adminId = :adminId 
+		      AND p.status <> 'Not Shortlisted'
 		      AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) 
-		     AND (:status IS NULL OR LOWER(p.status) = LOWER(:status))
+		      AND (:status IS NULL OR LOWER(p.status) = LOWER(:status))
 		    ORDER BY p.donorId DESC
 		""")
 		Page<Donors> findByAdminId(
@@ -52,10 +53,11 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		    AND (:bloodGroup IS NULL OR LOWER(p.bloodGroup) = LOWER(:bloodGroup))
 		    AND (:city IS NULL OR LOWER(p.city) = LOWER(:city))
 		    
-		  
-		    AND (:height = 0 OR p.height = :height)
-		    AND (:weight = 0 OR p.weight = :weight)
+		    AND (:minHeight IS NULL OR p.height >= :minHeight)
+		    AND (:maxHeight IS NULL OR p.height <= :maxHeight)
 		    
+		    AND (:minWeight IS NULL OR p.weight >= :minWeight)
+		    AND (:maxWeight IS NULL OR p.weight <= :maxWeight)
 		    
 		    AND (:skinColor IS NULL OR LOWER(p.skinColor) = LOWER(:skinColor))
 		    AND (:eyeColor IS NULL OR LOWER(p.eyeColor) = LOWER(:eyeColor))
@@ -68,8 +70,10 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		        @Param("search") String search,
 		        @Param("bloodGroup") String bloodGroup,
 		        @Param("city") String city,
-		        @Param("height") double height,
-		        @Param("weight") double weight,
+		        @Param("minHeight") Double minHeight,
+		        @Param("maxHeight") Double maxHeight,
+		        @Param("minWeight") Double minWeight,
+		        @Param("maxWeight") Double maxWeight,
 		        @Param("skinColor") String skinColor,
 		        @Param("eyeColor") String eyeColor,
 		        @Param("religion") String religion,
@@ -84,8 +88,11 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		    AND (:city IS NULL OR LOWER(p.city) = LOWER(:city))
 		    
 		  
-		    AND (:height = 0 OR p.height = :height)
-		    AND (:weight = 0 OR p.weight = :weight)
+		    AND (:minHeight IS NULL OR p.height >= :minHeight)
+		    AND (:maxHeight IS NULL OR p.height <= :maxHeight)
+		    
+		    AND (:minWeight IS NULL OR p.weight >= :minWeight)
+		    AND (:maxWeight IS NULL OR p.weight <= :maxWeight)
 		    
 		    
 		    AND (:skinColor IS NULL OR LOWER(p.skinColor) = LOWER(:skinColor))
@@ -99,8 +106,10 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 		        @Param("search") String search,
 		        @Param("bloodGroup") String bloodGroup,
 		        @Param("city") String city,
-		        @Param("height") double height,
-		        @Param("weight") double weight,
+		        @Param("minHeight") Double minHeight,
+		        @Param("maxHeight") Double maxHeight,
+		        @Param("minWeight") Double minWeight,
+		        @Param("maxWeight") Double maxWeight,
 		        @Param("skinColor") String skinColor,
 		        @Param("eyeColor") String eyeColor,
 		        @Param("religion") String religion,
