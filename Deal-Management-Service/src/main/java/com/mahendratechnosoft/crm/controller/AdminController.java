@@ -43,6 +43,7 @@ import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
+import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -60,6 +61,7 @@ import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.SalesService;
 import com.mahendratechnosoft.crm.service.SettingServices;
+import com.mahendratechnosoft.crm.service.TaskService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -101,6 +103,9 @@ public class AdminController {
 	
 	@Autowired
 	private DonorService donorService;
+	
+	@Autowired
+	private TaskService taskService;
 
 	
     @ModelAttribute("admin")
@@ -1043,4 +1048,27 @@ public class AdminController {
 	        @RequestParam(required = false) String endDate) throws Exception {
         leadService.generateLeadExcel(response, admin, leadStatus, startDate, endDate);
     }
+	
+	@PostMapping("/createTask")
+	public ResponseEntity<?> createTask(@ModelAttribute("admin") Admin admin,@RequestBody Task task){
+		task.setAdminId(admin.getAdminId());
+		task.setCreatedBy(admin.getName());
+		try {
+			Task responce = taskService.createTask(task);
+			return ResponseEntity.ok(responce);
+		} catch (Exception e) {
+			 e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                             .body("Error: " + e.getMessage());
+		}
+	}
+	
+	
+	@GetMapping("/getAllTaskList/{page}/{size}")
+	public ResponseEntity<?> getAllTaskList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,
+			@RequestParam(required = false) String search) {
+
+		return taskService.getAllTaskList(page ,size,admin,search);
+
+	}
 }
