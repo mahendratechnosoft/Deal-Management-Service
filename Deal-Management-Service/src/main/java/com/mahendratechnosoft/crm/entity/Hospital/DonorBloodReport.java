@@ -26,6 +26,7 @@ public class DonorBloodReport {
 	private String SRCreatinine;
 	private String CMV;
 	private String reportType;
+	private String stage;
 	
 	@Lob
     @Column(columnDefinition = "MEDIUMBLOB")
@@ -181,6 +182,14 @@ public class DonorBloodReport {
 
 	public void setAttachmentFileType(String attachmentFileType) {
 		this.attachmentFileType = attachmentFileType;
+	}
+
+	public String getStage() {
+		return stage;
+	}
+
+	public void setStage(String stage) {
+		this.stage = stage;
 	}
 	
 }
