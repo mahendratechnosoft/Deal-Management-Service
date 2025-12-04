@@ -1071,4 +1071,55 @@ public class AdminController {
 		return taskService.getAllTaskList(page ,size,admin,search);
 
 	}
+	
+	@PutMapping("/updateTask")
+	public ResponseEntity<?> updateTask(@ModelAttribute("admin") Admin admin,@RequestBody Task task){
+		task.setAdminId(admin.getAdminId());
+		try {
+			Task responce = taskService.updateTask(task);
+			return ResponseEntity.ok(responce);
+		} catch (Exception e) {
+			 e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                             .body("Error: " + e.getMessage());
+		}
+	}
+	
+	@GetMapping("/getTaskByItemId/{taskId}")
+	public ResponseEntity<?> getTaskByItemId(@PathVariable String taskId) {
+		return taskService.getTaskById(taskId);	
+	}
+	
+	@DeleteMapping("/deleteTask/{taskId}")
+	public ResponseEntity<?> deleteTask(@PathVariable String taskId) {
+		
+		return taskService.deleteTaskById(taskId);
+		
+	}
+	
+	@GetMapping("/getLeadNameAndIdWithConverted")
+	public ResponseEntity<?> getLeadNameAndIdWithConverted(@ModelAttribute("admin") Admin admin) {
+
+	  return  leadService.getLeadNameAndIdWithConverted(admin);
+	}
+	
+	@GetMapping("/getProposalNumberAndId")
+	public ResponseEntity<?> getProposalNameAndId(@ModelAttribute("admin") Admin admin) {
+
+	  return  salesService.proposalNumberAndIdByAdminId(admin);
+	}
+	
+	@GetMapping("/getProformaNumberAndId")
+	public ResponseEntity<?> getProformaNameAndId(@ModelAttribute("admin") Admin admin) {
+
+	  return  salesService.proformaNumberAndIdByAdminId(admin);
+	}
+	
+	@GetMapping("/getInvoiceNumberAndId")
+	public ResponseEntity<?> getInvoiceNumberAndId(@ModelAttribute("admin") Admin admin) {
+
+	  return  salesService.inoviceNumberAndIdByAdminId(admin);
+	}
+	
+	
 }

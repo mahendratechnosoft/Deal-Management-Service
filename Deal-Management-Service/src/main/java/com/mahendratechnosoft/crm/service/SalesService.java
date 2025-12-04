@@ -1152,5 +1152,79 @@ public class SalesService {
 	    }
 	}
 
+	public ResponseEntity<?> proposalNumberAndIdByAdminId(Object loginUser) {
+	    try {
+	        String adminId = null;
 
+	        if (loginUser instanceof Admin a) {
+	        	adminId = a.getAdminId();
+	        } else if (loginUser instanceof Employee employee) {
+	        	adminId = employee.getAdmin().getAdminId();
+	        }
+
+	        List<Object[]> proposal = proposalRepository.proposalNumberAndIdByAdminId(adminId);
+
+	        List<Map<String, Object>> result = proposal.stream()
+	                .map(e -> Map.of("proposalId", e[0], "proposalNumber", e[1]))
+	                .toList();
+
+	        return ResponseEntity.ok(result);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error: " + e.getMessage());
+	    }
+	}
+	
+	
+	public ResponseEntity<?> proformaNumberAndIdByAdminId(Object loginUser) {
+	    try {
+	        String adminId = null;
+
+	        if (loginUser instanceof Admin a) {
+	        	adminId = a.getAdminId();
+	        } else if (loginUser instanceof Employee employee) {
+	        	adminId = employee.getAdmin().getAdminId();
+	        }
+
+	        List<Object[]> proforma = proformaInvoiceRepository.proformaNumberAndIdByAdminId(adminId);
+
+	        List<Map<String, Object>> result = proforma.stream()
+	                .map(e -> Map.of("proformaInvoiceId", e[0], "proformaInvoiceNumber", e[1]))
+	                .toList();
+
+	        return ResponseEntity.ok(result);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error: " + e.getMessage());
+	    }
+	}
+	
+	public ResponseEntity<?> inoviceNumberAndIdByAdminId(Object loginUser) {
+	    try {
+	        String adminId = null;
+
+	        if (loginUser instanceof Admin a) {
+	        	adminId = a.getAdminId();
+	        } else if (loginUser instanceof Employee employee) {
+	        	adminId = employee.getAdmin().getAdminId();
+	        }
+
+	        List<Object[]> proforma = proformaInvoiceRepository.invoiceNumberAndIdByAdminId(adminId);
+
+	        List<Map<String, Object>> result = proforma.stream()
+	                .map(e -> Map.of("invoiceId", e[0], "invoiceNumber", e[1]))
+	                .toList();
+
+	        return ResponseEntity.ok(result);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error: " + e.getMessage());
+	    }
+	}
 }
