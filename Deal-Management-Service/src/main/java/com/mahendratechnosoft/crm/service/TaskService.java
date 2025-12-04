@@ -107,5 +107,58 @@ public class TaskService {
 		}
 
 	}
+	
+	
+	@Transactional
+    public Task updateTask(Task task) {
+		
+        if (task.getAssignedEmployees() != null && !task.getAssignedEmployees().isEmpty()) {
+            Set<String> assigneeIds = task.getAssignedEmployees().stream()
+                    .map(Employee::getEmployeeId)
+                    .collect(Collectors.toSet());
+            
+            // Fetch real entities
+            Set<Employee> realAssignees = new HashSet<>(employeeRepository.findAllById(assigneeIds));
+            task.setAssignedEmployees(realAssignees);
+        }
+
+        // 2. Handle Followers
+        if (task.getFollowersEmployees() != null && !task.getFollowersEmployees().isEmpty()) {
+            Set<String> followerIds = task.getFollowersEmployees().stream()
+                    .map(Employee::getEmployeeId)
+                    .collect(Collectors.toSet());
+
+            Set<Employee> realFollowers = new HashSet<>(employeeRepository.findAllById(followerIds));
+            task.setFollowersEmployees(realFollowers);
+        }
+
+        return taskRepository.save(task);
+    }
+
+
+	public ResponseEntity<?> getTaskById(String taskId) {
+		try {
+
+			return ResponseEntity.ok(taskRepository.findById(taskId));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
+
+
+	public ResponseEntity<?> deleteTaskById(String taskId) {
+
+		try {
+			taskRepository.deleteById(taskId);
+			return ResponseEntity.ok("Deleted Successfully");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
 
 }

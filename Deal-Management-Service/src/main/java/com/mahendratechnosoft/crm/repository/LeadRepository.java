@@ -52,4 +52,7 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 	@Query("SELECT e.id, e.clientName FROM Leads e WHERE e.adminId = :adminId AND LOWER(e.status) <> 'converted'")
 	List<Object[]> LeadNameAndIdByAdminId(@Param("adminId") String adminId);
 	
+	@Query("SELECT e.id, e.clientName FROM Leads e WHERE e.adminId = :adminId ")
+	List<Object[]> LeadNameAndIdByAdminIdWithConverted(@Param("adminId") String adminId);
+	
 }
