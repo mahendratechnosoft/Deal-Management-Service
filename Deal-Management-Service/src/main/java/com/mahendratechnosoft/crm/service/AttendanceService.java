@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -312,5 +314,37 @@ public class AttendanceService {
 		}
 
 	}
+	
+	
+	
+	public ResponseEntity<?> getLoginStatusAllEmployee(String adminId, String date) {
+
+	    try {
+
+	        List<Object[]> rows = attendanceRepository.findLatestAttendanceForDate(adminId, date);
+
+	        List<Map<String, Object>> response = new ArrayList<>();
+
+	        for (Object[] row : rows) {
+
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("employeeId", row[0]);
+	            map.put("employeeName", row[1]);
+	            map.put("status", row[2]);         // boolean status (original DB bit)
+	            map.put("timeStamp", row[3]);      // original bigint timestamp or null
+
+	            response.add(map);
+	        }
+
+	        return ResponseEntity.ok(response);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity
+	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error " + e.getMessage());
+	    }
+	}
+
 
 }

@@ -560,6 +560,13 @@ public class EmployeeController {
 	        return  attendanceService.deleteAttendance(attendanceId);
 	    }
 		
+		
+		@GetMapping("/getLoginStatusAllEmployee/{date}")
+	    public ResponseEntity<?> getLoginStatusAllEmployee(@ModelAttribute Employee employee ,@PathVariable String date) {
+	      
+	        return attendanceService.getLoginStatusAllEmployee(employee.getAdmin().getAdminId(),date);
+	    }
+		
 		@GetMapping("/getNextProformaNumber")
 	    public ResponseEntity<Integer> getNextProformaNumber(@ModelAttribute("employee") Employee employee) {
 	        int nextNumber = salesService.getNextProformaNumberForAdmin(employee.getAdmin().getAdminId());
