@@ -19,6 +19,8 @@ public class FamilyVialAllocation {
     private String donorId;
     private int vialsAssignedCount;
     private LocalDateTime allocationDate;
+    private String donarName;
+    private String donarUin;
     
     @PrePersist
 	protected void onCreate() {
@@ -55,5 +57,21 @@ public class FamilyVialAllocation {
 	public void setAllocationDate(LocalDateTime allocationDate) {
 		this.allocationDate = allocationDate;
 	}
-    
+
+	public String getDonarName() {
+		return donarName;
+	}
+
+	public void setDonarName(String donarName) {
+		this.donarName = donarName;
+	}
+
+	public String getDonarUin() {
+		return donarUin;
+	}
+
+	public void setDonarUin(String donarUin) {
+		this.donarUin = donarUin;
+	}
+	
 }

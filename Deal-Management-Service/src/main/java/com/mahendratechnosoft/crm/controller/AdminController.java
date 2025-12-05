@@ -1166,4 +1166,9 @@ public class AdminController {
         return ResponseEntity.ok(details);
     }
 	
+	@GetMapping("/getAllFinalReportByFamilyId/{familyId}")
+	public ResponseEntity<?> getAllFinalReport(@PathVariable String familyId) {
+		return donorService.getAllFinalReport(familyId);
+	}
+	
 }
