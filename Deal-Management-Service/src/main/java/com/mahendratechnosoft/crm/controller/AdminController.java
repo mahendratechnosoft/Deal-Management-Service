@@ -32,6 +32,7 @@ import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
@@ -49,6 +50,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
@@ -773,6 +775,7 @@ public class AdminController {
         return attendanceService.getLoginStatusAllEmployee(admin.getAdminId(),date);
     }
 	
+	
 
 	@GetMapping("/getAttendanceExcelExport")
 	public ResponseEntity<?> getAttendanceBetweenExcelExport(@ModelAttribute("admin") Admin admin, @RequestParam String fromDate,
@@ -1140,6 +1143,25 @@ public class AdminController {
     public ResponseEntity<?> deleteSemenReport(@PathVariable String semenReportId ) {
      
         return  donorService.deleteSemenReport(semenReportId);
+    }
+	
+	@PostMapping("/assignVialsToFamily")
+	public ResponseEntity<?> assignVialsToFamily(@RequestBody FamilyVialAllocation familyVialAllocation){
+		
+		try {
+			FamilyVialAllocation responce = donorService.assignVialsToFamily(familyVialAllocation);
+			return ResponseEntity.ok(responce);
+		} catch (Exception e) {
+			 e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		                             .body("Error: " + e.getMessage());
+		}
+	}
+	
+	@GetMapping("/getFinalReport/{allocationId}")
+    public ResponseEntity<AllocationDetailsDTO> getAllocationDetails(@PathVariable String allocationId) {
+        AllocationDetailsDTO details = donorService.getAllocationDetails(allocationId);
+        return ResponseEntity.ok(details);
     }
 	
 }

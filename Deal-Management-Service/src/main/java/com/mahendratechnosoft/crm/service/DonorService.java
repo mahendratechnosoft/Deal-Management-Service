@@ -17,7 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
+import com.mahendratechnosoft.crm.dto.Hospital.DonorResponseDto;
 import com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
@@ -26,14 +29,17 @@ import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorBloodReportRepositroy;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorFamilyInfoRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorsRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.FamilyInfoRepository;
+import com.mahendratechnosoft.crm.repository.Hospital.FamilyVialAllocationRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.SampleReportRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.SemenReportRepository;
+
 
 @Service
 public class DonorService {
@@ -58,6 +64,9 @@ public class DonorService {
 	
 	@Autowired
 	private FamilyInfoRepository familyInfoRepository;
+	
+	@Autowired
+	private FamilyVialAllocationRepository familyVialAllocationRepository;
 	
 	
 	public ResponseEntity<?> createDonor( Donors request) {
@@ -580,7 +589,7 @@ public class DonorService {
 	        Double minWeightVal = (minWeight != null && !minWeight.isEmpty()) ? Double.parseDouble(minWeight) : null;
 	        Double maxWeightVal = (maxWeight != null && !maxWeight.isEmpty()) ? Double.parseDouble(maxWeight) : null;
 			
-			Page<Donors> donorPage = null;
+			Page<DonorResponseDto> donorPage = null;
 			if (loginUser instanceof Admin admin) {
 				role = admin.getUser().getRole();
 				adminId = admin.getAdminId();
@@ -717,6 +726,92 @@ public class DonorService {
 		}
 
 	}
-	
+
+	@Transactional
+	public FamilyVialAllocation assignVialsToFamily(FamilyVialAllocation familyVialAllocation) {
+
+	    int requestedVials = familyVialAllocation.getVialsAssignedCount();
+	    SampleReport sampleReport = sampleReportRepository.findByDonorId(familyVialAllocation.getDonorId());
+
+	    if (sampleReport.getBalancedVials() < requestedVials) {
+	        throw new RuntimeException("Not enough vials available. Balanced vials = " 
+	                                   + sampleReport.getBalancedVials());
+	    }
+
+	    // Update balanced vials
+	    sampleReport.setBalancedVials(sampleReport.getBalancedVials() - requestedVials);
+	    sampleReportRepository.save(sampleReport);
+
+	    // Save allocation
+	    return familyVialAllocationRepository.save(familyVialAllocation);
+	}
+
+	@Transactional(readOnly = true)
+    public AllocationDetailsDTO getAllocationDetails(String allocationId) {
+        // 1. Get Allocation
+        FamilyVialAllocation allocation = familyVialAllocationRepository.findById(allocationId)
+                .orElseThrow(() -> new RuntimeException("Allocation not found with ID: " + allocationId));
+
+        // 2. Initialize DTO
+        AllocationDetailsDTO dto = new AllocationDetailsDTO();
+        dto.setAllocationId(allocation.getAllocationId());
+        dto.setVialsAssignedCount(allocation.getVialsAssignedCount());
+
+        // 3. Fetch and Map Donor Details
+        Donors donor = donorsRepository.findById(allocation.getDonorId())
+                .orElseThrow(() -> new RuntimeException("Donor not found with ID: " + allocation.getDonorId()));
+        
+        dto.setDonorId(donor.getDonorId());
+        dto.setDonorUin(donor.getUin());
+        dto.setSkinColor(donor.getSkinColor());
+        dto.setEyeColor(donor.getEyeColor());
+        dto.setEducation(donor.getEducation());
+        dto.setProfession(donor.getProfession());
+        dto.setReligion(donor.getReligion());
+
+        // 4. Fetch and Map Family Details
+        FamilyInfo family = familyInfoRepository.findById(allocation.getFamilyInfoId())
+                .orElseThrow(() -> new RuntimeException("Family Info not found with ID: " + allocation.getFamilyInfoId()));
+
+        dto.setFamilyInfoId(family.getFamilyInfoId());
+        dto.setFamilyUin(family.getUin());
+        dto.setReferHospital(family.getReferHospital());
+        dto.setReferHospitalAddress(family.getReferHospitalAddress());
+        dto.setReferDoctor(family.getReferDoctor());
+        dto.setHusbandName(family.getHusbandName());
+        dto.setWifeName(family.getWifeName());
+
+        // 5. Fetch Latest Blood Report (Handle null if no report exists)
+        donoBloodReportRepositroy.findFirstByDonorIdOrderByReportDateTimeDesc(allocation.getDonorId())
+                .ifPresent(report -> {
+                    dto.setDonorBloodReportId(report.getDonorBloodReportId());
+                    dto.setBloodGroup(report.getBloodGroup());
+                    dto.setBsl(report.getBsl());
+                    dto.setHIV(report.getHIV());
+                    dto.setHBSAG(report.getHBSAG());
+                    dto.setVDRL(report.getVDRL());
+                    dto.setHCV(report.getHCV());
+                    dto.setHBElectrophoresis(report.getHBElectrophoresis());
+                    dto.setSRCreatinine(report.getSRCreatinine());
+                    dto.setCMV(report.getCMV());
+                });
+
+        // 6. Fetch Latest Semen Report (Handle null if no report exists)
+        semenReportRepository.findFirstByDonorIdOrderByDateAndTimeDesc(allocation.getDonorId())
+                .ifPresent(report -> {
+                    dto.setSampleReportId(report.getSampleReportId());
+                    dto.setSemenReportDateAndTime(report.getDateAndTime());
+                    dto.setMedia(report.getMedia());
+                    dto.setVolumne(report.getVolumne());
+                    dto.setSpermConcentration(report.getSpermConcentration());
+                    dto.setProgressiveMotilityA(report.getProgressiveMotilityA());
+                    dto.setProgressiveMotilityB(report.getProgressiveMotilityB());
+                    dto.setProgressiveMotilityC(report.getProgressiveMotilityC());
+                    dto.setMorphology(report.getMorphology());
+                    dto.setAbnormality(report.getAbnormality());
+                });
+
+        return dto;
+    }
 	
 }
