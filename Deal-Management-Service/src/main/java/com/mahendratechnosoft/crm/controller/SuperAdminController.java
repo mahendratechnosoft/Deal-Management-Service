@@ -145,7 +145,7 @@ public class SuperAdminController {
 		//   ModuleAccess access=moduleAccessRepository.findByAdminIdAndEmployeeId(admin.getAdminId(),null);
 		   
 			response.put("adminInfo",adminInfo);
-			System.out.println(admin.getModuleAccess());
+			
 	     	response.put("moduleAccess",  moduleAccessRepository.save(admin.getModuleAccess()));
 
 

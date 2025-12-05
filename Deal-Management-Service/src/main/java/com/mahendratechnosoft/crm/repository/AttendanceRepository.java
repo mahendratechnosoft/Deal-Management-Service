@@ -76,6 +76,30 @@ public interface AttendanceRepository extends JpaRepository<Attendance, String> 
 		        @Param("employeeId") String employeeId,
 		        @Param("fromTime") long fromTime,
 		        @Param("toTime") long toTime);
+	
+	
+	@Query("""
+			SELECT e.employeeId,
+			       e.name,
+			       COALESCE(a.status, false) AS status,
+			       a.timeStamp
+			FROM Employee e
+			LEFT JOIN Attendance a
+			       ON e.employeeId = a.employeeId
+			       AND a.timeStamp = (
+			            SELECT MAX(t.timeStamp)
+			            FROM Attendance t
+			            WHERE t.employeeId = e.employeeId
+			            AND FUNCTION('DATE', FUNCTION('FROM_UNIXTIME', t.timeStamp / 1000))
+			                = FUNCTION('STR_TO_DATE', :date, '%d-%m-%Y')
+			       )
+			WHERE e.admin.adminId = :adminId
+			ORDER BY e.name
+			""")
+			List<Object[]> findLatestAttendanceForDate(
+			        @Param("adminId") String adminId,
+			        @Param("date") String date);
+
 
 
 }

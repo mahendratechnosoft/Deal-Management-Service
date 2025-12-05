@@ -1,6 +1,7 @@
 package com.mahendratechnosoft.crm.controller;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -766,6 +767,11 @@ public class AdminController {
         return  attendanceService.deleteAttendance(attendanceId);
     }
 	
+	@GetMapping("/getLoginStatusAllEmployee/{date}")
+    public ResponseEntity<?> getLoginStatusAllEmployee(@ModelAttribute Admin admin ,@PathVariable String date) {
+      
+        return attendanceService.getLoginStatusAllEmployee(admin.getAdminId(),date);
+    }
 	
 	@GetMapping("/getNextProformaNumber")
     public ResponseEntity<Integer> getNextProformaNumber(@ModelAttribute Admin admin) {
