@@ -14,9 +14,10 @@ import com.mahendratechnosoft.crm.dto.Hospital.DonorResponseDto;
 import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 
 @Repository
-public interface DonorsRepository extends JpaRepository<Donors, String>{
+public interface FamilyVialAllocationRepository extends JpaRepository<FamilyVialAllocation, String>{
 	
 	@Query("""
 		    SELECT p FROM Donors p
