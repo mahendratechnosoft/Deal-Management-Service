@@ -145,6 +145,13 @@ public class EmployeeController {
 		return dealsService.getAllDeals(page ,size,employee);
 
 	}
+	
+	@GetMapping("/getLeadFollowUp")
+	public ResponseEntity<?> getLeadFollowUp(@ModelAttribute("employee") Employee employee,@RequestParam(required = false) String followUpdate) {
+
+	  return  leadService.getLeadFollowUp(employee,followUpdate);
+	}
+	
 
 	// lead APis
 	
@@ -165,9 +172,9 @@ public class EmployeeController {
 				@RequestParam(required = false) String search,
 				@RequestParam(required = false) String leadStatus,
 				@RequestParam(required = false) String startDate,
-		        @RequestParam(required = false) String endDate) {
+		        @RequestParam(required = false) String endDate,@RequestParam(required = false) String  followUpDate) {
 
-		  return  leadService.getAllLeads(page, size,employee,leadStatus,search,startDate, endDate);
+		  return  leadService.getAllLeads(page, size,employee,leadStatus,search,startDate, endDate,followUpDate);
 		}
 		
 		@GetMapping("/getLeadStatusAndCount")

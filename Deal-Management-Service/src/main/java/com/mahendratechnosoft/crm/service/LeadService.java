@@ -117,10 +117,11 @@ public class LeadService {
 
 	
 	public ResponseEntity<?> getAllLeads(int page ,int size,Object loginUser,
-			String leadStatus,String search, String startDate, String endDate) {
+			String leadStatus,String search, String startDate, String endDate,String followUpDate) {
 		
 		LocalDateTime fromDate = null;
 		LocalDateTime toDate = null;
+		LocalDate followUp = null;
 
 		if (startDate != null && !startDate.isEmpty()) {
 		    fromDate = LocalDate.parse(startDate).atStartOfDay();
@@ -129,7 +130,10 @@ public class LeadService {
 		if (endDate != null && !endDate.isEmpty()) {
 		    toDate = LocalDate.parse(endDate).atTime(LocalTime.MAX);
 		}
-        
+		
+		if (followUpDate != null && !followUpDate.isEmpty()) {
+		    followUp = LocalDate.parse(followUpDate);  
+		}
 
 	    try {
 	    	  ModuleAccess moduleAcces=null;
@@ -166,24 +170,18 @@ public class LeadService {
 	        Pageable pageable = PageRequest.of(page, size);
 	        List<Object[]> countAndStatus = null;
 	        if(role.equals("ROLE_ADMIN")){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search,fromDate,toDate, pageable);
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search,fromDate,toDate,followUp, pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
  
 
 	        }else if(moduleAcces.isLeadViewAll()){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, fromDate,toDate,pageable);
-	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
-	        	
-	        }
-	        else if(moduleAcces.isLeadViewAll()){
-	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, fromDate,toDate,pageable);
+	        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,search, fromDate,toDate,followUp,pageable);
 	        	 countAndStatus = leadRepository.countLeadsByStatus(adminId);
 	        	
 	        }
 	        else {
-
 	        	
-	        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,search, pageable);
+	        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,search,fromDate,toDate,followUp, pageable);
 	        	countAndStatus = leadRepository.countLeadsByStatusByEmployeeId(employeeId);
 	        }
 	        
@@ -681,14 +679,14 @@ public class LeadService {
            }
         
         if(role.equals("ROLE_ADMIN")){
-        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,null,fromDate,toDate, Pageable.unpaged());
+        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,null,fromDate,toDate,null, Pageable.unpaged());
 
         }
         else if(moduleAcces.isLeadViewAll()){
-        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,null, fromDate,toDate,Pageable.unpaged());
+        	leadPage = leadRepository.findByAdminIdAndOptionalStatus(adminId,leadStatus,null, fromDate,toDate,null,Pageable.unpaged());
         }
         else {
-        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,null, Pageable.unpaged());
+        	leadPage = leadRepository.findByEmployeeIdAndOptionalStatus(employeeId,leadStatus,null,fromDate,toDate,null, Pageable.unpaged());
         }
         
         excelService.generateLeadExcel(response,leadPage.getContent());
@@ -721,5 +719,65 @@ public class LeadService {
 	                .body("Error: " + e.getMessage());
 	    }
 	}
+	
+	
+	public ResponseEntity<?> getLeadFollowUp(Object loginUser, String followUpDate) {
+	    try {
+	        String adminId = null;
+	        String employeeId = null;
+	        ModuleAccess access = null;
+	        LocalDate followUp = null;
+	        String role = "ROLE_EMPLOYEE";
+
+	        if (followUpDate != null && !followUpDate.isEmpty()) {
+	            followUp = LocalDate.parse(followUpDate);
+	        }
+
+	        if (loginUser instanceof Admin admin) {
+	            adminId = admin.getAdminId();
+	            role = admin.getUser().getRole();
+
+	        } else if (loginUser instanceof Employee employee) {
+	            adminId = employee.getAdmin().getAdminId();
+	            employeeId = employee.getEmployeeId();
+	            access = employee.getModuleAccess();
+	        }
+
+	        List<Object[]> leads = null;
+
+	        if (role.equals("ROLE_ADMIN")) {
+	            leads = leadRepository.leadFollowUpDetails(adminId, null, followUp);
+
+	        } else if (access.isLeadViewAll()) {
+	            leads = leadRepository.leadFollowUpDetails(adminId, null, followUp);
+
+	        } else {
+	            leads = leadRepository.leadFollowUpDetails(adminId, employeeId, followUp); // ✅ fixed
+	        }
+
+	        List<Map<String, Object>> result = leads.stream()
+	                .map(e -> Map.of(
+	                        "leadId", e[0],
+	                        "clientName", e[1],
+	                        "companyName", e[2],
+	                        "email", e[3],
+	                        "phone", e[4],
+	                        "status", e[5]
+	                ))
+	                .toList();
+
+	        Map<String, Object> response = new LinkedHashMap<>();
+	        response.put("todayLeadFolloUp", result);
+	        response.put("count", result.size());
+
+	        return ResponseEntity.ok(response);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+	    }
+	}
+
+
 
 }
