@@ -704,5 +704,19 @@ public class DonorService {
 
 	}
 	
+	public ResponseEntity<?> deleteSemenReport( String  semenReportId) {
+
+		try {
+			semenReportRepository.deleteById(semenReportId);
+			return ResponseEntity.ok("Deleted Successfully");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
 	
 }

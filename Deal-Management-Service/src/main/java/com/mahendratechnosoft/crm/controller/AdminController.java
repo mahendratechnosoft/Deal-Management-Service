@@ -1123,5 +1123,10 @@ public class AdminController {
 	  return  salesService.inoviceNumberAndIdByAdminId(admin);
 	}
 	
+	@DeleteMapping("/deleteSemenReport/{semenReportId}")
+    public ResponseEntity<?> deleteSemenReport(@PathVariable String semenReportId ) {
+     
+        return  donorService.deleteSemenReport(semenReportId);
+    }
 	
 }

@@ -4,6 +4,8 @@ public class FamilyInfoDto {
 
 	private String familyInfoId;
 	 private String uin;
+	 private String wifeName;
+	 private String husbandName;
 	 public String getFamilyInfoId() {
 		 return familyInfoId;
 	 }
@@ -16,14 +18,28 @@ public class FamilyInfoDto {
 	 public void setUin(String uin) {
 		 this.uin = uin;
 	 }
-	 public FamilyInfoDto(String familyInfoId, String uin) {
-		super();
-		this.familyInfoId = familyInfoId;
-		this.uin = uin;
-	 }
 	 public FamilyInfoDto() {
 		super();
 		// TODO Auto-generated constructor stub
+	 }
+	 public FamilyInfoDto(String familyInfoId, String uin, String wifeName, String husbandName) {
+		super();
+		this.familyInfoId = familyInfoId;
+		this.uin = uin;
+		this.wifeName = wifeName;
+		this.husbandName = husbandName;
+	 }
+	 public String getWifeName() {
+		 return wifeName;
+	 }
+	 public void setWifeName(String wifeName) {
+		 this.wifeName = wifeName;
+	 }
+	 public String getHusbandName() {
+		 return husbandName;
+	 }
+	 public void setHusbandName(String husbandName) {
+		 this.husbandName = husbandName;
 	 }
 	 
 }

@@ -77,6 +77,7 @@ public class Donors {
 	@Transient
 	private String fullLengthImageData;
 	
+	@Column(length = 500)
 	private String geneticElements;
 
 	public Donors() {
