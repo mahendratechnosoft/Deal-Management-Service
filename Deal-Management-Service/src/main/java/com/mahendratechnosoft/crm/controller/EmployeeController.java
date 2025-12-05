@@ -834,6 +834,12 @@ public class EmployeeController {
 	    public ResponseEntity<?> getFamilyList(@ModelAttribute("employee") Employee employee) {
 	        return  donorService.getFamilyList(employee);
 	    }
+		
+		@DeleteMapping("/deleteSemenReport/{semenReportId}")
+	    public ResponseEntity<?> deleteSemenReport(@PathVariable String semenReportId ) {
+	     
+	        return  donorService.deleteSemenReport(semenReportId);
+	    }
 
 		
 		// End donor api
