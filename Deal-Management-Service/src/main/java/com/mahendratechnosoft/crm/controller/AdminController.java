@@ -272,9 +272,9 @@ public class AdminController {
 			@RequestParam(required = false) String search,
 			@RequestParam(required = false) String leadStatus,
 			@RequestParam(required = false) String startDate,
-	        @RequestParam(required = false) String endDate) {
+	        @RequestParam(required = false) String endDate,@RequestParam(required = false) String followUpDate) {
 
-	  return  leadService.getAllLeads(page, size,admin,leadStatus,search,startDate, endDate);
+	  return  leadService.getAllLeads(page, size,admin,leadStatus,search,startDate, endDate,followUpDate);
 	}
 	
 	@GetMapping("/getLeadStatusAndCount")
@@ -282,6 +282,13 @@ public class AdminController {
 
 	  return  leadService.getLeadStatusAndCount(admin);
 	}
+	
+	@GetMapping("/getLeadFollowUp")
+	public ResponseEntity<?> getLeadFollowUp(@ModelAttribute("admin") Admin admin,@RequestParam(required = false) String followUpdate) {
+
+	  return  leadService.getLeadFollowUp(admin,followUpdate);
+	}
+	
     
 	@PutMapping("/updateLead")
 	public ResponseEntity<?> updateLead( @ModelAttribute("admin") Admin admin,@RequestBody Leads lead) {

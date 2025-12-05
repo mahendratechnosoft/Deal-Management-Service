@@ -1,6 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,10 +24,11 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 			+ "      )"
 			+ "AND (:fromDate IS NULL OR l.createdDate >= :fromDate)"
 			+ "AND (:toDate   IS NULL OR l.createdDate <= :toDate)"
+			+ "AND (:followUpDate IS NULL OR DATE(l.followUp) = :followUpDate) "
 			+ "order By l.createdDate desc"
 			)
 	Page<Leads> findByAdminIdAndOptionalStatus( @Param("adminId") String adminId, @Param("status") String status,
-			@Param("search") String search, @Param("fromDate") LocalDateTime fromDate,@Param("toDate") LocalDateTime toDate,
+			@Param("search") String search, @Param("fromDate") LocalDateTime fromDate,@Param("toDate") LocalDateTime toDate,@Param("followUpDate") LocalDate followUpDate,
 			Pageable pageable);
 
 	
@@ -35,9 +37,14 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 			+ "          :search IS NULL "
 			+ "          OR LOWER(l.clientName) LIKE LOWER(CONCAT('%', :search, '%'))"
 			+ "          OR LOWER(l.companyName) LIKE LOWER(CONCAT('%', :search, '%'))"
-			+ "      )")
+			+ "      )"
+			+ "AND (:fromDate IS NULL OR l.createdDate >= :fromDate)"
+			+ "AND (:toDate   IS NULL OR l.createdDate <= :toDate)"
+			+ "AND (:followUpDate IS NULL OR DATE(l.followUp) = :followUpDate) "
+			+ "order By l.createdDate desc")
 			
-	Page<Leads> findByEmployeeIdAndOptionalStatus( @Param("employeeId") String employeeId, @Param("status") String status,@Param("search") String search, Pageable pageable);
+	Page<Leads> findByEmployeeIdAndOptionalStatus( @Param("employeeId") String employeeId, @Param("status") String status,@Param("search") String search,
+			@Param("fromDate") LocalDateTime fromDate,@Param("toDate") LocalDateTime toDate,@Param("followUpDate") LocalDate followUpDate,Pageable pageable);
 
 	
 	List<Leads> findByAdminId(String companyId);
@@ -54,5 +61,19 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 	
 	@Query("SELECT e.id, e.clientName FROM Leads e WHERE e.adminId = :adminId ")
 	List<Object[]> LeadNameAndIdByAdminIdWithConverted(@Param("adminId") String adminId);
+	
+	@Query("SELECT e.id, e.clientName, e.companyName, e.email, e.mobileNumber, e.status "
+		     + "FROM Leads e "
+		     + "WHERE e.adminId = :adminId "
+		     + "AND DATE(e.followUp) = :followUpDate "
+		     + "AND (:employeeId IS NULL OR e.employeeId = :employeeId)")
+		List<Object[]> leadFollowUpDetails(
+		        @Param("adminId") String adminId,
+		        @Param("employeeId") String employeeId,
+		        @Param("followUpDate") LocalDate followUpDate
+		);
+
+
+
 	
 }
