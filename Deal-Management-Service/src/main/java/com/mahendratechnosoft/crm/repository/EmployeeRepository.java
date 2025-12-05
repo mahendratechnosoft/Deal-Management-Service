@@ -48,5 +48,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
 	
 	@Query("SELECT e.employeeId, e.name FROM Employee e WHERE e.admin = :admin")
 	List<Object[]> EmployeeNameAndIdByAdminId(@Param("admin") Admin admin);
+	
+	List<Employee> findByAdmin(Admin admin);
 
 }

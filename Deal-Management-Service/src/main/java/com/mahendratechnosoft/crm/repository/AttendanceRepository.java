@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -101,5 +102,16 @@ public interface AttendanceRepository extends JpaRepository<Attendance, String> 
 			        @Param("date") String date);
 
 
+			@Query("""
+				       SELECT a FROM Attendance a
+				       WHERE a.adminId = :adminId
+				       AND FUNCTION('DATE', FUNCTION('FROM_UNIXTIME', a.timeStamp / 1000))
+				           BETWEEN :startDate AND :endDate
+				       """)
+				List<Attendance> findAttendanceBetweenDates(
+				        @Param("adminId") String adminId,
+				        @Param("startDate") LocalDate startDate,
+				        @Param("endDate") LocalDate endDate
+				);
 
 }
