@@ -813,5 +813,16 @@ public class DonorService {
 
         return dto;
     }
+
+
+	public ResponseEntity<?> getAllFinalReport(String familyId) {
+		try {
+			List<FamilyVialAllocation> responce = familyVialAllocationRepository.findByFamilyInfoIdOrderByAllocationDateDesc(familyId);
+			return ResponseEntity.ok(responce);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
 	
 }

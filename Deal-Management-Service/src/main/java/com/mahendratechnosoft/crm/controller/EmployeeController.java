@@ -873,6 +873,11 @@ public class EmployeeController {
 	        AllocationDetailsDTO details = donorService.getAllocationDetails(allocationId);
 	        return ResponseEntity.ok(details);
 	    }
+		
+		@GetMapping("/getAllFinalReportByFamilyId/{familyId}")
+		public ResponseEntity<?> getAllFinalReport(@PathVariable String familyId) {
+			return donorService.getAllFinalReport(familyId);
+		}
 
 		
 		// End donor api
