@@ -121,7 +121,7 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	
 	
 	@Query("SELECT d.status, COUNT(d) FROM Donors d " +
-		       "WHERE d.status IN ('New Donor', 'Donor', 'Qualified', 'Shortlisted', 'Selected') " +
+		       "WHERE d.status IN ('New Donor', 'Donor', 'Qualified', 'Shortlisted', 'Selected','Qurantined') " +
 		       "AND d.adminId = :adminId " +
 		       "GROUP BY d.status")
 	List<Object[]> getDonorCountByStatus(@Param("adminId") String adminId);

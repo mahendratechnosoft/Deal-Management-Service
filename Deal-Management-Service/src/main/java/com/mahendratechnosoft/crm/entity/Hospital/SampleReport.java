@@ -17,6 +17,7 @@ public class SampleReport {
 	private String caneNo;
 	private String canisterNo;
 	private int numberOfVials;
+	private int balancedVials;
 	private String remarks;
 	
 //	@ManyToOne
@@ -95,6 +96,14 @@ public class SampleReport {
 
 	public void setDonorId(String donorId) {
 		this.donorId = donorId;
+	}
+
+	public int getBalancedVials() {
+		return balancedVials;
+	}
+
+	public void setBalancedVials(int balancedVials) {
+		this.balancedVials = balancedVials;
 	}
 
 	

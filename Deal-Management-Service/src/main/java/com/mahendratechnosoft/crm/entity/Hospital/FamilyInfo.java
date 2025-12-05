@@ -29,7 +29,7 @@ public class FamilyInfo {
     private String husbandEducation;
     private String husbandDistrict;
     private String husbandCountry;
-    @Column(length = 1000)
+    @Column(length = 500)
     private String husbandGenticIllness; 
     private String wifeName;
     private String wifeMobile;
@@ -42,7 +42,7 @@ public class FamilyInfo {
     private String wifeEducation;
     private String wifeDistrict;
     private String wifeCountry;
-    @Column(length = 1000)
+    @Column(length = 500)
     private String wifeGenticIllness;
 	public FamilyInfo(String familyInfoId,  String referHospital, String referHospitalAddress,
 			String referDoctor, String referDoctorContactNumber, String husbandName, String husbandMobile,
