@@ -773,6 +773,12 @@ public class AdminController {
         return attendanceService.getLoginStatusAllEmployee(admin.getAdminId(),date);
     }
 	
+
+	@GetMapping("/getAttendanceExcelExport")
+	public ResponseEntity<?> getAttendanceBetweenExcelExport(@ModelAttribute("admin") Admin admin, @RequestParam String fromDate,
+			@RequestParam String toDate,@RequestParam(required = false) String employeeId,String attendanceType,String monthName) {
+		return attendanceService.getAttendanceExcelExport(admin, fromDate, toDate,employeeId,attendanceType,monthName);
+	}
 	
 	@GetMapping("/getNextProformaNumber")
     public ResponseEntity<Integer> getNextProformaNumber(@ModelAttribute Admin admin) {

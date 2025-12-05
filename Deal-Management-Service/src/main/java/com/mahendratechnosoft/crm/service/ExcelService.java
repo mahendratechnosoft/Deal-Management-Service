@@ -4,11 +4,19 @@ package com.mahendratechnosoft.crm.service;
 
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,6 +28,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -29,9 +38,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mahendratechnosoft.crm.entity.ActivityLogs;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.repository.ActivityLogsRepository;
+import com.mahendratechnosoft.crm.repository.AttendanceRepository;
+import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.LeadRepository;
 
 import jakarta.servlet.ServletOutputStream;
@@ -45,6 +57,13 @@ public class ExcelService {
 
 	@Autowired
 	private ActivityLogsRepository activityLogsRepository;
+	
+	
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 	
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 	
@@ -318,6 +337,148 @@ public class ExcelService {
 
 	    cell.setCellStyle(style);
 	}
+
+	public ByteArrayInputStream exportAttendanceExcel(Admin admin, String fromDate, String toDate, String monthName) throws Exception {
+
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	    LocalDate start = LocalDate.parse(fromDate, formatter);
+	    LocalDate end = LocalDate.parse(toDate, formatter);
+
+	    List<Employee> employees = employeeRepository.findByAdmin(admin);
+
+	    List<Attendance> attendanceList = attendanceRepository
+	            .findAttendanceBetweenDates(admin.getAdminId(), start, end);
+
+	    // employeeId → date → present
+	    Map<String, Map<LocalDate, Boolean>> attendanceMap = new HashMap<>();
+	    for (Attendance att : attendanceList) {
+	        LocalDate attDate = Instant.ofEpochMilli(att.getTimeStamp())
+	                .atZone(ZoneId.systemDefault())
+	                .toLocalDate();
+	        attendanceMap.computeIfAbsent(att.getEmployeeId(), k -> new HashMap<>())
+	                .put(attDate, true);
+	    }
+
+	    XSSFWorkbook workbook = new XSSFWorkbook();
+	    XSSFSheet sheet = workbook.createSheet("Attendance Report");
+
+	    // ----------------- FONT COLORS -----------------
+	    Font greenFont = workbook.createFont();
+	    greenFont.setBold(true);
+	    greenFont.setColor(IndexedColors.GREEN.getIndex());
+	    CellStyle presentStyle = workbook.createCellStyle();
+	    presentStyle.setFont(greenFont);
+	    presentStyle.setBorderBottom(BorderStyle.THIN);
+	    presentStyle.setBorderTop(BorderStyle.THIN);
+	    presentStyle.setBorderLeft(BorderStyle.THIN);
+	    presentStyle.setBorderRight(BorderStyle.THIN);
+	    presentStyle.setAlignment(HorizontalAlignment.CENTER);
+
+	    Font redFont = workbook.createFont();
+	    redFont.setColor(IndexedColors.RED.getIndex());
+	    CellStyle absentStyle = workbook.createCellStyle();
+	    absentStyle.setFont(redFont);
+	    absentStyle.setBorderBottom(BorderStyle.THIN);
+	    absentStyle.setBorderTop(BorderStyle.THIN);
+	    absentStyle.setBorderLeft(BorderStyle.THIN);
+	    absentStyle.setBorderRight(BorderStyle.THIN);
+	    absentStyle.setAlignment(HorizontalAlignment.CENTER);
+
+	    Font headerFont = workbook.createFont();
+	    headerFont.setBold(true);
+	    CellStyle headerStyle = workbook.createCellStyle();
+	    headerStyle.setFont(headerFont);
+	    headerStyle.setAlignment(HorizontalAlignment.CENTER);
+	    headerStyle.setBorderBottom(BorderStyle.THIN);
+	    headerStyle.setBorderTop(BorderStyle.THIN);
+	    headerStyle.setBorderLeft(BorderStyle.THIN);
+	    headerStyle.setBorderRight(BorderStyle.THIN);
+
+	    // ----------------- MONTH & YEAR HEADER -----------------
+	    Row monthRow = sheet.createRow(0);
+	    Cell monthCell = monthRow.createCell(0);
+	    monthCell.setCellValue(monthName + " " + start.getYear());
+	    monthCell.setCellStyle(headerStyle);
+
+	    int totalDays = (int) (end.toEpochDay() - start.toEpochDay() + 1);
+	    sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, totalDays + 2));
+
+	    // ----------------- DAY HEADER ROW -----------------
+	    Row headerRow = sheet.createRow(1);
+	    headerRow.createCell(0).setCellValue("Employee Name");
+	    headerRow.getCell(0).setCellStyle(headerStyle);
+
+	    LocalDate current = start;
+	    int col = 1;
+	    while (!current.isAfter(end)) {
+	        Cell cell = headerRow.createCell(col);
+	        // Show day abbreviation: Mon, Tue, Wed...
+	        String dayWithDate = current.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " + current.getDayOfMonth();
+	        cell.setCellValue(dayWithDate);
+	        cell.setCellStyle(headerStyle);
+	        col++;
+	        current = current.plusDays(1);
+	    }
+
+	    // Total Days & Total Present
+	    headerRow.createCell(col).setCellValue("Total Days");
+	    headerRow.getCell(col).setCellStyle(headerStyle);
+	    headerRow.createCell(col + 1).setCellValue("Total Present");
+	    headerRow.getCell(col + 1).setCellStyle(headerStyle);
+
+	    // ----------------- EMPLOYEE ROWS -----------------
+	    int rowIndex = 2;
+	    for (Employee emp : employees) {
+	        Row row = sheet.createRow(rowIndex);
+	        Cell nameCell = row.createCell(0);
+	        nameCell.setCellValue(emp.getName());
+	        nameCell.setCellStyle(headerStyle);
+
+	        LocalDate datePointer = start;
+	        int colIndex = 1;
+	        Map<LocalDate, Boolean> empDates = attendanceMap.getOrDefault(emp.getEmployeeId(), new HashMap<>());
+	        int presentCount = 0;
+
+	        while (!datePointer.isAfter(end)) {
+	            boolean present = empDates.containsKey(datePointer);
+	            Cell cell = row.createCell(colIndex);
+	            cell.setCellValue(present ? "P" : "AB");
+	            cell.setCellStyle(present ? presentStyle : absentStyle);
+	            if (present) presentCount++;
+	            datePointer = datePointer.plusDays(1);
+	            colIndex++;
+	        }
+
+	        // Total Days
+	        Cell totalDaysCell = row.createCell(colIndex);
+	        totalDaysCell.setCellValue(totalDays);
+	        totalDaysCell.setCellStyle(headerStyle);
+
+	        // Total Present
+	        Cell presentCell = row.createCell(colIndex + 1);
+	        presentCell.setCellValue(presentCount);
+	        presentCell.setCellStyle(headerStyle);
+
+	        rowIndex++;
+	    }
+
+	    // ----------------- FREEZE PANES -----------------
+	    // Freeze first two rows (month + day header) and first column
+	    sheet.createFreezePane(1, 2);
+
+	    // Auto-size columns
+	    for (int i = 0; i <= col + 1; i++) {
+	        sheet.autoSizeColumn(i);
+	    }
+
+	    ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    workbook.write(out);
+	    workbook.close();
+
+	    return new ByteArrayInputStream(out.toByteArray());
+	}
+
+
 
 
 }

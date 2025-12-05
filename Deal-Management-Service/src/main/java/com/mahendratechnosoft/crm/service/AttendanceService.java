@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.io.ByteArrayInputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -14,7 +15,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +35,9 @@ public class AttendanceService {
 	
 	@Autowired
 	private AttendanceRepository attendanceRepository;
+	
+	@Autowired
+	private ExcelService excelService;
 	
 	public ResponseEntity<?> addAttendance( String adminId,String employeeId,boolean status) {
 
@@ -346,5 +353,31 @@ public class AttendanceService {
 	    }
 	}
 
+	public ResponseEntity<?> getAttendanceExcelExport(Admin admin, String fromDate, String toDate, String empId,String attendanceType,String monthName) {
+
+		try {
+			
+
+			  ByteArrayInputStream excelStream =
+		                excelService.exportAttendanceExcel(admin, fromDate, toDate,monthName);
+
+		        InputStreamResource resource = new InputStreamResource(excelStream);
+
+		        HttpHeaders headers = new HttpHeaders();
+		        headers.add("Content-Disposition", "attachment; filename=attendance_report.xlsx");
+
+		        return ResponseEntity.ok()
+		                .headers(headers)
+		                .contentLength(excelStream.available())
+		                .contentType(MediaType.parseMediaType(
+		                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+		                ))
+		                .body(resource);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
 
 }

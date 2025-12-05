@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
@@ -566,6 +565,12 @@ public class EmployeeController {
 	      
 	        return attendanceService.getLoginStatusAllEmployee(employee.getAdmin().getAdminId(),date);
 	    }
+		
+		@GetMapping("/getAttendanceExcelExport")
+		public ResponseEntity<?> getAttendanceBetweenExcelExport(@ModelAttribute Employee employee, @RequestParam String fromDate,
+				@RequestParam String toDate,@RequestParam(required = false) String employeeId,String attendanceType,String monthName) {
+			return attendanceService.getAttendanceExcelExport(employee.getAdmin(), fromDate, toDate,employeeId,attendanceType,monthName);
+		}
 		
 		@GetMapping("/getNextProformaNumber")
 	    public ResponseEntity<Integer> getNextProformaNumber(@ModelAttribute("employee") Employee employee) {
