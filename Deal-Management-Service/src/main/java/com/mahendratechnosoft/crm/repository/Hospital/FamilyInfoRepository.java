@@ -36,11 +36,11 @@ public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> 
 	Page<FamilyInfo> findByAdminId(@Param("adminId") String adminId, @Param("search") String search,
 			 Pageable pageable);
 	
-	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin) " +
+	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin,fi.wifeName,fi.husbandName) " +
 		       "FROM FamilyInfo fi WHERE fi.adminId = :adminId")
 	List<FamilyInfoDto> findByAdminId(@Param("adminId") String adminId);
 	
-	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin) " +
+	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin, fi.wifeName,fi.husbandName) " +
 		       "FROM FamilyInfo fi WHERE fi.employeeId = :employeeId")
 	List<FamilyInfoDto> findByEmployeeId(@Param("employeeId") String employeeId);
 
