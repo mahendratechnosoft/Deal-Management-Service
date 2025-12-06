@@ -885,7 +885,11 @@ public class EmployeeController {
 		public ResponseEntity<?> getAllFinalReport(@PathVariable String familyId) {
 			return donorService.getAllFinalReport(familyId);
 		}
-
+		
+		@GetMapping("/getAllDonation/{donorId}")
+		public ResponseEntity<?> getAllDonation(@PathVariable String donorId) {
+			return donorService.getAllDonation(donorId);
+		}
 		
 		// End donor api
     

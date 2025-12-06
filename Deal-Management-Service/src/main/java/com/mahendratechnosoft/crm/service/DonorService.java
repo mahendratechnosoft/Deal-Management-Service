@@ -729,6 +729,12 @@ public class DonorService {
 
 	@Transactional
 	public FamilyVialAllocation assignVialsToFamily(FamilyVialAllocation familyVialAllocation) {
+		
+		Optional<Donors> donarOptional = donorsRepository.findById(familyVialAllocation.getDonorId());
+	    if(donarOptional.isEmpty()) {
+	    	throw new RuntimeException("Donar is not present for id = " 
+                    + familyVialAllocation.getDonorId());
+	    }
 
 	    int requestedVials = familyVialAllocation.getVialsAssignedCount();
 	    SampleReport sampleReport = sampleReportRepository.findByDonorId(familyVialAllocation.getDonorId());
@@ -741,6 +747,10 @@ public class DonorService {
 	    // Update balanced vials
 	    sampleReport.setBalancedVials(sampleReport.getBalancedVials() - requestedVials);
 	    sampleReportRepository.save(sampleReport);
+	    
+	    Donors donar = donarOptional.get();
+	    donar.setStatus("Donor");
+	    donorsRepository.save(donar);
 
 	    // Save allocation
 	    return familyVialAllocationRepository.save(familyVialAllocation);
@@ -818,6 +828,16 @@ public class DonorService {
 	public ResponseEntity<?> getAllFinalReport(String familyId) {
 		try {
 			List<FamilyVialAllocation> responce = familyVialAllocationRepository.findByFamilyInfoIdOrderByAllocationDateDesc(familyId);
+			return ResponseEntity.ok(responce);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
+	
+	public ResponseEntity<?> getAllDonation(String donorId) {
+		try {
+			List<FamilyVialAllocation> responce = familyVialAllocationRepository.findByDonorIdOrderByAllocationDateDesc(donorId);
 			return ResponseEntity.ok(responce);
 		} catch (Exception e) {
 			e.printStackTrace();
