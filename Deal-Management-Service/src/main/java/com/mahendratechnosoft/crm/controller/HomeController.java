@@ -150,7 +150,7 @@ public class HomeController {
 	@PostMapping("/createDonor")
 	public ResponseEntity<?> createDonorPublic(@RequestBody Donors request) {
 		
-		return donorService.createDonor(request);
+		return donorService.createDonorPublic(request);
 		
 	}
 
