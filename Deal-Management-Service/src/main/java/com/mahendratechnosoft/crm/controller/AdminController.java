@@ -1178,4 +1178,9 @@ public class AdminController {
 		return donorService.getAllFinalReport(familyId);
 	}
 	
+	@GetMapping("/getAllDonation/{donorId}")
+	public ResponseEntity<?> getAllDonation(@PathVariable String donorId) {
+		return donorService.getAllDonation(donorId);
+	}
+	
 }

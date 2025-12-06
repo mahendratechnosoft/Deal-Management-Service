@@ -10,4 +10,6 @@ import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 @Repository
 public interface FamilyVialAllocationRepository extends JpaRepository<FamilyVialAllocation, String>{
 	List<FamilyVialAllocation> findByFamilyInfoIdOrderByAllocationDateDesc(String familyInfoId);
+	
+	List<FamilyVialAllocation> findByDonorIdOrderByAllocationDateDesc(String donorId);
 }

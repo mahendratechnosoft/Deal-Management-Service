@@ -52,7 +52,7 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	        FROM Donors p 
 	        LEFT JOIN SampleReport s ON p.donorId = s.donorId 
 	        WHERE p.adminId = :adminId
-	        AND p.status = 'Qualified'
+	        AND p.status IN ('Qualified', 'Donor')
 		    AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))) 
 		    AND (:bloodGroup IS NULL OR LOWER(p.bloodGroup) = LOWER(:bloodGroup))
 		    AND (:city IS NULL OR LOWER(p.city) = LOWER(:city))
@@ -89,7 +89,7 @@ public interface DonorsRepository extends JpaRepository<Donors, String>{
 	        FROM Donors p 
 	        LEFT JOIN SampleReport s ON p.donorId = s.donorId 
 		    WHERE p.employeeId = :employeeId 
-		    AND p.status = 'Qualified'
+		    AND p.status IN ('Qualified', 'Donor')
 		    AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')))
 		    
 		    AND (:bloodGroup IS NULL OR LOWER(p.bloodGroup) = LOWER(:bloodGroup))
