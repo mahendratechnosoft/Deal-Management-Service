@@ -148,7 +148,7 @@ public class HomeController {
     
     
 	@PostMapping("/createDonor")
-	public ResponseEntity<?> createDonar(@RequestBody Donors request) {
+	public ResponseEntity<?> createDonorPublic(@RequestBody Donors request) {
 		
 		return donorService.createDonor(request);
 		

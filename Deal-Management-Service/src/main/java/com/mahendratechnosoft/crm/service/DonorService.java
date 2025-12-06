@@ -845,4 +845,43 @@ public class DonorService {
 		}
 	}
 	
+	public ResponseEntity<?> createDonorPublic( Donors request) {
+
+		try {
+			request.setStatus("New Donor");
+			
+			String base64SelfeImage = request.getSelfeImageData();
+            String base64fullLengthImage=request.getFullLengthImageData();
+			
+			if (base64SelfeImage != null && !base64SelfeImage.isEmpty()) {
+			    try {
+			        byte[] imageBytes = Base64.getDecoder().decode(base64SelfeImage);
+			        request.setSelfeImage(imageBytes);   // ✅ Correct setter
+			    } catch (IllegalArgumentException e) {
+			        throw new RuntimeException("Invalid Base64 image format", e);
+			    }
+			}
+			
+			if (base64fullLengthImage != null && !base64fullLengthImage.isEmpty()) {
+			    try {
+			        byte[] imageBytes = Base64.getDecoder().decode(base64SelfeImage);
+			        request.setFullLengthImage(imageBytes);   // ✅ Correct setter
+			    } catch (IllegalArgumentException e) {
+			        throw new RuntimeException("Invalid Base64 image format", e);
+			    }
+			}
+
+			
+			donorsRepository.save(request);
+			
+			return ResponseEntity.ok(request);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
 }
