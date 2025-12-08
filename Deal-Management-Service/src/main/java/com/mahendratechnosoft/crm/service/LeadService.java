@@ -728,9 +728,16 @@ public class LeadService {
 	        ModuleAccess access = null;
 	        LocalDate followUp = null;
 	        String role = "ROLE_EMPLOYEE";
+	        
+	        LocalDateTime start = null;
+	        LocalDateTime end = null;
 
 	        if (followUpDate != null && !followUpDate.isEmpty()) {
-	            followUp = LocalDate.parse(followUpDate);
+	            LocalDate date = LocalDate.parse(followUpDate);
+	            start = date.atStartOfDay();          
+	            end = date.atTime(LocalTime.MAX);    
+	        } else {
+	        	return ResponseEntity.ok(Map.of("count", 0, "todayLeadFolloUp", List.of()));
 	        }
 
 	        if (loginUser instanceof Admin admin) {
@@ -746,13 +753,13 @@ public class LeadService {
 	        List<Object[]> leads = null;
 
 	        if (role.equals("ROLE_ADMIN")) {
-	            leads = leadRepository.leadFollowUpDetails(adminId, null, followUp);
+	            leads = leadRepository.leadFollowUpDetails(adminId, null, start, end);
 
 	        } else if (access.isLeadViewAll()) {
-	            leads = leadRepository.leadFollowUpDetails(adminId, null, followUp);
+	            leads = leadRepository.leadFollowUpDetails(adminId, null, start, end);
 
 	        } else {
-	            leads = leadRepository.leadFollowUpDetails(adminId, employeeId, followUp); // ✅ fixed
+	            leads = leadRepository.leadFollowUpDetails(adminId, employeeId, start, end); // ✅ fixed
 	        }
 
 	        List<Map<String, Object>> result = leads.stream()

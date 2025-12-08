@@ -65,12 +65,13 @@ public interface LeadRepository extends JpaRepository<Leads, String> {
 	@Query("SELECT e.id, e.clientName, e.companyName, e.email, e.mobileNumber, e.status "
 		     + "FROM Leads e "
 		     + "WHERE e.adminId = :adminId "
-		     + "AND DATE(e.followUp) = :followUpDate "
+		     + "AND (e.followUp BETWEEN :start AND :end) "
 		     + "AND (:employeeId IS NULL OR e.employeeId = :employeeId)")
 		List<Object[]> leadFollowUpDetails(
 		        @Param("adminId") String adminId,
 		        @Param("employeeId") String employeeId,
-		        @Param("followUpDate") LocalDate followUpDate
+		        @Param("start") LocalDateTime start,
+		        @Param("end") LocalDateTime end
 		);
 
 
