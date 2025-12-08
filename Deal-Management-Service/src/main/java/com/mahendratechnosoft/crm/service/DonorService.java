@@ -864,7 +864,7 @@ public class DonorService {
 			
 			if (base64fullLengthImage != null && !base64fullLengthImage.isEmpty()) {
 			    try {
-			        byte[] imageBytes = Base64.getDecoder().decode(base64SelfeImage);
+			        byte[] imageBytes = Base64.getDecoder().decode(base64fullLengthImage);
 			        request.setFullLengthImage(imageBytes);   // ✅ Correct setter
 			    } catch (IllegalArgumentException e) {
 			        throw new RuntimeException("Invalid Base64 image format", e);
