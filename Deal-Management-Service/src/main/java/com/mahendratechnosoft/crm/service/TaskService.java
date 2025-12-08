@@ -2,39 +2,77 @@ package com.mahendratechnosoft.crm.service;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
+import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.Task;
+import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
+import com.mahendratechnosoft.crm.repository.TaskAttachmentRepository;
 import com.mahendratechnosoft.crm.repository.TaskRepository;
-
+import com.mahendratechnosoft.crm.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
 public class TaskService {
+
+    private final UserRepository userRepository;
+
+    private final UserDetailServiceImp userDetailServiceImp;
 	
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
 	@Autowired
 	private TaskRepository taskRepository;
+	
+	@Autowired
+	private TaskAttachmentRepository taskAttachmentRepository;
+
+    TaskService(UserDetailServiceImp userDetailServiceImp, UserRepository userRepository) {
+        this.userDetailServiceImp = userDetailServiceImp;
+        this.userRepository = userRepository;
+    }
 
 	@Transactional
-    public Task createTask(Task task) {
+    public Task createTask(Object loginUser,TaskDto request) {
+		
+		String adminId = null;
+		String employeeId = null;
+		String name = null;
+		if (loginUser instanceof Admin admin) {
+			adminId = admin.getAdminId();
+			name = admin.getName();
+		} else if (loginUser instanceof Employee employee) {
+			adminId = employee.getAdmin().getAdminId();
+			employeeId = employee.getEmployeeId();
+			name = employee.getName();
+		}
+		
+		Task task = request.getTask();
+		task.setAdminId(adminId);
+		task.setEmployeeId(employeeId);
+		task.setCreatedBy(name);
+		
 		
         if (task.getAssignedEmployees() != null && !task.getAssignedEmployees().isEmpty()) {
             Set<String> assigneeIds = task.getAssignedEmployees().stream()
@@ -55,8 +93,21 @@ public class TaskService {
             Set<Employee> realFollowers = new HashSet<>(employeeRepository.findAllById(followerIds));
             task.setFollowersEmployees(realFollowers);
         }
-
-        return taskRepository.save(task);
+        
+        Task savedTask = taskRepository.save(task);
+        
+        List<TaskAttachment> attachments = new LinkedList<>();
+        if(request.getTaskAttachments() != null) {
+	        	
+	        for (TaskAttachment taskAttachment : request.getTaskAttachments()) {
+	        	System.out.println("check");
+				taskAttachment.setTaskId(savedTask.getTaskId());
+				taskAttachment.setUploadedBy(name);
+				attachments.add(taskAttachment);
+			}
+	        taskAttachmentRepository.saveAll(attachments);
+        }
+        return savedTask;
     }
 	
 	
@@ -138,8 +189,11 @@ public class TaskService {
 
 	public ResponseEntity<?> getTaskById(String taskId) {
 		try {
-
-			return ResponseEntity.ok(taskRepository.findById(taskId));
+			Optional<Task> task = taskRepository.findById(taskId);
+			if(task.isEmpty()){
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Task is not found for taskId : "+ taskId ); 
+			}
+			return ResponseEntity.ok(task.get());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -161,4 +215,61 @@ public class TaskService {
 
 	}
 
+
+	public ResponseEntity<?> addAttachmentToTask(Object loginUser, List<TaskAttachment> request) {
+		try {
+			
+		
+		final String uploadedBy = 
+	            (loginUser instanceof Admin admin) ? admin.getName()
+	          : (loginUser instanceof Employee employee) ? employee.getName()
+	          : null;
+
+	    // Validate max 4 attachments
+	    if (request != null && request.size() > 4) {
+	        return ResponseEntity
+	                .status(HttpStatus.BAD_REQUEST)
+	                .body("Error: Only 4 attachments are allowed at a time.");
+	    }
+
+	    // Update fields using Streams
+	    List<TaskAttachment> attachments = request.stream()
+	            .peek(a -> {
+	                a.setUploadedBy(uploadedBy);
+	            })
+	            .collect(Collectors.toList());
+
+	    taskAttachmentRepository.saveAll(attachments);
+
+	    return ResponseEntity.ok("All attachments added successfully.");
+	    
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+	}
+
+
+	public ResponseEntity<?> getAttachmentByTaskId(String taskId) {
+		try {
+			List<TaskAttachment> byTaskId = taskAttachmentRepository.findByTaskId(taskId);
+			return ResponseEntity.ok(byTaskId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error "+e.getMessage());
+		}
+		
+	}
+
+	public ResponseEntity<?> deleteTaskAttachement(String taskAttachmentId) {
+		try {
+			taskAttachmentRepository.deleteById(taskAttachmentId);
+			return ResponseEntity.ok("Attachment deleted sucessfully...");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error "+e.getMessage());
+		}
+	}
+
+	
 }

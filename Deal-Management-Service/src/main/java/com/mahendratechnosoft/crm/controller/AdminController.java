@@ -26,12 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -46,6 +47,7 @@ import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.entity.Task;
+import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -72,6 +74,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
+    private final UserDetailServiceImp userDetailServiceImp;
 
 	
 	@Autowired
@@ -109,6 +113,11 @@ public class AdminController {
 	
 	@Autowired
 	private TaskService taskService;
+
+
+    AdminController(UserDetailServiceImp userDetailServiceImp) {
+        this.userDetailServiceImp = userDetailServiceImp;
+    }
 
 	
     @ModelAttribute("admin")
@@ -1076,11 +1085,15 @@ public class AdminController {
     }
 	
 	@PostMapping("/createTask")
-	public ResponseEntity<?> createTask(@ModelAttribute("admin") Admin admin,@RequestBody Task task){
-		task.setAdminId(admin.getAdminId());
-		task.setCreatedBy(admin.getName());
+	public ResponseEntity<?> createTask(@ModelAttribute("admin") Admin admin,@RequestBody TaskDto request){
 		try {
-			Task responce = taskService.createTask(task);
+			if (request.getTaskAttachments() != null && request.getTaskAttachments().size() > 4) {
+	            return ResponseEntity
+	                    .status(HttpStatus.BAD_REQUEST)
+	                    .body("Error: Only 4 attachments are allowed at a time.");
+	        }
+
+			Task responce = taskService.createTask(admin,request);
 			return ResponseEntity.ok(responce);
 		} catch (Exception e) {
 			 e.printStackTrace();
@@ -1180,6 +1193,21 @@ public class AdminController {
 	@GetMapping("/getAllDonation/{donorId}")
 	public ResponseEntity<?> getAllDonation(@PathVariable String donorId) {
 		return donorService.getAllDonation(donorId);
+	}
+	
+	@PostMapping("/addTaskAttachement")
+	public ResponseEntity<?> addAttachmentToTask(@ModelAttribute("admin") Admin admin,@RequestBody List<TaskAttachment> request) {
+		return taskService.addAttachmentToTask(admin,request);
+	}
+	
+	@GetMapping("/getTaskAttachmentByTaskId/{taskId}")
+	public ResponseEntity<?> getAttachmentByTaskId(@PathVariable String taskId) {
+		return taskService.getAttachmentByTaskId(taskId);
+	}
+	
+	@DeleteMapping("/deleteTaskAttachement/{taskAttachmentId}")
+	public ResponseEntity<?> deleteTaskAttachement(@PathVariable String taskAttachmentId){
+		return taskService.deleteTaskAttachement(taskAttachmentId);
 	}
 	
 }
