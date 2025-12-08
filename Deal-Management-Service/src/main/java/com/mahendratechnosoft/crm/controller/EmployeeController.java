@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -34,6 +35,7 @@ import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Task;
+import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -900,12 +902,10 @@ public class EmployeeController {
 		// End donor api
 		
 		@PostMapping("/createTask")
-		public ResponseEntity<?> createTask(@ModelAttribute("employee") Employee employee,@RequestBody Task task){
-			task.setAdminId(employee.getAdmin().getAdminId());
-			task.setCreatedBy(employee.getName());
-			task.setEmployeeId(employee.getEmployeeId());
+		public ResponseEntity<?> createTask(@ModelAttribute("employee") Employee employee,@RequestBody TaskDto request){
+			
 			try {
-				Task responce = taskService.createTask(task);
+				Task responce = taskService.createTask(employee,request);
 				return ResponseEntity.ok(responce);
 			} catch (Exception e) {
 				 e.printStackTrace();
@@ -946,6 +946,21 @@ public class EmployeeController {
 			
 			return taskService.deleteTaskById(taskId);
 			
+		}
+		
+		@PostMapping("/addTaskAttachement")
+		public ResponseEntity<?> addAttachmentToTask(@ModelAttribute("employee") Employee employee,@RequestBody List<TaskAttachment> request) {
+			return taskService.addAttachmentToTask(employee,request);
+		}
+		
+		@GetMapping("/getTaskAttachmentByTaskId/{taskId}")
+		public ResponseEntity<?> getAttachmentByTaskId(@PathVariable String taskId) {
+			return taskService.getAttachmentByTaskId(taskId);
+		}
+		
+		@DeleteMapping("/deleteTaskAttachement/{taskAttachmentId}")
+		public ResponseEntity<?> deleteTaskAttachement(@PathVariable String taskAttachmentId){
+			return taskService.deleteTaskAttachement(taskAttachmentId);
 		}
     
 }
