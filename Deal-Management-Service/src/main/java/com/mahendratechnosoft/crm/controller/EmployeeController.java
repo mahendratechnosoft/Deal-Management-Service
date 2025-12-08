@@ -24,6 +24,7 @@ import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
+import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
@@ -32,6 +33,7 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
+import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -49,6 +51,7 @@ import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.SalesService;
+import com.mahendratechnosoft.crm.service.TaskService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -84,6 +87,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private DonorService donorService;
+	
+	@Autowired
+	private TaskService taskService;
 
 
     // Helper method to get the currently logged-in Employee
@@ -892,5 +898,54 @@ public class EmployeeController {
 		}
 		
 		// End donor api
+		
+		@PostMapping("/createTask")
+		public ResponseEntity<?> createTask(@ModelAttribute("employee") Employee employee,@RequestBody Task task){
+			task.setAdminId(employee.getAdmin().getAdminId());
+			task.setCreatedBy(employee.getName());
+			task.setEmployeeId(employee.getEmployeeId());
+			try {
+				Task responce = taskService.createTask(task);
+				return ResponseEntity.ok(responce);
+			} catch (Exception e) {
+				 e.printStackTrace();
+			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			                             .body("Error: " + e.getMessage());
+			}
+		}
+		
+		
+		@GetMapping("/getAllTaskList/{page}/{size}")
+		public ResponseEntity<?> getAllTaskList(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,
+				@RequestParam(required = false) String search) {
+
+			return taskService.getAllTaskList(page ,size,employee,search);
+
+		}
+		
+		@PutMapping("/updateTask")
+		public ResponseEntity<?> updateTask(@ModelAttribute("employee") Employee employee,@RequestBody Task task){
+			task.setAdminId(employee.getAdmin().getAdminId());
+			try {
+				Task responce = taskService.updateTask(task);
+				return ResponseEntity.ok(responce);
+			} catch (Exception e) {
+				 e.printStackTrace();
+			        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			                             .body("Error: " + e.getMessage());
+			}
+		}
+		
+		@GetMapping("/getTaskByItemId/{taskId}")
+		public ResponseEntity<?> getTaskByItemId(@PathVariable String taskId) {
+			return taskService.getTaskById(taskId);	
+		}
+		
+		@DeleteMapping("/deleteTask/{taskId}")
+		public ResponseEntity<?> deleteTask(@PathVariable String taskId) {
+			
+			return taskService.deleteTaskById(taskId);
+			
+		}
     
 }

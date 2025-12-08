@@ -83,10 +83,10 @@ public class TaskService {
 				taskPage = taskRepository.findByAdminId(adminId, search, pageable);
 
 			}
-//			else if(moduleAccess.isDonorViewAll()) {
-//				donorPage = donorsRepository.findByAdminId(adminId, search, status,pageable);
-//				
-//			} 
+			else if(moduleAccess.isTaskViewAll()) {
+				taskPage = taskRepository.findByAdminId(adminId, search, pageable);
+				
+			} 
 			else {
 
 				taskPage = taskRepository.findByEmployeeId(employeeId, search, pageable);

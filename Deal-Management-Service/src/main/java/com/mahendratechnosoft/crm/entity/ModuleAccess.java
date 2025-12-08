@@ -68,6 +68,12 @@ public class ModuleAccess {
 	private boolean itemDelete;
 	private boolean itemEdit;
 	
+	private boolean taskAccess;
+	private boolean taskViewAll;
+	private boolean taskCreate;
+	private boolean taskDelete;
+	private boolean taskEdit;
+	
 	private boolean employeeAccess;
     private boolean settingAccess;	
 	public String getModuleAccessId() {
@@ -374,8 +380,34 @@ public class ModuleAccess {
 	public void setSettingAccess(boolean settingAccess) {
 		this.settingAccess = settingAccess;
 	}
-	
-	
-	
-	
+	public boolean isTaskAccess() {
+		return taskAccess;
+	}
+	public void setTaskAccess(boolean taskAccess) {
+		this.taskAccess = taskAccess;
+	}
+	public boolean isTaskViewAll() {
+		return taskViewAll;
+	}
+	public void setTaskViewAll(boolean taskViewAll) {
+		this.taskViewAll = taskViewAll;
+	}
+	public boolean isTaskCreate() {
+		return taskCreate;
+	}
+	public void setTaskCreate(boolean taskCreate) {
+		this.taskCreate = taskCreate;
+	}
+	public boolean isTaskDelete() {
+		return taskDelete;
+	}
+	public void setTaskDelete(boolean taskDelete) {
+		this.taskDelete = taskDelete;
+	}
+	public boolean isTaskEdit() {
+		return taskEdit;
+	}
+	public void setTaskEdit(boolean taskEdit) {
+		this.taskEdit = taskEdit;
+	}
 }
