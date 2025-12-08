@@ -285,6 +285,7 @@ public class AdminController {
 	
 	@GetMapping("/getLeadFollowUp")
 	public ResponseEntity<?> getLeadFollowUp(@ModelAttribute("admin") Admin admin,@RequestParam(required = false) String followUpdate) {
+		System.out.println("check");
 
 	  return  leadService.getLeadFollowUp(admin,followUpdate);
 	}
