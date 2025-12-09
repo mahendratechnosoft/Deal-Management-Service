@@ -48,6 +48,7 @@ import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
+import com.mahendratechnosoft.crm.entity.TaskComments;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -1212,4 +1213,40 @@ public class AdminController {
 		return taskService.deleteTaskAttachement(taskAttachmentId);
 	}
 	
+	@PostMapping("/addCommentOnTask")
+	public ResponseEntity<?> addCommentOnTask(@ModelAttribute("admin") Admin admin,@RequestBody TaskComments taskComments) {
+		return taskService.addCommentOnTask(admin,taskComments);
+	}
+	
+	@GetMapping("/getAllCommentsByTaskId/{taskId}")
+    public ResponseEntity<Page<TaskComments>> getCommentsForTask(
+            @PathVariable String taskId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("commentedAt").descending());
+            Page<TaskComments> commentsPage = taskService.getAllCommentByTaskIs(taskId, pageable);
+            return ResponseEntity.ok(commentsPage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+	
+	@DeleteMapping("/deleteTaskComment/{commentId}")
+	public ResponseEntity<?> deleteTaskComment(@ModelAttribute("admin") Admin admin,@PathVariable String commentId) {
+	    return taskService.deleteCommentOnTask(commentId,admin);
+	}
+//	
+//	@DeleteMapping("/deleteCommentAttachment/{commentAttachmentId}")
+//	public ResponseEntity<?> deleteAttachment(@PathVariable String commentAttachmentId) {
+//	    return taskService.deleteTaskCommentAttachement(commentAttachmentId);
+//	}
+//	
+//	@PutMapping("/updateCommentOfTask")
+//	public ResponseEntity<?> updateCommentOnTask(@ModelAttribute("admin") Admin admin,@RequestBody TaskComments taskComments) {
+//		return taskService.updateCommentOfTask(admin,taskComments);
+//	}
 }

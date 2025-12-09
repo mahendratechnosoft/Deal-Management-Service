@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,6 +40,7 @@ import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
+import com.mahendratechnosoft.crm.entity.TaskComments;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -961,6 +966,34 @@ public class EmployeeController {
 		@DeleteMapping("/deleteTaskAttachement/{taskAttachmentId}")
 		public ResponseEntity<?> deleteTaskAttachement(@PathVariable String taskAttachmentId){
 			return taskService.deleteTaskAttachement(taskAttachmentId);
+		}
+		
+		@PostMapping("/addCommentOnTask")
+		public ResponseEntity<?> addCommentOnTask(@ModelAttribute("employee") Employee employee,@RequestBody TaskComments taskComments) {
+			return taskService.addCommentOnTask(employee,taskComments);
+		}
+		
+		@GetMapping("/getAllCommentsByTaskId/{taskId}")
+	    public ResponseEntity<Page<TaskComments>> getCommentsForTask(
+	            @PathVariable String taskId,
+	            @RequestParam(defaultValue = "0") int page,
+	            @RequestParam(defaultValue = "10") int size
+	    ) {
+	        try {
+	            Pageable pageable = PageRequest.of(page, size, Sort.by("commentedAt").descending());
+	            Page<TaskComments> commentsPage = taskService.getAllCommentByTaskIs(taskId, pageable);
+	            return ResponseEntity.ok(commentsPage);
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+		
+		
+		@DeleteMapping("/deleteTaskComment/{commentId}")
+		public ResponseEntity<?> deleteTaskComment(@ModelAttribute Employee emp,@PathVariable String commentId) {
+		    return taskService.deleteCommentOnTask(commentId,emp);
 		}
     
 }
