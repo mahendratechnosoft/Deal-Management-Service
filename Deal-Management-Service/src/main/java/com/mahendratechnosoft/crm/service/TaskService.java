@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -28,21 +29,21 @@ import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.TaskComments;
+import com.mahendratechnosoft.crm.entity.TaskTimeLog;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.enums.TaskStatus;
+import com.mahendratechnosoft.crm.enums.TimeLogStatus;
 import com.mahendratechnosoft.crm.repository.CommentsAttachmentRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.TaskAttachmentRepository;
 import com.mahendratechnosoft.crm.repository.TaskCommentsRepository;
 import com.mahendratechnosoft.crm.repository.TaskRepository;
+import com.mahendratechnosoft.crm.repository.TaskTimeLogRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
 public class TaskService {
-
-    private final UserRepository userRepository;
-
-    private final UserDetailServiceImp userDetailServiceImp;
 	
 	@Autowired
 	private EmployeeRepository employeeRepository;
@@ -58,12 +59,10 @@ public class TaskService {
 	
 	@Autowired
 	private CommentsAttachmentRepository commentsAttachmentRepository;
-
-    TaskService(UserDetailServiceImp userDetailServiceImp, UserRepository userRepository) {
-        this.userDetailServiceImp = userDetailServiceImp;
-        this.userRepository = userRepository;
-    }
-
+	
+	@Autowired
+	private TaskTimeLogRepository taskTimeLogRepository;
+	
 	@Transactional
     public Task createTask(Object loginUser,TaskDto request) {
 		
@@ -83,6 +82,7 @@ public class TaskService {
 		task.setAdminId(adminId);
 		task.setEmployeeId(employeeId);
 		task.setCreatedBy(name);
+		task.setStatus(TaskStatus.NOT_STARTED);
 		
 		
         if (task.getAssignedEmployees() != null && !task.getAssignedEmployees().isEmpty()) {
@@ -424,6 +424,142 @@ public class TaskService {
 		}
 	}
 	
+	public ResponseEntity<?> startTimer(String taskId, Employee employee) {
+	    try {
+	        // 1. Check if ANY task is currently active for this employee
+	        Optional<TaskTimeLog> currentActiveLog = taskTimeLogRepository
+	                .findByEmployeeIdAndStatus(employee.getEmployeeId(), TimeLogStatus.ACTIVE);
 
+	        // 2. If an active timer exists, stop it automatically
+	        if (currentActiveLog.isPresent()) {
+	            TaskTimeLog activeLog = currentActiveLog.get();
+	            
+	            // If the user tries to start the SAME task that is already running
+	            if(activeLog.getTaskId().equals(taskId)) {
+	                 return ResponseEntity.badRequest().body("Timer is already running for this task.");
+	            }
+
+	            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+	            activeLog.setEndTime(now);
+	            long minutes = Duration.between(activeLog.getStartTime(), now).toMinutes();
+	            activeLog.setDurationInMinutes(minutes);
+	            activeLog.setEndNote("Auto-stopped because new task (" + taskId + ") was started."); // Default note
+	            activeLog.setStatus(TimeLogStatus.COMPLETED);
+	            
+	            taskTimeLogRepository.save(activeLog);
+	        }
+
+	        // 3. Proceed to start the new timer
+	        Optional<Task> taskOptional = taskRepository.findById(taskId);
+	        if (taskOptional.isEmpty()) {
+	            return ResponseEntity.badRequest().body("Task is not present for Id: " + taskId);
+	        }
+
+	        Task task = taskOptional.get();
+	        if (task.getStatus() == TaskStatus.NOT_STARTED) {
+	            task.setStatus(TaskStatus.IN_PROGRESS);
+	        }
+	        taskRepository.save(task);
+
+	        TaskTimeLog log = new TaskTimeLog();
+	        log.setTaskId(taskId);
+	        log.setAdminId(employee.getAdmin().getAdminId());
+	        log.setEmployeeId(employee.getEmployeeId());
+	        log.setEmployeeName(employee.getName());
+	        log.setStartTime(LocalDateTime.now(ZoneId.of("Asia/Kolkata")));
+	        log.setStatus(TimeLogStatus.ACTIVE);
+
+	        TaskTimeLog savedLog = taskTimeLogRepository.save(log);
+	        
+	        return ResponseEntity.ok(savedLog);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+	    }
+	}
 	
+	public ResponseEntity<?> stopTimer(String taskId, Employee employee,String endNote) {
+		try {
+		    TaskTimeLog activeLog = taskTimeLogRepository.findByTaskIdAndEmployeeIdAndStatus(
+		            taskId, employee.getEmployeeId(), TimeLogStatus.ACTIVE)
+		            .orElseThrow(() -> new RuntimeException("No active timer found to stop."));
+	
+		    LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+		    activeLog.setEndTime(now);
+	
+		    long minutes = Duration.between(activeLog.getStartTime(), now).toMinutes();
+		    activeLog.setDurationInMinutes(minutes);
+		    activeLog.setEndNote(endNote);
+		    activeLog.setStatus(TimeLogStatus.COMPLETED);
+	
+		    taskTimeLogRepository.save(activeLog);
+	
+		    return ResponseEntity.ok("Timer stopped. Worked for: " + minutes + " minutes.");
+	    
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error "+e.getMessage());
+		}
+	}
+	
+	public ResponseEntity<?> getAllTaskTimerList(Object loginUser, String taskId) {
+
+		try {
+            ModuleAccess moduleAccess=null;
+			String role = "ROLE_EMPLOYEE";
+			String adminId = null;
+			String employeeId = null;
+			if (loginUser instanceof Admin admin) {
+				role = admin.getUser().getRole();
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+				moduleAccess=employee.getModuleAccess();
+			}
+			
+			List<TaskTimeLog> response = new LinkedList<>();
+			
+			if (role.equals("ROLE_ADMIN") || moduleAccess.isTaskViewAll()) {
+				response = taskTimeLogRepository.findByTaskIdAndAdminIdOrderByStartTimeDesc(taskId, adminId);
+			} else {
+				response = taskTimeLogRepository.findByTaskIdAndEmployeeIdOrderByStartTimeDesc(taskId, employeeId);
+			}
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+		}
+
+	}
+	
+	
+	public ResponseEntity<?> getActiveTimer(Employee employee) {
+	    Optional<TaskTimeLog> activeLog = taskTimeLogRepository
+	            .findByEmployeeIdAndStatus(employee.getEmployeeId(), TimeLogStatus.ACTIVE);
+	        
+	    if(activeLog.isPresent()) {
+	    	TaskTimeLog taskTimeLog = activeLog.get();
+	    	String taskId = taskTimeLog.getTaskId();
+	    	Optional<Task> task = taskRepository.findById(taskId);
+	    	if (task.isPresent()) {
+	    		Task task2 = task.get();
+		    	HashMap<String, Object> responce = new HashMap<>();
+		    	responce.put("taskSubject", task2.getSubject());
+		    	responce.put("taskDescription", task2.getDescription());
+		    	responce.put("taskStatus", task2.getStatus());
+		    	responce.put("taskLogId", taskTimeLog.getTaskLogId());
+		    	responce.put("employeeId", taskTimeLog.getEmployeeId());
+		    	responce.put("employeeName", taskTimeLog.getEmployeeName());
+		    	responce.put("startTime", taskTimeLog.getStartTime());
+		    	
+		        return ResponseEntity.ok(responce);
+				
+			}
+	    }
+	    return ResponseEntity.noContent().build();
+	}
 }

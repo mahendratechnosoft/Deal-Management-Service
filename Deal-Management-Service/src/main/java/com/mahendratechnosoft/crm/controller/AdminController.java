@@ -1256,4 +1256,10 @@ public class AdminController {
 //	public ResponseEntity<?> updateCommentOnTask(@ModelAttribute("admin") Admin admin,@RequestBody TaskComments taskComments) {
 //		return taskService.updateCommentOfTask(admin,taskComments);
 //	}
+	
+	@GetMapping("/getAllTimerLogs/{taskId}")
+	public ResponseEntity<?> getAllTimerLogs(@ModelAttribute("admin") Admin admin,@PathVariable("taskId") String taskId){
+		return taskService.getAllTaskTimerList(admin,taskId);
+	}
+	
 }

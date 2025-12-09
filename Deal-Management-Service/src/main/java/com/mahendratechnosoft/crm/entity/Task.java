@@ -9,9 +9,12 @@ import java.util.Set;
 import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.mahendratechnosoft.crm.enums.TaskStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
@@ -38,7 +41,9 @@ public class Task {
 	private double estimatedHours;
 	@Column(length = 500)
 	private String description;
-	private String status;
+	
+	@Enumerated(EnumType.STRING)
+	private TaskStatus status;
 	
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -203,12 +208,11 @@ public class Task {
 		this.description = description;
 	}
 
-	public String getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
-	
 }
