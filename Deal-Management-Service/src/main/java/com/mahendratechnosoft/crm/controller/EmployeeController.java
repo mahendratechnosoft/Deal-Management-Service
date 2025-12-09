@@ -992,8 +992,31 @@ public class EmployeeController {
 		
 		
 		@DeleteMapping("/deleteTaskComment/{commentId}")
-		public ResponseEntity<?> deleteTaskComment(@ModelAttribute Employee emp,@PathVariable String commentId) {
-		    return taskService.deleteCommentOnTask(commentId,emp);
+		public ResponseEntity<?> deleteTaskComment(@ModelAttribute Employee employee,@PathVariable String commentId) {
+		    return taskService.deleteCommentOnTask(commentId,employee);
+		}
+		
+		@PostMapping("/startTimerOfTask")
+		public ResponseEntity<?> startTimer(@ModelAttribute("employee") Employee employee,@RequestBody Map<String, Object> req) {
+		    String taskId = (String) req.get("taskId");
+		    return taskService.startTimer(taskId, employee);
+		}
+		
+		@PostMapping("/stopTimerOfTask")
+		public ResponseEntity<?> stopTimer(@ModelAttribute("employee") Employee employee,@RequestBody Map<String, Object> req) {
+		    String taskId = (String) req.get("taskId");
+		    String endNote = (String) req.get("endNote");
+		    return taskService.stopTimer(taskId, employee, endNote);
+		}
+		
+		@GetMapping("/getAllTimerLogs/{taskId}")
+		public ResponseEntity<?> getAllTimerLogs(@ModelAttribute("employee") Employee employee,@PathVariable("taskId") String taskId){
+			return taskService.getAllTaskTimerList(employee,taskId);
+		}
+		
+		@GetMapping("/activeTimer")
+		public ResponseEntity<?> getActiveTimer(@ModelAttribute("employee") Employee employee) {
+		    return taskService.getActiveTimer(employee);
 		}
     
 }
