@@ -24,6 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorMessage> handleAccessDeniedException(
             AccessDeniedException ex, HttpServletRequest request) {
+    	 ex.printStackTrace(); 
         ErrorMessage errorResponse = new ErrorMessage(
                 "Access Denied",
                 ex.getMessage(),
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorMessage> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpServletRequest request) {
-        
+    	 ex.printStackTrace(); 
         String requestedPath = request.getRequestURI(); // Get the requested URI
         String customErrorMessage = "API Not Found: " + requestedPath; // Set API-specific message
 
@@ -53,6 +54,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleValidationException(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
+    	 ex.printStackTrace(); 
         ErrorMessage errorResponse = new ErrorMessage(
                 "Validation Error",
                 ex.getBindingResult().toString(),
@@ -65,6 +67,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleGenericException(
             Exception ex, HttpServletRequest request) {
+    	 ex.printStackTrace(); 
         ErrorMessage errorResponse = new ErrorMessage(
                 "An unexpected error occurred",
                 ex.getMessage(),

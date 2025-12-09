@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -158,7 +159,25 @@ public class EmployeeService {
 	                .body("Error: " + e.getMessage());
 	    }
 	}
+	
+	
+	public ResponseEntity<String> updatePassword(String loginEmail, String password) {
 
+		Optional<User> user = userRepository.findByLoginEmail(loginEmail);
+
+		if(user.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found");
+		}
+		
+		user.get().setLoginEmail(loginEmail);
+		user.get().setPassword(passwordEncoder.encode(password));
+
+		userRepository.save(user.get());
+
+		return ResponseEntity.ok("Password Updated !");
+
+	}
 
 }
 	

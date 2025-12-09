@@ -27,12 +27,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
+import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
+import com.mahendratechnosoft.crm.dto.UserCredential;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -221,6 +223,13 @@ public class AdminController {
 	public String deleteEmployee(@PathVariable String employeeId) {
 
 		return employeeService.deleteEmployee(employeeId);
+
+	}
+	
+	@PutMapping("/updateEmployeePassword")
+	public ResponseEntity<String> updateEmployeePassword(@RequestBody UserCredential request) {
+
+		return employeeService.updatePassword(request.getLoginEmail(),request.getPassword());
 
 	}
     
