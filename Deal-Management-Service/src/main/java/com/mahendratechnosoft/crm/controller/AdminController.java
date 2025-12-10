@@ -59,6 +59,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
+import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -659,8 +660,8 @@ public class AdminController {
 	
 	
 	@GetMapping("/checkCustomerIsExist/{companyName}")
-	public ResponseEntity<?> checkCustomerIsExist( @PathVariable String companyName) {
-        return customerService.checkCustomerExist(companyName);
+	public ResponseEntity<?> checkCustomerIsExist(@ModelAttribute("admin") Admin admin, @PathVariable String companyName) {
+        return customerService.checkCustomerExist(admin,companyName);
 
 	}
 	
@@ -1285,6 +1286,15 @@ public class AdminController {
     public ResponseEntity<?> removeFollower(@PathVariable String taskId, @PathVariable String employeeId) {
         taskService.removeFollower(taskId, employeeId);
         return ResponseEntity.ok("Removed Follower with Id: "+employeeId);
+    }
+    
+    @PutMapping("/updateTaskStatus/{taskId}/{status}")
+    public ResponseEntity<Task> updateStatus(
+            @PathVariable String taskId, 
+            @PathVariable TaskStatus status) {
+        
+        Task updatedTask = taskService.updateTaskStatus(taskId, status);
+        return ResponseEntity.ok(updatedTask);
     }
 	
 }

@@ -205,10 +205,18 @@ public class CustomerService {
 	
 	
 	
-	public ResponseEntity<?> checkCustomerExist(String companyName) {
+	public ResponseEntity<?> checkCustomerExist(Object loginUser,String companyName) {
 		try {
-			
-			boolean exists = customerRepository.existsByCompanyName(companyName);
+			String adminId = null;
+			if (loginUser instanceof Admin admin) {
+				
+				adminId = admin.getAdminId();
+			} else if (loginUser instanceof Employee employee) {
+
+				adminId = employee.getAdmin().getAdminId();
+				
+			}
+			boolean exists = customerRepository.existsByCompanyNameAndAdminId(companyName,adminId);
           
 			return ResponseEntity.ok(exists);
 		} catch (Exception e) {

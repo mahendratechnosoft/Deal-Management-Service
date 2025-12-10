@@ -151,7 +151,7 @@ public class TaskService {
 			} 
 			else {
 
-				taskPage = taskRepository.findByEmployeeId(employeeId, search, pageable);
+				taskPage = taskRepository.findTasksForEmployee(adminId,employeeId, search, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new HashMap<>();
@@ -621,6 +621,13 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
         task.getFollowersEmployees().removeIf(emp -> emp.getEmployeeId().equals(employeeId));
 
+        return taskRepository.save(task);
+    }
+    
+    public Task updateTaskStatus(String taskId, TaskStatus newStatus) {
+        Task task = taskRepository.findById(taskId)
+        		 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+        task.setStatus(newStatus);
         return taskRepository.save(task);
     }
 }
