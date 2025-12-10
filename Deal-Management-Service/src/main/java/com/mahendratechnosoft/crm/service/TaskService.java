@@ -122,7 +122,7 @@ public class TaskService {
     }
 	
 	
-	public ResponseEntity<?> getAllTaskList(int page, int size, Object loginUser, String search) {
+	public ResponseEntity<?> getAllTaskList(int page, int size, Object loginUser, String search,TaskStatus status) {
 
 		try {
             ModuleAccess moduleAccess=null;
@@ -142,16 +142,16 @@ public class TaskService {
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
-				taskPage = taskRepository.findByAdminId(adminId, search, pageable);
+				taskPage = taskRepository.findByAdminId(adminId,status, search, pageable);
 
 			}
 			else if(moduleAccess.isTaskViewAll()) {
-				taskPage = taskRepository.findByAdminId(adminId, search, pageable);
+				taskPage = taskRepository.findByAdminId(adminId,status, search, pageable);
 				
 			} 
 			else {
 
-				taskPage = taskRepository.findTasksForEmployee(adminId,employeeId, search, pageable);
+				taskPage = taskRepository.findTasksForEmployee(adminId,employeeId,status, search, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new HashMap<>();
@@ -198,13 +198,25 @@ public class TaskService {
     }
 
 
-	public ResponseEntity<?> getTaskById(String taskId) {
+	public ResponseEntity<?> getTaskById(String taskId,String employeeId) {
 		try {
-			Optional<Task> task = taskRepository.findById(taskId);
-			if(task.isEmpty()){
+			Optional<Task> taskOptional = taskRepository.findById(taskId);
+			if(taskOptional.isEmpty()){
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Task is not found for taskId : "+ taskId ); 
 			}
-			return ResponseEntity.ok(task.get());
+			Task task = taskOptional.get();
+			boolean canStartTimer = true;
+			if(employeeId != null) {
+				boolean isOwner = (task.getEmployeeId() != null) ? task.getEmployeeId().equals(employeeId) : false;
+		        boolean isAssignee = task.getAssignedEmployees().stream()
+		                .anyMatch(emp -> emp.getEmployeeId().equals(employeeId));
+		        canStartTimer = isOwner || isAssignee;
+			}
+	        
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("task", task);
+	        response.put("canStartTimer", canStartTimer);
+			return ResponseEntity.ok(response);
 
 		} catch (Exception e) {
 			e.printStackTrace();

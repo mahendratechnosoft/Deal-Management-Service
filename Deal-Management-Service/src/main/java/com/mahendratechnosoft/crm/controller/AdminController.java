@@ -1125,9 +1125,10 @@ public class AdminController {
 	
 	@GetMapping("/getAllTaskList/{page}/{size}")
 	public ResponseEntity<?> getAllTaskList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,
-			@RequestParam(required = false) String search) {
+			@RequestParam(required = false) String search,
+			@RequestParam(required = false)TaskStatus status) {
 
-		return taskService.getAllTaskList(page ,size,admin,search);
+		return taskService.getAllTaskList(page ,size,admin,search,status);
 
 	}
 	
@@ -1146,7 +1147,7 @@ public class AdminController {
 	
 	@GetMapping("/getTaskByItemId/{taskId}")
 	public ResponseEntity<?> getTaskByItemId(@PathVariable String taskId) {
-		return taskService.getTaskById(taskId);	
+		return taskService.getTaskById(taskId,null);	
 	}
 	
 	@DeleteMapping("/deleteTask/{taskId}")

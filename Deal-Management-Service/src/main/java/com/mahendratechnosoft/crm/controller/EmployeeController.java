@@ -931,9 +931,10 @@ public class EmployeeController {
 		
 		@GetMapping("/getAllTaskList/{page}/{size}")
 		public ResponseEntity<?> getAllTaskList(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,
-				@RequestParam(required = false) String search) {
+				@RequestParam(required = false) String search,
+				@RequestParam(required = false) TaskStatus status) {
 
-			return taskService.getAllTaskList(page ,size,employee,search);
+			return taskService.getAllTaskList(page ,size,employee,search,status);
 
 		}
 		
@@ -951,8 +952,8 @@ public class EmployeeController {
 		}
 		
 		@GetMapping("/getTaskByItemId/{taskId}")
-		public ResponseEntity<?> getTaskByItemId(@PathVariable String taskId) {
-			return taskService.getTaskById(taskId);	
+		public ResponseEntity<?> getTaskByItemId(@ModelAttribute("employee") Employee employee,@PathVariable String taskId) {
+			return taskService.getTaskById(taskId,employee.getEmployeeId());	
 		}
 		
 		@DeleteMapping("/deleteTask/{taskId}")

@@ -314,6 +314,12 @@ public class DonorService {
 	        Optional<Donors> donorOpt=donorsRepository.findById(donorId);
 			
 	        Donors donor = donorOpt.get();
+	        
+	        if ("Not Shortlisted".equalsIgnoreCase(donorStatus)) {
+                donorsRepository.delete(donor);
+                return ResponseEntity.ok("Donor removed from database successfully");
+            }
+	        
 	        donor.setStatus(donorStatus);
 	        
 	        if (donor.getUin() == null || donor.getUin().isEmpty()) {
