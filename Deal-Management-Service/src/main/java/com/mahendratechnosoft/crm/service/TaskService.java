@@ -562,4 +562,65 @@ public class TaskService {
 	    }
 	    return ResponseEntity.noContent().build();
 	}
+	
+	public ResponseEntity<?> getActiveTimerForTask(String taskId, Employee employee) {
+	    try {
+	        Optional<TaskTimeLog> activeLog = taskTimeLogRepository
+	                .findByTaskIdAndEmployeeIdAndStatus(taskId, employee.getEmployeeId(), TimeLogStatus.ACTIVE);
+
+	        if (activeLog.isPresent()) {
+	            return ResponseEntity.ok(activeLog.get());
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No active timer for this task.");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+	    }
+	}
+	
+	
+	@Transactional
+    public Task addAssignees(String taskId, Set<String> employeeIds) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+
+        if (employeeIds != null && !employeeIds.isEmpty()) {
+            List<Employee> newAssignees = employeeRepository.findAllById(employeeIds);
+            task.getAssignedEmployees().addAll(newAssignees);
+        }
+
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task addFollowers(String taskId, Set<String> employeeIds) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+
+        if (employeeIds != null && !employeeIds.isEmpty()) {
+            List<Employee> newFollowers = employeeRepository.findAllById(employeeIds);
+            task.getFollowersEmployees().addAll(newFollowers);
+        }
+
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task removeAssignee(String taskId, String employeeId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+        task.getAssignedEmployees().removeIf(emp -> emp.getEmployeeId().equals(employeeId));
+
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task removeFollower(String taskId, String employeeId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
+        task.getFollowersEmployees().removeIf(emp -> emp.getEmployeeId().equals(employeeId));
+
+        return taskRepository.save(task);
+    }
 }
