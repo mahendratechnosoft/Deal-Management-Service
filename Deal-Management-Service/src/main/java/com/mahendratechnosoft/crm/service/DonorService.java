@@ -784,6 +784,7 @@ public class DonorService {
         dto.setEducation(donor.getEducation());
         dto.setProfession(donor.getProfession());
         dto.setReligion(donor.getReligion());
+        dto.setHeight(donor.getHeight());
 
         // 4. Fetch and Map Family Details
         FamilyInfo family = familyInfoRepository.findById(allocation.getFamilyInfoId())
