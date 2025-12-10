@@ -1322,9 +1322,10 @@ public class AdminController {
 	
     
 	@GetMapping("/getAllAMC/{page}/{size}")
-	public ResponseEntity<?> getAllAMC(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+	public ResponseEntity<?> getAllAMC(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,
+			@RequestParam(required = false) String expiryFromDate,@RequestParam(required = false) String expirayToDate) {
 
-		return amcService.getAllAMC(page ,size,admin,search);
+		return amcService.getAllAMC(page,size,admin,search,expiryFromDate,expirayToDate);
 
 	}
 	

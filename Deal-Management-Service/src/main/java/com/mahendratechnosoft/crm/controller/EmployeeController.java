@@ -1081,9 +1081,10 @@ public class EmployeeController {
 		
 	    
 		@GetMapping("/getAllAMC/{page}/{size}")
-		public ResponseEntity<?> getAllAMC(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+		public ResponseEntity<?> getAllAMC(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,
+				@RequestParam(required = false) String expiryFromDate,@RequestParam(required = false) String expirayToDate) {
 
-			return amcService.getAllAMC(page ,size,employee,search);
+			return amcService.getAllAMC(page ,size,employee,search,expiryFromDate,expirayToDate);
 
 		}
 		
