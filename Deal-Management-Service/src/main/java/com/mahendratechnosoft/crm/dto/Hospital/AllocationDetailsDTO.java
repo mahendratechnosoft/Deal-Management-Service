@@ -50,6 +50,7 @@ public class AllocationDetailsDTO {
     private double progressiveMotilityC;
     private String morphology;
     private String abnormality;
+    private double million;
 	public String getAllocationId() {
 		return allocationId;
 	}
@@ -266,5 +267,12 @@ public class AllocationDetailsDTO {
 	public void setVialsAssignedCount(int vialsAssignedCount) {
 		this.vialsAssignedCount = vialsAssignedCount;
 	}
+	public double getMillion() {
+		return million;
+	}
+	public void setMillion(double million) {
+		this.million = million;
+	}
+
     
 }

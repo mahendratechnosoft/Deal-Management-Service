@@ -825,6 +825,7 @@ public class DonorService {
                     dto.setProgressiveMotilityC(report.getProgressiveMotilityC());
                     dto.setMorphology(report.getMorphology());
                     dto.setAbnormality(report.getAbnormality());
+                    dto.setMillion(report.getMillion());
                 });
 
         return dto;
