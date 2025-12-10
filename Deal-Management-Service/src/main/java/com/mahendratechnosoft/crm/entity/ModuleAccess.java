@@ -76,6 +76,13 @@ public class ModuleAccess {
 	
 	private boolean employeeAccess;
     private boolean settingAccess;	
+    
+    private boolean amcAccess;
+	private boolean amcViewAll;
+	private boolean amcCreate;
+	private boolean amcDelete;
+	private boolean amcEdit;
+    
 	public String getModuleAccessId() {
 		return moduleAccessId;
 	}
@@ -410,4 +417,35 @@ public class ModuleAccess {
 	public void setTaskEdit(boolean taskEdit) {
 		this.taskEdit = taskEdit;
 	}
+	public boolean isAmcAccess() {
+		return amcAccess;
+	}
+	public void setAmcAccess(boolean amcAccess) {
+		this.amcAccess = amcAccess;
+	}
+	public boolean isAmcViewAll() {
+		return amcViewAll;
+	}
+	public void setAmcViewAll(boolean amcViewAll) {
+		this.amcViewAll = amcViewAll;
+	}
+	public boolean isAmcCreate() {
+		return amcCreate;
+	}
+	public void setAmcCreate(boolean amcCreate) {
+		this.amcCreate = amcCreate;
+	}
+	public boolean isAmcDelete() {
+		return amcDelete;
+	}
+	public void setAmcDelete(boolean amcDelete) {
+		this.amcDelete = amcDelete;
+	}
+	public boolean isAmcEdit() {
+		return amcEdit;
+	}
+	public void setAmcEdit(boolean amcEdit) {
+		this.amcEdit = amcEdit;
+	}
+	
 }

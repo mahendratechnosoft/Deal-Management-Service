@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
+import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
@@ -37,6 +38,9 @@ import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.dto.UserCredential;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
+import com.mahendratechnosoft.crm.entity.AMC;
+import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
@@ -61,6 +65,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.service.AMCService;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
@@ -118,6 +123,9 @@ public class AdminController {
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private AMCService amcService;
 
 
     AdminController(UserDetailServiceImp userDetailServiceImp) {
@@ -1290,6 +1298,7 @@ public class AdminController {
         return ResponseEntity.ok("Removed Follower with Id: "+employeeId);
     }
     
+
     @PutMapping("/updateTaskStatus/{taskId}/{status}")
     public ResponseEntity<Task> updateStatus(
             @PathVariable String taskId, 
@@ -1298,5 +1307,68 @@ public class AdminController {
         Task updatedTask = taskService.updateTaskStatus(taskId, status);
         return ResponseEntity.ok(updatedTask);
     }
+
+    // AMC APIs
+    
+
 	
+	@PostMapping("/createAMC")
+	public ResponseEntity<?> createAMC(@ModelAttribute("admin") Admin admin ,@RequestBody CreateAMC createAMC){
+		createAMC.getAmcInfo().setAdminId(admin.getAdminId());
+		return amcService.createAMC(createAMC);
+	}
+	
+	
+    
+	@GetMapping("/getAllAMC/{page}/{size}")
+	public ResponseEntity<?> getAllAMC(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+		return amcService.getAllAMC(page ,size,admin,search);
+
+	}
+	
+	@PutMapping("/updateAMC")
+	public ResponseEntity<AMC> updateAMC(@ModelAttribute("admin") Admin admin ,@RequestBody AMC updateAMC){
+		updateAMC.setAdminId(admin.getAdminId());
+		return amcService.updateAMC(updateAMC);
+	}
+	
+	
+	@DeleteMapping("/deleteAMC/{amcId}")
+	public ResponseEntity<String> deleteAMC(@PathVariable String amcId){
+		return amcService.deleteAMC(amcId);
+	}
+	
+	
+	@GetMapping("/getAllAMCHistoy/{amcId}")
+	public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(@PathVariable String amcId){
+		return amcService.getAllAMCHistoy(amcId);
+	}
+	
+	@PutMapping("/updateAMCHistory")
+	public ResponseEntity<AMCHistory> updateAMCHistory(@RequestBody AMCHistory updateAMCHistory){
+		return amcService.updateAMCHistory(updateAMCHistory);
+	}
+	
+	@DeleteMapping("/deleteAMCHistory/{amcHistoryId}")
+	public ResponseEntity<String> deleteAMCHistory(@PathVariable String amcHistoryId){
+		return amcService.deleteAMCHistory(amcHistoryId);
+	}
+	
+	@GetMapping("/getAllAMCDomainHistoy/{amcId}")
+	public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(@PathVariable String amcId){
+		return amcService.getAllAMCDomainHistoy(amcId);
+	}
+	
+	@PutMapping("/updateAMCDomainHistoy")
+	public ResponseEntity<AMCDomainHistory> updateAMCDomainHistoy(@RequestBody AMCDomainHistory updateAMCDomainHistory){
+		return amcService.updateAMCDomainHistoy(updateAMCDomainHistory);
+	}
+	
+	@DeleteMapping("/deleteAMCDomainHistory/{amcDomainHistoryId}")
+	public ResponseEntity<String> deleteAMCDomainHistory(@PathVariable String amcDomainHistoryId){
+		return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
+	}
+	
+	// amc API END
 }
