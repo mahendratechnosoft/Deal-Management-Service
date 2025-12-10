@@ -25,11 +25,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
+import com.mahendratechnosoft.crm.entity.AMC;
+import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Contacts;
@@ -51,6 +55,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
+import com.mahendratechnosoft.crm.service.AMCService;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
@@ -100,6 +105,8 @@ public class EmployeeController {
 	@Autowired
 	private TaskService taskService;
 
+	@Autowired
+	private AMCService amcService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -1058,5 +1065,70 @@ public class EmployeeController {
 	        Task updatedTask = taskService.updateTaskStatus(taskId, status);
 	        return ResponseEntity.ok(updatedTask);
 	    }
+	    
+	    
+	    // AMC APIs
+	    
+
+		
+		@PostMapping("/createAMC")
+		public ResponseEntity<?> createAMC(@ModelAttribute("employee") Employee employee ,@RequestBody CreateAMC createAMC){
+			createAMC.getAmcInfo().setAdminId(employee.getAdmin().getAdminId());
+			return amcService.createAMC(createAMC);
+		}
+		
+		
+	    
+		@GetMapping("/getAllAMC/{page}/{size}")
+		public ResponseEntity<?> getAllAMC(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search) {
+
+			return amcService.getAllAMC(page ,size,employee,search);
+
+		}
+		
+		@PutMapping("/updateAMC")
+		public ResponseEntity<AMC> updateAMC(@ModelAttribute("employee") Employee employee,@RequestBody AMC updateAMC){
+			updateAMC.setAdminId(employee.getAdmin().getAdminId());
+			return amcService.updateAMC(updateAMC);
+		}
+		
+		
+		@DeleteMapping("/deleteAMC/{amcId}")
+		public ResponseEntity<String> deleteAMC(@PathVariable String amcId){
+			return amcService.deleteAMC(amcId);
+		}
+		
+		
+		@GetMapping("/getAllAMCHistoy/{amcId}")
+		public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(@PathVariable String amcId){
+			return amcService.getAllAMCHistoy(amcId);
+		}
+		
+		@PutMapping("/updateAMCHistory")
+		public ResponseEntity<AMCHistory> updateAMCHistory(@RequestBody AMCHistory updateAMCHistory){
+			return amcService.updateAMCHistory(updateAMCHistory);
+		}
+		
+		@DeleteMapping("/deleteAMCHistory/{amcHistoryId}")
+		public ResponseEntity<String> deleteAMCHistory(@PathVariable String amcHistoryId){
+			return amcService.deleteAMCHistory(amcHistoryId);
+		}
+		
+		@GetMapping("/getAllAMCDomainHistoy/{amcId}")
+		public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(@PathVariable String amcId){
+			return amcService.getAllAMCDomainHistoy(amcId);
+		}
+		
+		@PutMapping("/updateAMCDomainHistoy")
+		public ResponseEntity<AMCDomainHistory> updateAMCDomainHistoy(@RequestBody AMCDomainHistory updateAMCDomainHistory){
+			return amcService.updateAMCDomainHistoy(updateAMCDomainHistory);
+		}
+		
+		@DeleteMapping("/deleteAMCDomainHistory/{amcDomainHistoryId}")
+		public ResponseEntity<String> deleteAMCDomainHistory(@PathVariable String amcDomainHistoryId){
+			return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
+		}
+		
+		// amc API END
     
 }
