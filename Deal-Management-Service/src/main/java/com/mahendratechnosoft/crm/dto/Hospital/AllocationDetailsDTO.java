@@ -17,6 +17,7 @@ public class AllocationDetailsDTO {
     private String education;
     private String profession;
     private String religion;
+    private double height;
 
     // --- From FamilyInfo ---
     private String familyInfoId;
@@ -273,6 +274,11 @@ public class AllocationDetailsDTO {
 	public void setMillion(double million) {
 		this.million = million;
 	}
-
-    
+	public double getHeight() {
+		return height;
+	}
+	public void setHeight(double height) {
+		this.height = height;
+	}
+	
 }
