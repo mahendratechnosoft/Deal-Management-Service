@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.mahendratechnosoft.crm.dto.AMCList;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
@@ -50,14 +52,27 @@ public class AMCService {
 	}
 	
 	
-	public ResponseEntity<?> getAllAMC(@PathVariable int page, @PathVariable int size, Object loginUser,String search) {
+	public ResponseEntity<?> getAllAMC(@PathVariable int page, @PathVariable int size,  Object loginUser,String search,String expiryFromDate,String expiryToDate) {
 
 		try {
+			
+			LocalDate from=null;
+			LocalDate to=null;
+			
+			if (expiryFromDate != null && !expiryFromDate.trim().isEmpty()) {
+			    from = LocalDate.parse(expiryFromDate.trim());
+			}
+
+			if (expiryToDate != null && !expiryToDate.trim().isEmpty()) {
+			    to = LocalDate.parse(expiryToDate.trim());
+			}
+			
+			
 			ModuleAccess moduleAccess=null;
 			String role = "ROLE_EMPLOYEE";
 			String adminId = null;
 			String employeeId = null;
-			Page<AMC> amcPage = null;
+			Page<AMCList> amcPage = null;
 			
 			if (loginUser instanceof Admin admin) {
 				role = admin.getUser().getRole();
@@ -72,13 +87,13 @@ public class AMCService {
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
-				amcPage = amcRepository.findByAMC(adminId,null,search, pageable);
+				amcPage = amcRepository.findByAMC(adminId,null,search,from,to, pageable);
 
 			}else if(moduleAccess.isAmcViewAll()) {
-				amcPage = amcRepository.findByAMC(adminId,null,search, pageable);
+				amcPage = amcRepository.findByAMC(adminId,null,search,from,to, pageable);
 			} 
 			else {
-				amcPage = amcRepository.findByAMC(adminId,employeeId,search, pageable);
+				amcPage = amcRepository.findByAMC(adminId,employeeId,search,from,to, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new HashMap<>();

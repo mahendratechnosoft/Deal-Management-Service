@@ -13,7 +13,7 @@ public class AMC {
 	private String adminId;
 	private String employeeId;
 	private String assingedTo;
-	private String clinetName;
+	private String clientName;
 	private String companyName;
 	private String contactPersonName;
 	private String email;
@@ -24,14 +24,14 @@ public class AMC {
 	private String domainProvider;
 
 	
-	public AMC(String amcId, String adminId, String employeeId, String clinetName, String companyName,
+	public AMC(String amcId, String adminId, String employeeId, String clientName, String companyName,
 			String contactPersonName, String email, String phoneNumber, String websiteURL, String technology,
 			String hostingProvider, String domainProvider, String assingedTo) {
 		super();
 		this.amcId = amcId;
 		this.adminId = adminId;
 		this.employeeId = employeeId;
-		this.clinetName = clinetName;
+		this.clientName = clientName;
 		this.companyName = companyName;
 		this.contactPersonName = contactPersonName;
 		this.email = email;
@@ -65,11 +65,12 @@ public class AMC {
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
-	public String getClinetName() {
-		return clinetName;
+	
+	public String getClientName() {
+		return clientName;
 	}
-	public void setClinetName(String clinetName) {
-		this.clinetName = clinetName;
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 	public String getCompanyName() {
 		return companyName;
