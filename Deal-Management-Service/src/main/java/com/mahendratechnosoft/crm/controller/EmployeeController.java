@@ -3,6 +3,7 @@ package com.mahendratechnosoft.crm.controller;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -1018,5 +1019,34 @@ public class EmployeeController {
 		public ResponseEntity<?> getActiveTimer(@ModelAttribute("employee") Employee employee) {
 		    return taskService.getActiveTimer(employee);
 		}
+		
+		@GetMapping("/getActiveTimerForTask/{taskId}")
+		public ResponseEntity<?> getActiveTimerForTask(@ModelAttribute("employee") Employee employee, @PathVariable("taskId") String taskId) {
+		    return taskService.getActiveTimerForTask(taskId, employee);
+		}
+		
+		@PutMapping("/addAssigneesToTask/{taskId}")
+	    public ResponseEntity<Task> addAssignees(@PathVariable String taskId, @RequestBody Set<String> employeeIds) {
+	        Task updatedTask = taskService.addAssignees(taskId, employeeIds);
+	        return ResponseEntity.ok(updatedTask);
+	    }
+
+	    @PutMapping("/addFollowersToTask/{taskId}")
+	    public ResponseEntity<Task> addFollowers(@PathVariable String taskId, @RequestBody Set<String> employeeIds) {
+	        Task updatedTask = taskService.addFollowers(taskId, employeeIds);
+	        return ResponseEntity.ok(updatedTask);
+	    }
+
+	    @DeleteMapping("/removeTaskAssignee/{taskId}/{employeeId}")
+	    public ResponseEntity<?> removeAssignee(@PathVariable String taskId, @PathVariable String employeeId) {
+	        taskService.removeAssignee(taskId, employeeId);
+	        return ResponseEntity.ok("Removed Assignee with Id: "+employeeId);
+	    }
+
+	    @DeleteMapping("/removeTaskFollower/{taskId}/{employeeId}")
+	    public ResponseEntity<?> removeFollower(@PathVariable String taskId, @PathVariable String employeeId) {
+	        taskService.removeFollower(taskId, employeeId);
+	        return ResponseEntity.ok("Removed Follower with Id: "+employeeId);
+	    }
     
 }
