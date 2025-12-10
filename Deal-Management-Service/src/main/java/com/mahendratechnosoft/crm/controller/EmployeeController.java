@@ -49,6 +49,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
+import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -412,10 +413,10 @@ public class EmployeeController {
 		}
 		
 		@GetMapping("/checkCustomerIsExist")
-		public ResponseEntity<?> getInvoiceByCustomerId(@RequestBody Map<String, String> request ) {
+		public ResponseEntity<?> getInvoiceByCustomerId(@ModelAttribute("employee") Employee employee,@RequestBody Map<String, String> request ) {
 
 			String companyName = request.get("companyName");
-	        return customerService.checkCustomerExist(companyName);
+	        return customerService.checkCustomerExist(employee,companyName);
 
 		}
 		
@@ -1047,6 +1048,15 @@ public class EmployeeController {
 	    public ResponseEntity<?> removeFollower(@PathVariable String taskId, @PathVariable String employeeId) {
 	        taskService.removeFollower(taskId, employeeId);
 	        return ResponseEntity.ok("Removed Follower with Id: "+employeeId);
+	    }
+	    
+	    @PutMapping("/updateTaskStatus/{taskId}/{status}")
+	    public ResponseEntity<Task> updateStatus(
+	            @PathVariable String taskId, 
+	            @PathVariable TaskStatus status) {
+	        
+	        Task updatedTask = taskService.updateTaskStatus(taskId, status);
+	        return ResponseEntity.ok(updatedTask);
 	    }
     
 }

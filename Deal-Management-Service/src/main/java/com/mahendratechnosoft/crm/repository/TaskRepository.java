@@ -25,15 +25,23 @@ public interface TaskRepository extends JpaRepository<Task,String> {
 	
 	
 	@Query("""
-		    SELECT t FROM Task t
-		    WHERE t.employeeId = :employeeId 
-		      AND (:search IS NULL OR LOWER(t.subject) LIKE LOWER(CONCAT('%', :search, '%'))) 
-		    ORDER BY t.createdAt DESC
-		""")
-		Page<Task> findByEmployeeId(
-		        @Param("employeeId") String employeeId,
-		        @Param("search") String search,
-		        Pageable pageable);
+	        SELECT DISTINCT t FROM Task t
+	        LEFT JOIN t.assignedEmployees ae
+	        LEFT JOIN t.followersEmployees fe
+	        WHERE t.adminId = :adminId
+	          AND (
+	               t.employeeId = :employeeId 
+	               OR ae.employeeId = :employeeId 
+	               OR fe.employeeId = :employeeId
+	          )
+	          AND (:search IS NULL OR LOWER(t.subject) LIKE LOWER(CONCAT('%', :search, '%'))) 
+	        ORDER BY t.createdAt DESC
+	    """)
+	    Page<Task> findTasksForEmployee(
+	            @Param("adminId") String adminId,
+	            @Param("employeeId") String employeeId,
+	            @Param("search") String search,
+	            Pageable pageable);
 	
 
 }
