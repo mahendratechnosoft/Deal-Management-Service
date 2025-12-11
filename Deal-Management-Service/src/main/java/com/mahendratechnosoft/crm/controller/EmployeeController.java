@@ -1131,6 +1131,11 @@ public class EmployeeController {
 			return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
 		}
 		
+		@GetMapping("/getDonorInfo/{donorId}")
+		public ResponseEntity<?> getDonorInfo(@PathVariable("donorId") String donorId){
+			return donorService.getDonorInfo(donorId);
+		}
+		
 		// amc API END
     
 }

@@ -85,9 +85,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final UserDetailServiceImp userDetailServiceImp;
-
-	
 	@Autowired
     private AdminRepository adminRepository;
 	
@@ -126,12 +123,6 @@ public class AdminController {
 	
 	@Autowired
 	private AMCService amcService;
-
-
-    AdminController(UserDetailServiceImp userDetailServiceImp) {
-        this.userDetailServiceImp = userDetailServiceImp;
-    }
-
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -1368,6 +1359,11 @@ public class AdminController {
 	@DeleteMapping("/deleteAMCDomainHistory/{amcDomainHistoryId}")
 	public ResponseEntity<String> deleteAMCDomainHistory(@PathVariable String amcDomainHistoryId){
 		return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
+	}
+	
+	@GetMapping("/getDonorInfo/{donorId}")
+	public ResponseEntity<?> getDonorInfo(@PathVariable("donorId") String donorId){
+		return donorService.getDonorInfo(donorId);
 	}
 	
 	// amc API END
