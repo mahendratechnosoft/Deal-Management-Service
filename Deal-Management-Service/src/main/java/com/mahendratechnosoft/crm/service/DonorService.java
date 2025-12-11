@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
+import com.mahendratechnosoft.crm.dto.Hospital.DonarInfoDto;
 import com.mahendratechnosoft.crm.dto.Hospital.DonorResponseDto;
 import com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto;
 import com.mahendratechnosoft.crm.entity.Admin;
@@ -892,4 +894,23 @@ public class DonorService {
 
 	}
 	
+	public ResponseEntity<?> getDonorInfo(String donorId) {
+	    
+	    Donors donor = donorsRepository.findById(donorId)
+	            .orElseThrow(() -> new RuntimeException("Donor not found with Id: " + donorId));
+
+	    Optional<DonorBloodReport> donorBloodReportOptional = donoBloodReportRepositroy.findFirstByDonorIdOrderByReportDateTimeDesc(donor.getDonorId());
+	    Optional<SemenReport> semenReportOptional = semenReportRepository.findFirstByDonorIdOrderByDateAndTimeDesc(donor.getDonorId());
+	    SampleReport sampleReport = sampleReportRepository.findByDonorId(donor.getDonorId());
+	    List<DonorFamilyInfo> familyList = donorFamilyInfoRepository.findByDonorId(donorId);
+
+	    DonarInfoDto donarInfoDto = new DonarInfoDto();
+	    donarInfoDto.setDonors(donor);
+	    donarInfoDto.setDonorBloodReport(donorBloodReportOptional.orElse(null)); 
+	    donarInfoDto.setSemenReport(semenReportOptional.orElse(null));
+	    donarInfoDto.setSampleReport(sampleReport);
+	    donarInfoDto.setDonorFamilyInfos(familyList != null ? familyList : new ArrayList<>());
+	    
+	    return ResponseEntity.ok(donarInfoDto);
+	}
 }
