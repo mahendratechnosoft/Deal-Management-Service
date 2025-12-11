@@ -65,6 +65,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
 import com.mahendratechnosoft.crm.service.AMCService;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -84,6 +85,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+
+    private final ProformaInvoiceContentRepository proformaInvoiceContentRepository;
 
 	@Autowired
     private AdminRepository adminRepository;
@@ -123,6 +126,10 @@ public class AdminController {
 	
 	@Autowired
 	private AMCService amcService;
+
+    AdminController(ProformaInvoiceContentRepository proformaInvoiceContentRepository) {
+        this.proformaInvoiceContentRepository = proformaInvoiceContentRepository;
+    }
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -1119,9 +1126,11 @@ public class AdminController {
 	@GetMapping("/getAllTaskList/{page}/{size}")
 	public ResponseEntity<?> getAllTaskList(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,
 			@RequestParam(required = false) String search,
-			@RequestParam(required = false)TaskStatus status) {
+			@RequestParam(required = false)TaskStatus status,
+			@RequestParam(required = false) String listType
+			) {
 
-		return taskService.getAllTaskList(page ,size,admin,search,status);
+		return taskService.getAllTaskList(page ,size,admin,search,status,null);
 
 	}
 	
@@ -1362,11 +1371,17 @@ public class AdminController {
 	public ResponseEntity<String> deleteAMCDomainHistory(@PathVariable String amcDomainHistoryId){
 		return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
 	}
+
+	// amc API END
 	
 	@GetMapping("/getDonorInfo/{donorId}")
 	public ResponseEntity<?> getDonorInfo(@PathVariable("donorId") String donorId){
 		return donorService.getDonorInfo(donorId);
 	}
 	
-	// amc API END
+	@GetMapping("/getTaskCount")
+	public ResponseEntity<?> getTaskCount(@ModelAttribute("admin") Admin admin,
+			@RequestParam(required = false) String listType){
+		return taskService.getTaskCounts(admin, null);
+	}
 }

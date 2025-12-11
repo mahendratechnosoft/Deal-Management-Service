@@ -754,14 +754,10 @@ public class LeadService {
 
 	        if (role.equals("ROLE_ADMIN")) {
 	            leads = leadRepository.leadFollowUpDetails(adminId, null, start, end);
-	            System.out.println("check 1");
-	            
 	        } else if (access.isLeadViewAll()) {
 	            leads = leadRepository.leadFollowUpDetails(adminId, null, start, end);
-	            System.out.println("check 2");
 	        } else {
-	            leads = leadRepository.leadFollowUpDetails(adminId, employeeId, start, end); // ✅ fixed
-	            System.out.println("check 3");
+	            leads = leadRepository.leadFollowUpDetails(adminId, employeeId, start, end);
 	        }
 
 	        List<Map<String, Object>> result = leads.stream()

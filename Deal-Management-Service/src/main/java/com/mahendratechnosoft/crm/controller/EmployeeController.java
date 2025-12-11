@@ -932,9 +932,11 @@ public class EmployeeController {
 		@GetMapping("/getAllTaskList/{page}/{size}")
 		public ResponseEntity<?> getAllTaskList(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,
 				@RequestParam(required = false) String search,
-				@RequestParam(required = false) TaskStatus status) {
+				@RequestParam(required = false) TaskStatus status,
+				@RequestParam(required = false) String listType
+				) {
 
-			return taskService.getAllTaskList(page ,size,employee,search,status);
+			return taskService.getAllTaskList(page ,size,employee,search,status,listType);
 
 		}
 		
@@ -1130,12 +1132,17 @@ public class EmployeeController {
 		public ResponseEntity<String> deleteAMCDomainHistory(@PathVariable String amcDomainHistoryId){
 			return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
 		}
+
+		// amc API END
 		
 		@GetMapping("/getDonorInfo/{donorId}")
 		public ResponseEntity<?> getDonorInfo(@PathVariable("donorId") String donorId){
 			return donorService.getDonorInfo(donorId);
 		}
 		
-		// amc API END
-    
+		@GetMapping("/getTaskCount")
+		public ResponseEntity<?> getTaskCount(@ModelAttribute("employee") Employee employee,
+				@RequestParam(required = false) String listType){
+			return taskService.getTaskCounts(employee, listType);
+		}
 }
