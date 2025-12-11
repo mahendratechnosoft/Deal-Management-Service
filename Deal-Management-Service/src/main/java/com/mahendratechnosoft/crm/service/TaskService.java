@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +123,7 @@ public class TaskService {
     }
 	
 	
-	public ResponseEntity<?> getAllTaskList(int page, int size, Object loginUser, String search,TaskStatus status) {
+	public ResponseEntity<?> getAllTaskList(int page, int size, Object loginUser, String search,TaskStatus status,String listType) {
 
 		try {
             ModuleAccess moduleAccess=null;
@@ -151,7 +152,7 @@ public class TaskService {
 			} 
 			else {
 
-				taskPage = taskRepository.findTasksForEmployee(adminId,employeeId,status, search, pageable);
+				taskPage = taskRepository.findTasksForEmployee(adminId,employeeId,status, search,listType, pageable);
 			}
 			// 3. Prepare response
 			Map<String, Object> response = new HashMap<>();
@@ -641,5 +642,56 @@ public class TaskService {
         		 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
         task.setStatus(newStatus);
         return taskRepository.save(task);
+    }
+    
+    public ResponseEntity<?> getTaskCounts(Object loginUser, String listType) {
+        try {
+            String role = "ROLE_EMPLOYEE";
+            String adminId = null;
+            String employeeId = null;
+            ModuleAccess moduleAccess = null;
+
+            if (loginUser instanceof Admin admin) {
+                role = admin.getUser().getRole();
+                adminId = admin.getAdminId();
+            } else if (loginUser instanceof Employee employee) {
+                adminId = employee.getAdmin().getAdminId();
+                employeeId = employee.getEmployeeId();
+                moduleAccess = employee.getModuleAccess();
+            }
+
+            List<Object[]> dbCounts;
+
+            if (role.equals("ROLE_ADMIN")) {
+                dbCounts = taskRepository.countStatusByAdminId(adminId);
+            }
+
+            else if (moduleAccess != null && moduleAccess.isTaskViewAll()) {
+                dbCounts = taskRepository.countStatusByAdminId(adminId);
+            } else {
+                dbCounts = taskRepository.countStatusForEmployee(adminId, employeeId, listType);
+            }
+
+            Map<String, Long> responseMap = new LinkedHashMap<>();
+
+            for (TaskStatus status : TaskStatus.values()) {
+                responseMap.put(status.name(), 0L);
+            }
+
+            for (Object[] row : dbCounts) {
+                TaskStatus status = (TaskStatus) row[0];
+                Long count = (Long) row[1];
+                responseMap.put(status.name(), count);
+                
+            }
+            long totalTasks = responseMap.values().stream().mapToLong(Long::longValue).sum();
+            responseMap.put("TOTAL", totalTasks);
+
+            return ResponseEntity.ok(responseMap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+        }
     }
 }
