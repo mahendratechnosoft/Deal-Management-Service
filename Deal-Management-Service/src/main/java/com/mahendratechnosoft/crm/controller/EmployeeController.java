@@ -1150,10 +1150,34 @@ public class EmployeeController {
 		public void exportTasks(
 				@ModelAttribute("employee") Employee employee,
 		        HttpServletResponse response,
-		        @RequestParam(required = false) String search,
 		        @RequestParam(required = false) TaskStatus status,
 		        @RequestParam(required = false) String listType
 		        ) {
-		    taskService.exportTaskExcel(response, employee, search, status, listType);
+		    taskService.exportTaskExcel(response, employee, status, listType);
+		}
+		
+		
+		@GetMapping("/getLeadNameAndIdWithConverted")
+		public ResponseEntity<?> getLeadNameAndIdWithConverted(@ModelAttribute("employee") Employee employee) {
+
+		  return  leadService.getLeadNameAndIdWithConverted(employee);
+		}
+		
+		@GetMapping("/getProposalNumberAndId")
+		public ResponseEntity<?> getProposalNameAndId(@ModelAttribute("employee") Employee employee) {
+
+		  return  salesService.proposalNumberAndIdByAdminId(employee);
+		}
+		
+		@GetMapping("/getProformaNumberAndId")
+		public ResponseEntity<?> getProformaNameAndId(@ModelAttribute("employee") Employee employee) {
+
+		  return  salesService.proformaNumberAndIdByAdminId(employee);
+		}
+		
+		@GetMapping("/getInvoiceNumberAndId")
+		public ResponseEntity<?> getInvoiceNumberAndId(@ModelAttribute("employee") Employee employee) {
+
+		  return  salesService.inoviceNumberAndIdByAdminId(employee);
 		}
 }
