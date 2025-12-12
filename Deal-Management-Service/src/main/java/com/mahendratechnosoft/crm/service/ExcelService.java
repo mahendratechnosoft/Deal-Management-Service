@@ -6,6 +6,7 @@ package com.mahendratechnosoft.crm.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -41,6 +43,7 @@ import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.repository.ActivityLogsRepository;
 import com.mahendratechnosoft.crm.repository.AttendanceRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
@@ -478,7 +481,90 @@ public class ExcelService {
 	    return new ByteArrayInputStream(out.toByteArray());
 	}
 
+	public void generateTaskExcel(HttpServletResponse response, List<Task> taskList) throws Exception {
 
+	    XSSFWorkbook workbook = new XSSFWorkbook();
+	    XSSFSheet sheet = workbook.createSheet("Tasks");
+
+	    // --- Styles Setup (Same as your Lead logic) ---
+	    CellStyle headerStyle = workbook.createCellStyle();
+	    XSSFFont headerFont = workbook.createFont();
+	    headerFont.setBold(true);
+	    headerFont.setFontHeight(12);
+	    headerStyle.setFont(headerFont);
+	    headerStyle.setAlignment(HorizontalAlignment.CENTER);
+	    headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+	    setBorder(headerStyle); 
+
+	    CellStyle dataStyle = workbook.createCellStyle();
+	    setBorder(dataStyle);
+
+	    // --- Headers ---
+	    String[] headers = {
+	        "Subject", "Status", "Priority", "Description", 
+	        "Start Date", "End Date", "Estimated Hours", "Hourly Rate",
+	        "Assigned To", "Followers", "Related To", "Created Date"
+	    };
+
+	    Row headerRow = sheet.createRow(0);
+	    for (int i = 0; i < headers.length; i++) {
+	        Cell cell = headerRow.createCell(i);
+	        cell.setCellValue(headers[i]);
+	        cell.setCellStyle(headerStyle);
+	    }
+	    
+	    int rowCount = 1;
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+	    for (Task task : taskList) {
+	        Row row = sheet.createRow(rowCount++);
+	        
+	        // Format Dates
+	        String startStr = (task.getStartDate() != null) ? new SimpleDateFormat("dd-MM-yyyy").format(task.getStartDate()) : "";
+	        String endStr = (task.getEndDate() != null) ? new SimpleDateFormat("dd-MM-yyyy").format(task.getEndDate()) : "";
+	        String createdStr = (task.getCreatedAt() != null) ? task.getCreatedAt().format(dtf) : "";
+
+	        // Convert Assigned Employees Set to Comma Separated String
+	        String assignees = task.getAssignedEmployees().stream()
+	                .map(Employee::getName)
+	                .collect(Collectors.joining(", "));
+
+	        // Convert Followers Set to Comma Separated String
+	        String followers = task.getFollowersEmployees().stream()
+	                .map(Employee::getName)
+	                .collect(Collectors.joining(", "));
+
+	        createCell(row, 0, task.getSubject(), dataStyle);
+	        createCell(row, 1, task.getStatus(), dataStyle);
+	        createCell(row, 2, task.getPriority(), dataStyle);
+	        createCell(row, 3, task.getDescription(), dataStyle);
+	        createCell(row, 4, startStr, dataStyle);
+	        createCell(row, 5, endStr, dataStyle);
+	        createCell(row, 6, task.getEstimatedHours(), dataStyle);
+	        createCell(row, 7, task.getHourlyRate(), dataStyle);
+	        createCell(row, 8, assignees, dataStyle);
+	        createCell(row, 9, followers, dataStyle);
+	        createCell(row, 10, task.getRelatedTo() + ": " + task.getRelatedToName(), dataStyle);
+	        createCell(row, 11, createdStr, dataStyle);
+	    }
+
+	    // Auto-size columns
+	    for (int i = 0; i < headers.length; i++) {
+	        sheet.autoSizeColumn(i);
+	    }
+
+	    // --- Response Configuration ---
+	    response.setContentType("application/octet-stream");
+	    String headerKey = "Content-Disposition";
+	    String headerValue = "attachment; filename=tasks_export_" + System.currentTimeMillis() + ".xlsx";
+	    response.setHeader(headerKey, headerValue);
+
+	    ServletOutputStream outputStream = response.getOutputStream();
+	    workbook.write(outputStream);
+	    workbook.close();
+	    outputStream.close();
+	}
 
 
 }

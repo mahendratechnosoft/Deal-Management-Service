@@ -1398,4 +1398,20 @@ public class AdminController {
 	public ResponseEntity<?> getActiveTimer(@ModelAttribute("admin") Admin admin) {
 	    return taskService.getActiveTimer(admin);
 	}
+	
+	@GetMapping("/exportTasks")
+	public void exportTasks(
+	        @ModelAttribute("admin") Admin admin,
+	        HttpServletResponse response,
+	        @RequestParam(required = false) String search,
+	        @RequestParam(required = false) TaskStatus status,
+	        @RequestParam(required = false) String listType
+	        ) {
+	    taskService.exportTaskExcel(response, admin, search, status, listType);
+	}
+	
+	@GetMapping("/getActiveTimerForTask/{taskId}")
+	public ResponseEntity<?> getActiveTimerForTask(@ModelAttribute("admin") Admin admin, @PathVariable("taskId") String taskId) {
+	    return taskService.getActiveTimerForTask(taskId, admin);
+	}
 }

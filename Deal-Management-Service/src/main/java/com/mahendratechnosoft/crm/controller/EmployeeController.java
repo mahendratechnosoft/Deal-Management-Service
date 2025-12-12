@@ -1145,4 +1145,15 @@ public class EmployeeController {
 				@RequestParam(required = false) String listType){
 			return taskService.getTaskCounts(employee, listType);
 		}
+		
+		@GetMapping("/exportTasks")
+		public void exportTasks(
+				@ModelAttribute("employee") Employee employee,
+		        HttpServletResponse response,
+		        @RequestParam(required = false) String search,
+		        @RequestParam(required = false) TaskStatus status,
+		        @RequestParam(required = false) String listType
+		        ) {
+		    taskService.exportTaskExcel(response, employee, search, status, listType);
+		}
 }

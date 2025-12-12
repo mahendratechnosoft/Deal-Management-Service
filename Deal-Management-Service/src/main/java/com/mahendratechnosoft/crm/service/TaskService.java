@@ -41,6 +41,8 @@ import com.mahendratechnosoft.crm.repository.TaskCommentsRepository;
 import com.mahendratechnosoft.crm.repository.TaskRepository;
 import com.mahendratechnosoft.crm.repository.TaskTimeLogRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -63,6 +65,9 @@ public class TaskService {
 	
 	@Autowired
 	private TaskTimeLogRepository taskTimeLogRepository;
+	
+	@Autowired
+	private ExcelService excelService;
 	
 	@Transactional
     public Task createTask(Object loginUser,TaskDto request) {
@@ -140,23 +145,19 @@ public class TaskService {
 				moduleAccess=employee.getModuleAccess();
 			}
 
-			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
+			
 			if (role.equals("ROLE_ADMIN")) {
 				taskPage = taskRepository.findByAdminId(adminId,status, search, pageable);
-
 			}
 			else if(moduleAccess.isTaskViewAll()) {
 				taskPage = taskRepository.findByAdminId(adminId,status, search, pageable);
-				
 			} 
 			else {
-
 				taskPage = taskRepository.findTasksForEmployee(adminId,employeeId,status, search,listType, pageable);
 			}
-			// 3. Prepare response
-			Map<String, Object> response = new HashMap<>();
 
+			Map<String, Object> response = new HashMap<>();
 			response.put("taskList", taskPage.getContent());
 			response.put("currentPage", taskPage.getNumber());
 			response.put("totalElement", taskPage.getTotalElements());
@@ -622,16 +623,28 @@ public class TaskService {
 	    return ResponseEntity.noContent().build();
 	}
 	
-	public ResponseEntity<?> getActiveTimerForTask(String taskId, Employee employee) {
+	public ResponseEntity<?> getActiveTimerForTask(String taskId, Object loginUser) {
 	    try {
-	        Optional<TaskTimeLog> activeLog = taskTimeLogRepository
-	                .findByTaskIdAndEmployeeIdAndStatus(taskId, employee.getEmployeeId(), TimeLogStatus.ACTIVE);
-
+	        Optional<TaskTimeLog> activeLog = Optional.empty();
+	        if (loginUser instanceof Admin admin) {
+	            activeLog = taskTimeLogRepository.findActiveLogForAdminByTask(
+	                taskId, 
+	                admin.getAdminId(), 
+	                TimeLogStatus.ACTIVE
+	            );
+	        } else if (loginUser instanceof Employee employee) {
+	            activeLog = taskTimeLogRepository.findByTaskIdAndEmployeeIdAndStatus(
+	                taskId, 
+	                employee.getEmployeeId(), 
+	                TimeLogStatus.ACTIVE
+	            );
+	        }
 	        if (activeLog.isPresent()) {
 	            return ResponseEntity.ok(activeLog.get());
 	        } else {
 	            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No active timer for this task.");
 	        }
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
@@ -710,9 +723,7 @@ public class TaskService {
 
             if (role.equals("ROLE_ADMIN")) {
                 dbCounts = taskRepository.countStatusByAdminId(adminId);
-            }
-
-            else if (moduleAccess != null && moduleAccess.isTaskViewAll()) {
+            } else if (moduleAccess != null && moduleAccess.isTaskViewAll()) {
                 dbCounts = taskRepository.countStatusByAdminId(adminId);
             } else {
                 dbCounts = taskRepository.countStatusForEmployee(adminId, employeeId, listType);
@@ -738,6 +749,43 @@ public class TaskService {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+        }
+    }
+    
+    public void exportTaskExcel(HttpServletResponse response, Object loginUser, String search, TaskStatus status, String listType) {
+        try {
+            ModuleAccess moduleAccess = null;
+            String role = "ROLE_EMPLOYEE";
+            String adminId = null;
+            String employeeId = null;
+            Page<Task> taskPage = null;
+
+            // 1. Determine User Role
+            if (loginUser instanceof Admin admin) {
+                role = admin.getUser().getRole();
+                adminId = admin.getAdminId();
+            } else if (loginUser instanceof Employee employee) {
+                adminId = employee.getAdmin().getAdminId();
+                employeeId = employee.getEmployeeId();
+                moduleAccess = employee.getModuleAccess();
+            }
+
+            Pageable pageable = Pageable.unpaged();
+
+            if (role.equals("ROLE_ADMIN")) {
+                taskPage = taskRepository.findByAdminId(adminId, status, search, pageable);
+            } 
+            else if (moduleAccess != null && moduleAccess.isTaskViewAll()) {
+                taskPage = taskRepository.findByAdminId(adminId, status, search, pageable);
+            } 
+            else {
+                taskPage = taskRepository.findTasksForEmployee(adminId, employeeId, status, search, listType, pageable);
+            }
+
+            excelService.generateTaskExcel(response, taskPage.getContent());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
