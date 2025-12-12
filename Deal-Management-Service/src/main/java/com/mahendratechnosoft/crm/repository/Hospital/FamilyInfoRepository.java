@@ -19,7 +19,7 @@ public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> 
 			      AND (:search IS NULL OR LOWER(p.wifeName) LIKE LOWER(CONCAT('%', :search, '%')))
 			     AND (:search IS NULL OR LOWER(p.husbandName) LIKE LOWER(CONCAT('%', :search, '%')))
 			     AND (:search IS NULL OR LOWER(p.uin) LIKE LOWER(CONCAT('%', :search, '%')))
-			    ORDER BY p.familyInfoId DESC
+			    ORDER BY p.createdAt DESC
 			""")
 	Page<FamilyInfo> findByEmployeeId(@Param("employeeId") String employeeId, @Param("search") String search,
 		 Pageable pageable);
@@ -31,17 +31,17 @@ public interface FamilyInfoRepository extends JpaRepository<FamilyInfo, String> 
 			     OR (:search IS NULL OR LOWER(p.husbandName) LIKE LOWER(CONCAT('%', :search, '%')))
 			     OR (:search IS NULL OR LOWER(p.uin) LIKE LOWER(CONCAT('%', :search, '%')))
 			     )
-			    ORDER BY p.familyInfoId DESC
+			    ORDER BY p.createdAt DESC
 			""")
 	Page<FamilyInfo> findByAdminId(@Param("adminId") String adminId, @Param("search") String search,
 			 Pageable pageable);
 	
 	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin,fi.wifeName,fi.husbandName) " +
-		       "FROM FamilyInfo fi WHERE fi.adminId = :adminId")
+		       "FROM FamilyInfo fi WHERE fi.adminId = :adminId ORDER BY fi.createdAt DESC")
 	List<FamilyInfoDto> findByAdminId(@Param("adminId") String adminId);
 	
 	@Query("SELECT new com.mahendratechnosoft.crm.dto.Hospital.FamilyInfoDto(fi.familyInfoId, fi.uin, fi.wifeName,fi.husbandName) " +
-		       "FROM FamilyInfo fi WHERE fi.employeeId = :employeeId")
+		       "FROM FamilyInfo fi WHERE fi.employeeId = :employeeId ORDER BY fi.createdAt DESC")
 	List<FamilyInfoDto> findByEmployeeId(@Param("employeeId") String employeeId);
 
 	@Query("SELECT COUNT(d) FROM FamilyInfo d WHERE d.uin LIKE :prefix%")
