@@ -22,7 +22,7 @@ public class TaskTimeLog {
     private String taskId;
     private String adminId;
     private String employeeId;
-    private String employeeName;
+    private String name;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -59,12 +59,12 @@ public class TaskTimeLog {
 		this.employeeId = employeeId;
 	}
 
-	public String getEmployeeName() {
-		return employeeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public LocalDateTime getStartTime() {
