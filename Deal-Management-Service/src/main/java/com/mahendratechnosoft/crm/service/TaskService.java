@@ -199,31 +199,37 @@ public class TaskService {
     }
 
 
-	public ResponseEntity<?> getTaskById(String taskId,String employeeId) {
-		try {
-			Optional<Task> taskOptional = taskRepository.findById(taskId);
-			if(taskOptional.isEmpty()){
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Task is not found for taskId : "+ taskId ); 
-			}
-			Task task = taskOptional.get();
-			boolean canStartTimer = true;
-			if(employeeId != null) {
-				boolean isOwner = (task.getEmployeeId() != null) ? task.getEmployeeId().equals(employeeId) : false;
-		        boolean isAssignee = task.getAssignedEmployees().stream()
-		                .anyMatch(emp -> emp.getEmployeeId().equals(employeeId));
-		        canStartTimer = isOwner || isAssignee;
-			}
-	        
+	public ResponseEntity<?> getTaskById(String taskId, Object loginUser) {
+	    try {
+	        Optional<Task> taskOptional = taskRepository.findById(taskId);
+	        if (taskOptional.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error Task is not found");
+	        }
+	        Task task = taskOptional.get();
+	        boolean canStartTimer = false;
+	        boolean canEdit = false;
+
+	        if (loginUser instanceof Admin) {
+	            canStartTimer = true; 
+	            canEdit = true;
+	        } else if (loginUser instanceof Employee employee) {
+	            String empId = employee.getEmployeeId();
+	            boolean isOwner = (task.getEmployeeId() != null) && task.getEmployeeId().equals(empId);
+	            boolean isAssignee = task.getAssignedEmployees().stream()
+	                    .anyMatch(emp -> emp.getEmployeeId().equals(empId));
+	            canStartTimer = isOwner || isAssignee;
+	            canEdit = isOwner;
+	        }
+
 	        Map<String, Object> response = new HashMap<>();
 	        response.put("task", task);
 	        response.put("canStartTimer", canStartTimer);
-			return ResponseEntity.ok(response);
+	        response.put("canEdit", canEdit);
+	        return ResponseEntity.ok(response);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
-		}
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+	    }
 	}
 
 
@@ -437,54 +443,61 @@ public class TaskService {
 		}
 	}
 	
-	public ResponseEntity<?> startTimer(String taskId, Employee employee) {
+	public ResponseEntity<?> startTimer(String taskId, Object loginUser) {
 	    try {
-	        // 1. Check if ANY task is currently active for this employee
-	        Optional<TaskTimeLog> currentActiveLog = taskTimeLogRepository
-	                .findByEmployeeIdAndStatus(employee.getEmployeeId(), TimeLogStatus.ACTIVE);
+	        String adminId = null;
+	        String employeeId = null;
+	        String name = null;
 
-	        // 2. If an active timer exists, stop it automatically
+	        // Identify User
+	        if (loginUser instanceof Admin admin) {
+	            adminId = admin.getAdminId();
+	            name = admin.getName();
+	        } else if (loginUser instanceof Employee employee) {
+	            adminId = employee.getAdmin().getAdminId();
+	            employeeId = employee.getEmployeeId();
+	            name = employee.getName();
+	        }
+
+	        // 1. Check for CURRENT active log based on Role
+	        Optional<TaskTimeLog> currentActiveLog;
+	        if (employeeId == null) {
+	            currentActiveLog = taskTimeLogRepository.findActiveLogForAdmin(adminId, TimeLogStatus.ACTIVE);
+	        } else {
+	            currentActiveLog = taskTimeLogRepository.findByEmployeeIdAndStatus(employeeId, TimeLogStatus.ACTIVE);
+	        }
+
+	        // 2. Auto-stop existing timer
 	        if (currentActiveLog.isPresent()) {
 	            TaskTimeLog activeLog = currentActiveLog.get();
-	            
-	            // If the user tries to start the SAME task that is already running
-	            if(activeLog.getTaskId().equals(taskId)) {
-	                 return ResponseEntity.badRequest().body("Timer is already running for this task.");
+	            if (activeLog.getTaskId().equals(taskId)) {
+	                return ResponseEntity.badRequest().body("Timer is already running for this task.");
 	            }
-
-	            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
-	            activeLog.setEndTime(now);
-	            long minutes = Duration.between(activeLog.getStartTime(), now).toMinutes();
-	            activeLog.setDurationInMinutes(minutes);
-	            activeLog.setEndNote("Auto-stopped because new task (" + taskId + ") was started."); // Default note
-	            activeLog.setStatus(TimeLogStatus.COMPLETED);
-	            
-	            taskTimeLogRepository.save(activeLog);
+	            stopActiveLogLogic(activeLog, "Auto-stopped because new task (" + taskId + ") was started.");
 	        }
 
-	        // 3. Proceed to start the new timer
+	        // 3. Start New Timer
 	        Optional<Task> taskOptional = taskRepository.findById(taskId);
 	        if (taskOptional.isEmpty()) {
-	            return ResponseEntity.badRequest().body("Task is not present for Id: " + taskId);
+	            return ResponseEntity.badRequest().body("Task not found.");
 	        }
-
+	        
 	        Task task = taskOptional.get();
+	        // Update task status if needed
 	        if (task.getStatus() == TaskStatus.NOT_STARTED) {
 	            task.setStatus(TaskStatus.IN_PROGRESS);
+	            taskRepository.save(task);
 	        }
-	        taskRepository.save(task);
 
 	        TaskTimeLog log = new TaskTimeLog();
 	        log.setTaskId(taskId);
-	        log.setAdminId(employee.getAdmin().getAdminId());
-	        log.setEmployeeId(employee.getEmployeeId());
-	        log.setEmployeeName(employee.getName());
+	        log.setAdminId(adminId);
+	        log.setEmployeeId(employeeId);
+	        log.setName(name);
 	        log.setStartTime(LocalDateTime.now(ZoneId.of("Asia/Kolkata")));
 	        log.setStatus(TimeLogStatus.ACTIVE);
 
-	        TaskTimeLog savedLog = taskTimeLogRepository.save(log);
-	        
-	        return ResponseEntity.ok(savedLog);
+	        return ResponseEntity.ok(taskTimeLogRepository.save(log));
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -492,28 +505,50 @@ public class TaskService {
 	    }
 	}
 	
-	public ResponseEntity<?> stopTimer(String taskId, Employee employee,String endNote) {
-		try {
-		    TaskTimeLog activeLog = taskTimeLogRepository.findByTaskIdAndEmployeeIdAndStatus(
-		            taskId, employee.getEmployeeId(), TimeLogStatus.ACTIVE)
-		            .orElseThrow(() -> new RuntimeException("No active timer found to stop."));
+	public ResponseEntity<?> stopTimer(String taskId, Object loginUser, String endNote) {
+	    try {
+	        String adminId = null;
+	        String employeeId = null;
+	        boolean isAdmin = false;
+
+	        if (loginUser instanceof Admin admin) {
+	            adminId = admin.getAdminId();
+	            isAdmin = true;
+	        } else if (loginUser instanceof Employee employee) {
+	            employeeId = employee.getEmployeeId();
+	        }
+
+	        Optional<TaskTimeLog> activeLogOptional;
+	        
+	        if (isAdmin) {
+	            activeLogOptional = taskTimeLogRepository.findActiveLogForAdminByTask(taskId, adminId, TimeLogStatus.ACTIVE);
+	        } else {
+	            activeLogOptional = taskTimeLogRepository.findByTaskIdAndEmployeeIdAndStatus(taskId, employeeId, TimeLogStatus.ACTIVE);
+	        }
+
+	        if (activeLogOptional.isEmpty()) {
+	            return ResponseEntity.badRequest().body("No active timer found to stop for this task.");
+	        }
+
+	        TaskTimeLog activeLog = activeLogOptional.get();
+	        long minutes = stopActiveLogLogic(activeLog, endNote);
+
+	        return ResponseEntity.ok("Timer stopped. Worked for: " + minutes + " minutes.");
+
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
+	    }
+	}
 	
-		    LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
-		    activeLog.setEndTime(now);
-	
-		    long minutes = Duration.between(activeLog.getStartTime(), now).toMinutes();
-		    activeLog.setDurationInMinutes(minutes);
-		    activeLog.setEndNote(endNote);
-		    activeLog.setStatus(TimeLogStatus.COMPLETED);
-	
-		    taskTimeLogRepository.save(activeLog);
-	
-		    return ResponseEntity.ok("Timer stopped. Worked for: " + minutes + " minutes.");
-	    
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error "+e.getMessage());
-		}
+	private long stopActiveLogLogic(TaskTimeLog activeLog, String endNote) {
+	    LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+	    activeLog.setEndTime(now);
+	    long minutes = Duration.between(activeLog.getStartTime(), now).toMinutes();
+	    activeLog.setDurationInMinutes(minutes);
+	    activeLog.setEndNote(endNote);
+	    activeLog.setStatus(TimeLogStatus.COMPLETED);
+	    taskTimeLogRepository.save(activeLog);
+	    return minutes;
 	}
 	
 	public ResponseEntity<?> getAllTaskTimerList(Object loginUser, String taskId) {
@@ -550,9 +585,20 @@ public class TaskService {
 	}
 	
 	
-	public ResponseEntity<?> getActiveTimer(Employee employee) {
-	    Optional<TaskTimeLog> activeLog = taskTimeLogRepository
-	            .findByEmployeeIdAndStatus(employee.getEmployeeId(), TimeLogStatus.ACTIVE);
+	public ResponseEntity<?> getActiveTimer(Object loginUser) {
+		Optional<TaskTimeLog> activeLog = Optional.empty();
+
+        if (loginUser instanceof Admin admin) {
+            activeLog = taskTimeLogRepository.findActiveLogForAdmin(
+                admin.getAdminId(), 
+                TimeLogStatus.ACTIVE
+            );
+        } else if (loginUser instanceof Employee employee) {
+            activeLog = taskTimeLogRepository.findByEmployeeIdAndStatus(
+                employee.getEmployeeId(), 
+                TimeLogStatus.ACTIVE
+            );
+        }
 	        
 	    if(activeLog.isPresent()) {
 	    	TaskTimeLog taskTimeLog = activeLog.get();
@@ -566,7 +612,7 @@ public class TaskService {
 		    	responce.put("taskStatus", task2.getStatus());
 		    	responce.put("taskLogId", taskTimeLog.getTaskLogId());
 		    	responce.put("employeeId", taskTimeLog.getEmployeeId());
-		    	responce.put("employeeName", taskTimeLog.getEmployeeName());
+		    	responce.put("name", taskTimeLog.getName());
 		    	responce.put("startTime", taskTimeLog.getStartTime());
 		    	
 		        return ResponseEntity.ok(responce);

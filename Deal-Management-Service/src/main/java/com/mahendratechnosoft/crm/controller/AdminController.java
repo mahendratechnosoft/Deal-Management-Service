@@ -1146,8 +1146,8 @@ public class AdminController {
 	}
 	
 	@GetMapping("/getTaskByItemId/{taskId}")
-	public ResponseEntity<?> getTaskByItemId(@PathVariable String taskId) {
-		return taskService.getTaskById(taskId,null);	
+	public ResponseEntity<?> getTaskByItemId(@ModelAttribute("admin") Admin admin,@PathVariable String taskId) {
+		return taskService.getTaskById(taskId,admin);	
 	}
 	
 	@DeleteMapping("/deleteTask/{taskId}")
@@ -1381,5 +1381,23 @@ public class AdminController {
 	public ResponseEntity<?> getTaskCount(@ModelAttribute("admin") Admin admin,
 			@RequestParam(required = false) String listType){
 		return taskService.getTaskCounts(admin, null);
+	}
+	
+	@PostMapping("/startTimerOfTask")
+	public ResponseEntity<?> startTimer(@ModelAttribute("admin") Admin admin,@RequestBody Map<String, Object> req) {
+	    String taskId = (String) req.get("taskId");
+	    return taskService.startTimer(taskId, admin);
+	}
+	
+	@PostMapping("/stopTimerOfTask")
+	public ResponseEntity<?> stopTimer(@ModelAttribute("admin") Admin admin,@RequestBody Map<String, Object> req) {
+	    String taskId = (String) req.get("taskId");
+	    String endNote = (String) req.get("endNote");
+	    return taskService.stopTimer(taskId, admin, endNote);
+	}
+	
+	@GetMapping("/activeTimer")
+	public ResponseEntity<?> getActiveTimer(@ModelAttribute("admin") Admin admin) {
+	    return taskService.getActiveTimer(admin);
 	}
 }

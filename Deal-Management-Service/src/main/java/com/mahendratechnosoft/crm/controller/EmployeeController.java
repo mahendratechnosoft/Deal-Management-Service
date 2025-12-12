@@ -955,7 +955,7 @@ public class EmployeeController {
 		
 		@GetMapping("/getTaskByItemId/{taskId}")
 		public ResponseEntity<?> getTaskByItemId(@ModelAttribute("employee") Employee employee,@PathVariable String taskId) {
-			return taskService.getTaskById(taskId,employee.getEmployeeId());	
+			return taskService.getTaskById(taskId,employee);	
 		}
 		
 		@DeleteMapping("/deleteTask/{taskId}")
