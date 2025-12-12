@@ -1,10 +1,14 @@
 package com.mahendratechnosoft.crm.entity.Hospital;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 @Entity
 public class FamilyInfo {
 
@@ -44,6 +48,8 @@ public class FamilyInfo {
     private String wifeCountry;
     @Column(length = 500)
     private String wifeGenticIllness;
+    private LocalDateTime createdAt;
+    
 	public FamilyInfo(String familyInfoId,  String referHospital, String referHospitalAddress,
 			String referDoctor, String referDoctorContactNumber, String husbandName, String husbandMobile,
 			String husbandHeight, String husbandWeight, String husbandBloodGroup, String husbandSkinColor,
@@ -87,6 +93,11 @@ public class FamilyInfo {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+	}
+	
 	public String getFamilyInfoId() {
 		return familyInfoId;
 	}
@@ -278,6 +289,12 @@ public class FamilyInfo {
 	}
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
+	}
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
     
     
