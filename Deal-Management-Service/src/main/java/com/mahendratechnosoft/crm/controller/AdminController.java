@@ -1403,11 +1403,10 @@ public class AdminController {
 	public void exportTasks(
 	        @ModelAttribute("admin") Admin admin,
 	        HttpServletResponse response,
-	        @RequestParam(required = false) String search,
 	        @RequestParam(required = false) TaskStatus status,
 	        @RequestParam(required = false) String listType
 	        ) {
-	    taskService.exportTaskExcel(response, admin, search, status, listType);
+	    taskService.exportTaskExcel(response, admin, status, listType);
 	}
 	
 	@GetMapping("/getActiveTimerForTask/{taskId}")

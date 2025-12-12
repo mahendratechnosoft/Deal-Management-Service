@@ -752,7 +752,7 @@ public class TaskService {
         }
     }
     
-    public void exportTaskExcel(HttpServletResponse response, Object loginUser, String search, TaskStatus status, String listType) {
+    public void exportTaskExcel(HttpServletResponse response, Object loginUser, TaskStatus status, String listType) {
         try {
             ModuleAccess moduleAccess = null;
             String role = "ROLE_EMPLOYEE";
@@ -773,13 +773,13 @@ public class TaskService {
             Pageable pageable = Pageable.unpaged();
 
             if (role.equals("ROLE_ADMIN")) {
-                taskPage = taskRepository.findByAdminId(adminId, status, search, pageable);
+                taskPage = taskRepository.findByAdminId(adminId, status, null, pageable);
             } 
             else if (moduleAccess != null && moduleAccess.isTaskViewAll()) {
-                taskPage = taskRepository.findByAdminId(adminId, status, search, pageable);
+                taskPage = taskRepository.findByAdminId(adminId, status, null, pageable);
             } 
             else {
-                taskPage = taskRepository.findTasksForEmployee(adminId, employeeId, status, search, listType, pageable);
+                taskPage = taskRepository.findTasksForEmployee(adminId, employeeId, status, null, listType, pageable);
             }
 
             excelService.generateTaskExcel(response, taskPage.getContent());

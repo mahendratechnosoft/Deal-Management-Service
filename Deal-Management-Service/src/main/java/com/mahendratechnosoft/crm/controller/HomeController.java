@@ -26,6 +26,7 @@ import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
+import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
@@ -152,6 +153,11 @@ public class HomeController {
 		
 		return donorService.createDonorPublic(request);
 		
+	}
+	
+	@PostMapping("/createFamily")
+	public ResponseEntity<?> createFamilyPublic(@RequestBody FamilyInfo request) {
+		return donorService.createFamilyInfo(request);
 	}
 
 
