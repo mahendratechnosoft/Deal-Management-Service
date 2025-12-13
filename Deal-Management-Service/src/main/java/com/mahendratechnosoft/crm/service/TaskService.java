@@ -615,6 +615,7 @@ public class TaskService {
 		    	responce.put("employeeId", taskTimeLog.getEmployeeId());
 		    	responce.put("name", taskTimeLog.getName());
 		    	responce.put("startTime", taskTimeLog.getStartTime());
+		    	responce.put("taskId", taskTimeLog.getTaskId());
 		    	
 		        return ResponseEntity.ok(responce);
 				
