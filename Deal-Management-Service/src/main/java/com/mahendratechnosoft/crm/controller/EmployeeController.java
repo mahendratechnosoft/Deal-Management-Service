@@ -1180,4 +1180,9 @@ public class EmployeeController {
 
 		  return  salesService.inoviceNumberAndIdByAdminId(employee);
 		}
+		
+		@GetMapping("/getAmcById/{amcId}")
+		public ResponseEntity<AMC> getAmcById(@PathVariable String amcId){
+			return amcService.getAmcById(amcId);
+		}
 }

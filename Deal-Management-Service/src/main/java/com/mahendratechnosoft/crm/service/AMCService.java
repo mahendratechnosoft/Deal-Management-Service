@@ -167,6 +167,12 @@ public class AMCService {
 	}
 
 
+	public ResponseEntity<AMC> getAmcById(String amcId) {
+		return ResponseEntity.ok(amcRepository.findById(amcId)
+				.orElseThrow(()->new RuntimeException("Amc not Found with Id : "+amcId)));
+	}
+
+
 
 	
 	

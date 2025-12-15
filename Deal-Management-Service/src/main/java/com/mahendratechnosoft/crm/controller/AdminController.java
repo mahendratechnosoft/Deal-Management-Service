@@ -1415,4 +1415,9 @@ public class AdminController {
 	public ResponseEntity<?> getActiveTimerForTask(@ModelAttribute("admin") Admin admin, @PathVariable("taskId") String taskId) {
 	    return taskService.getActiveTimerForTask(taskId, admin);
 	}
+	
+	@GetMapping("/getAmcById/{amcId}")
+	public ResponseEntity<AMC> getAmcById(@PathVariable String amcId){
+		return amcService.getAmcById(amcId);
+	}
 }
