@@ -51,6 +51,7 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.PaymentProfile;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.entity.Task;
@@ -1319,9 +1320,9 @@ public class AdminController {
     
 	@GetMapping("/getAllAMC/{page}/{size}")
 	public ResponseEntity<?> getAllAMC(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,
-			@RequestParam(required = false) String expiryFromDate,@RequestParam(required = false) String expirayToDate) {
+			@RequestParam(required = false) String expiryFromDate,@RequestParam(required = false) String expiryToDate) {
 
-		return amcService.getAllAMC(page,size,admin,search,expiryFromDate,expirayToDate);
+		return amcService.getAllAMC(page,size,admin,search,expiryFromDate,expiryToDate);
 
 	}
 	
@@ -1417,5 +1418,34 @@ public class AdminController {
 	@GetMapping("/getAmcById/{amcId}")
 	public ResponseEntity<AMC> getAmcById(@PathVariable String amcId){
 		return amcService.getAmcById(amcId);
+	}
+	
+	@PostMapping("/createPaymentProfile")
+	public ResponseEntity<PaymentProfile> createPaymentProfile(
+			@RequestBody PaymentProfile paymentProfile,
+			@ModelAttribute Admin admin){
+		return settingServices.createPaymentProfile(admin, paymentProfile);
+	}
+	
+	@PutMapping("/updatePaymentProfile")
+	public ResponseEntity<PaymentProfile> updatePaymentProfile(
+			@RequestBody PaymentProfile paymentProfile,
+			@ModelAttribute Admin admin){
+		return settingServices.createPaymentProfile(admin, paymentProfile);
+	}
+	
+	@GetMapping("/getPaymentProfileById/{paymentProfileId}")
+	public ResponseEntity<PaymentProfile> getPaymentProfileById(@PathVariable String paymentProfileId){
+		return settingServices.getPaymentProfileById(paymentProfileId);
+	}
+	
+	@GetMapping("/getAllPaymentProfile")
+	public ResponseEntity <List<PaymentProfile>> getAllPaymentProfile(@ModelAttribute Admin admin){
+		return settingServices.getAllPaymentProfile(admin);
+	}
+	
+	@DeleteMapping("/deletePaymentProfile/{paymentProfileId}")
+	public ResponseEntity<String> deletePaymentProfile(@PathVariable String paymentProfileId){
+		return settingServices.deletePaymentProfile(paymentProfileId);
 	}
 }
