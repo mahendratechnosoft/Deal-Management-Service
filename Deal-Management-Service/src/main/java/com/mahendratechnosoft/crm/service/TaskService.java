@@ -234,17 +234,41 @@ public class TaskService {
 	}
 
 
-	public ResponseEntity<?> deleteTaskById(String taskId) {
+	public ResponseEntity<?> deleteTaskById(Object loginUser, String taskId) {
 
-		try {
-			taskRepository.deleteById(taskId);
-			return ResponseEntity.ok("Deleted Successfully");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error " + e.getMessage());
-		}
+	    try {
+	        Task task = taskRepository.findById(taskId)
+	                .orElseThrow(() ->
+	                        new RuntimeException("Task not found with id: " + taskId));
 
+	        if (loginUser instanceof Employee employee) {
+	            String empId = employee.getEmployeeId();
+
+	            boolean isOwner = task.getEmployeeId() != null
+	                    && task.getEmployeeId().equals(empId);
+
+	            if (!isOwner) {
+	                String ownerName = task.getCreatedBy() != null
+	                        ? task.getCreatedBy()
+	                        : "task owner";
+
+	                return ResponseEntity
+	                        .status(HttpStatus.BAD_REQUEST)
+	                        .body("You are not the owner of this task. Please contact " + ownerName + ".");
+	            }
+	        }
+
+	        taskRepository.deleteById(taskId);
+	        return ResponseEntity.ok("Task deleted successfully");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity
+	                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error: " + e.getMessage());
+	    }
 	}
+
 
 
 	public ResponseEntity<?> addAttachmentToTask(Object loginUser, List<TaskAttachment> request) {
