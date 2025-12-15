@@ -39,6 +39,8 @@ public class Leads {
 	private String state;
 	private String city;
 	private String zipCode;
+	
+	@Column(length = 5000)
 	private String description;
 	private LocalDateTime followUp;
 	private LocalDateTime createdDate;
