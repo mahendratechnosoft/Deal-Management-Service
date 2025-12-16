@@ -17,6 +17,7 @@ public class AMCDomainHistory {
 	private String domainAmount;
 	private String domainRenewalCycle;
     private int sequence;
+    private boolean isPaid;
 	
 	
 	public AMCDomainHistory(String acmDomainHistoryId, String amcId, LocalDate domainStartDate, LocalDate domainRenewalDate,
@@ -77,7 +78,11 @@ public class AMCDomainHistory {
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
-	
-	
+	public boolean isPaid() {
+		return isPaid;
+	}
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
+	}
 
 }

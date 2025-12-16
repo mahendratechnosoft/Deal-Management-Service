@@ -12,19 +12,33 @@ public class AMCList {
 	private String domainProvider;
 	private String assingedTo;
 	
+    private LocalDate domainStartDate;
+    private LocalDate domainRenewalDate;
+
+    private LocalDate gsuitStartDate;
+    private LocalDate gsuitRenewalDate;
 	
-	public AMCList(String amcId, String clientName, String companyName, String websiteURL, LocalDate amcStartDate,
-			LocalDate amcEndDate, String domainProvider, String assingedTo) {
-		super();
-		this.amcId = amcId;
-		this.clientName = clientName;
-		this.companyName = companyName;
-		this.websiteURL = websiteURL;
-		this.amcStartDate = amcStartDate;
-		this.amcEndDate = amcEndDate;
-		this.domainProvider = domainProvider;
-		this.assingedTo = assingedTo;
+	
+	
+    public AMCList(String amcId, String clientName, String companyName, String websiteURL, 
+            String domainProvider, String assingedTo, 
+            LocalDate amcStartDate, LocalDate amcEndDate,
+            LocalDate domainStartDate, LocalDate domainRenewalDate,
+            LocalDate gsuitStartDate, LocalDate gsuitRenewalDate) {
+		 this.amcId = amcId;
+		 this.clientName = clientName;
+		 this.companyName = companyName;
+		 this.websiteURL = websiteURL;
+		 this.domainProvider = domainProvider;
+		 this.assingedTo = assingedTo;
+		 this.amcStartDate = amcStartDate;
+		 this.amcEndDate = amcEndDate;
+		 this.domainStartDate = domainStartDate;
+		 this.domainRenewalDate = domainRenewalDate;
+		 this.gsuitStartDate = gsuitStartDate;
+		 this.gsuitRenewalDate = gsuitRenewalDate;
 	}
+    
 	public AMCList() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -76,6 +90,30 @@ public class AMCList {
 	}
 	public void setAssingedTo(String assingedTo) {
 		this.assingedTo = assingedTo;
+	}
+	public LocalDate getDomainStartDate() {
+		return domainStartDate;
+	}
+	public void setDomainStartDate(LocalDate domainStartDate) {
+		this.domainStartDate = domainStartDate;
+	}
+	public LocalDate getDomainRenewalDate() {
+		return domainRenewalDate;
+	}
+	public void setDomainRenewalDate(LocalDate domainRenewalDate) {
+		this.domainRenewalDate = domainRenewalDate;
+	}
+	public LocalDate getGsuitStartDate() {
+		return gsuitStartDate;
+	}
+	public void setGsuitStartDate(LocalDate gsuitStartDate) {
+		this.gsuitStartDate = gsuitStartDate;
+	}
+	public LocalDate getGsuitRenewalDate() {
+		return gsuitRenewalDate;
+	}
+	public void setGsuitRenewalDate(LocalDate gsuitRenewalDate) {
+		this.gsuitRenewalDate = gsuitRenewalDate;
 	}
 	
 	

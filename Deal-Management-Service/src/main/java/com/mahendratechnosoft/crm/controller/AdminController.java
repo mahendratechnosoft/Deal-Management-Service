@@ -1482,5 +1482,9 @@ public class AdminController {
         return amcService.isAmcHistorySequenceUnique(amcId, sequence);
     }
 	
+	@GetMapping("/getAmcDashboardCounts")
+    public ResponseEntity<Map<String, Object>> getDashboardCounts(@ModelAttribute Admin admin) {
+        return amcService.getDashboardCounts(admin.getAdminId());
+    }
 
 }
