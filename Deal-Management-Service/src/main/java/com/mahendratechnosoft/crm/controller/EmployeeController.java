@@ -1216,4 +1216,9 @@ public class EmployeeController {
 		public ResponseEntity<Boolean> isAmcHistorySequenceUnique(@PathVariable String amcId,@PathVariable int sequence) {
 	        return amcService.isAmcHistorySequenceUnique(amcId, sequence);
 	    }
+		
+		@GetMapping("/getAmcDashboardCounts")
+	    public ResponseEntity<Map<String, Object>> getDashboardCounts(@ModelAttribute Employee employee) {
+	        return amcService.getDashboardCounts(employee.getAdmin().getAdminId());
+	    }
 }

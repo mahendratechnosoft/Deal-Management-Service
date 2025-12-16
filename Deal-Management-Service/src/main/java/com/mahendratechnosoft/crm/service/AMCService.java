@@ -47,15 +47,18 @@ public class AMCService {
 			
 		AMCHistory  amcHistory=createAMC.getAmcHistoryInfo();
 		amcHistory.setAmcId(newAmc.getAmcId());
+		amcHistory.setPaid(false);
 		amcHistoryRepository.save(amcHistory);
 		
 		AMCDomainHistory amcDomainHistory=createAMC.getAmcDomainHistoryInfo();
 		amcDomainHistory.setAmcId(newAmc.getAmcId());
+		amcDomainHistory.setPaid(false);
 		amcDomainHistoryRepository.save(amcDomainHistory);
 		
 		
 		AMCGsuitHistory amcGsuitHistory = createAMC.getAmcGsuitHistory();
 		amcGsuitHistory.setAmcId(newAmc.getAmcId());
+		amcGsuitHistory.setPaid(false);
 		amcGsuitHistoryRepository.save(amcGsuitHistory);
 		
 		return ResponseEntity.ok(createAMC);
@@ -205,6 +208,11 @@ public class AMCService {
 	
 	public ResponseEntity<Boolean> isAmcHistorySequenceUnique(String amcId, int sequence) {
         return ResponseEntity.ok(!amcHistoryRepository.existsByAmcIdAndSequence(amcId, sequence));
+    }
+	
+    public ResponseEntity<Map<String, Object>> getDashboardCounts(String adminId) {
+        Map<String, Object> counts = amcRepository.getDashboardCounts(adminId);
+        return ResponseEntity.ok(counts);
     }
 	
 }

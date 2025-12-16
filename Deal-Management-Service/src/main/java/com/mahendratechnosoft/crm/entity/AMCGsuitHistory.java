@@ -34,6 +34,8 @@ public class AMCGsuitHistory {
 	private String gsuitRenewalCycle;
     private int sequence;
     
+    private boolean isPaid;
+    
 	public String getAcmGsuitHistoryId() {
 		return acmGsuitHistoryId;
 	}
@@ -124,4 +126,11 @@ public class AMCGsuitHistory {
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
 	}
+	public boolean isPaid() {
+		return isPaid;
+	}
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
+	}
+	
 }
