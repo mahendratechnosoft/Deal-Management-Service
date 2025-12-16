@@ -1486,5 +1486,14 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> getDashboardCounts(@ModelAttribute Admin admin) {
         return amcService.getDashboardCounts(admin.getAdminId());
     }
+	
+	
+	@PutMapping("/updatePaymentProfileStatus/{paymentProfileId}")
+	public ResponseEntity<PaymentProfile> updatePaymentProfileStatus(
+			@PathVariable("paymentProfileId") String paymentProfileId,
+            @RequestParam boolean active) {
+
+        return settingServices.updatePaymentProfileStatus(paymentProfileId, active);
+    }
 
 }
