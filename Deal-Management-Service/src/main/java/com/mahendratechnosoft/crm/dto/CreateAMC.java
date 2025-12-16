@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
 import com.mahendratechnosoft.crm.entity.AMCHistory;
 
 public class CreateAMC {
@@ -13,6 +14,8 @@ public class CreateAMC {
 	private AMCHistory amcHistoryInfo;
 	
 	private AMCDomainHistory amcDomainHistoryInfo;
+	
+	private AMCGsuitHistory amcGsuitHistory;
 	
 
 	public AMC getAmcInfo() {
@@ -39,10 +42,13 @@ public class CreateAMC {
 		this.amcDomainHistoryInfo = amcDomainHistoryInfo;
 	}
 
+	public AMCGsuitHistory getAmcGsuitHistory() {
+		return amcGsuitHistory;
+	}
 
+	public void setAmcGsuitHistory(AMCGsuitHistory amcGsuitHistory) {
+		this.amcGsuitHistory = amcGsuitHistory;
+	}
 	
 	
-	
-	
-
 }

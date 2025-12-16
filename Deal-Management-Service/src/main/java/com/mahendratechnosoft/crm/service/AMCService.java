@@ -18,12 +18,14 @@ import com.mahendratechnosoft.crm.dto.AMCList;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
 import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.repository.AMCDomainHistoryRepository;
+import com.mahendratechnosoft.crm.repository.AMCGsuitHistoryRepository;
 import com.mahendratechnosoft.crm.repository.AMCHistoryRepository;
 import com.mahendratechnosoft.crm.repository.AMCRepository;
 @Service
@@ -35,6 +37,9 @@ public class AMCService {
 	private AMCHistoryRepository amcHistoryRepository;
 	@Autowired
 	private AMCDomainHistoryRepository amcDomainHistoryRepository;
+	
+	@Autowired
+	private AMCGsuitHistoryRepository amcGsuitHistoryRepository;
 	
 	public ResponseEntity<CreateAMC> createAMC( CreateAMC createAMC) {
 
@@ -172,10 +177,17 @@ public class AMCService {
 				.orElseThrow(()->new RuntimeException("Amc not Found with Id : "+amcId)));
 	}
 
-
-
+	public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(String amcId) {
+		return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcId(amcId));
+	}
 	
+	public ResponseEntity<AMCGsuitHistory> updateAMCGsuitHistory(AMCGsuitHistory amcGsuitHistory) {
+		return ResponseEntity.ok(amcGsuitHistoryRepository.save(amcGsuitHistory));
+	}
 	
+	public ResponseEntity<String> deleteAMCGsuitHistory(String amcGsuitHistoryId) {
+		amcGsuitHistoryRepository.deleteById(amcGsuitHistoryId);
+		return ResponseEntity.ok("Deleted Successfully");
+	}
 	
-
 }

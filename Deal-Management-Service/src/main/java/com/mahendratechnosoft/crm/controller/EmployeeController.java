@@ -33,6 +33,7 @@ import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
 import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -1184,5 +1185,20 @@ public class EmployeeController {
 		@GetMapping("/getAmcById/{amcId}")
 		public ResponseEntity<AMC> getAmcById(@PathVariable String amcId){
 			return amcService.getAmcById(amcId);
+		}
+		
+		@GetMapping("/getAllAMCGsuitHistory/{amcId}")
+		public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(@PathVariable String amcId){
+			return amcService.getAllAMCGsuitHistory(amcId);
+		}
+		
+		@PutMapping("/updateAMCGsuitHistory")
+		public ResponseEntity<AMCGsuitHistory> updateAMCGsuitHistory(@RequestBody AMCGsuitHistory updateAMCHistory ){
+			return amcService.updateAMCGsuitHistory(updateAMCHistory);
+		}
+		
+		@DeleteMapping("/deleteAMCGsuitHistory/{amcGsuitHistoryId}")
+		public ResponseEntity<String> deleteAMCGsuitHistory(@PathVariable String amcGsuitHistoryId){
+			return amcService.deleteAMCGsuitHistory(amcGsuitHistoryId);
 		}
 }
