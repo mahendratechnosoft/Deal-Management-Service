@@ -18,4 +18,6 @@ public interface AMCHistoryRepository extends JpaRepository<AMCHistory, String>{
     void deleteByAmcId(String amcId);
 	
 	List<AMCHistory> findByAmcId(String amcId);
+	
+	boolean existsByAmcIdAndSequence(String amcId, int sequence);
 }
