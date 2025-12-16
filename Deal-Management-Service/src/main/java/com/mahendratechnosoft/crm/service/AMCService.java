@@ -43,15 +43,20 @@ public class AMCService {
 	
 	public ResponseEntity<CreateAMC> createAMC( CreateAMC createAMC) {
 
-	AMC newAmc=	amcRepository.save(createAMC.getAmcInfo());
+		AMC newAmc=	amcRepository.save(createAMC.getAmcInfo());
+			
+		AMCHistory  amcHistory=createAMC.getAmcHistoryInfo();
+		amcHistory.setAmcId(newAmc.getAmcId());
+		amcHistoryRepository.save(amcHistory);
 		
-	AMCHistory  amcHistory=createAMC.getAmcHistoryInfo();
-	amcHistory.setAmcId(newAmc.getAmcId());
-	amcHistoryRepository.save(amcHistory);
-	
-	AMCDomainHistory amcDomainHistory=createAMC.getAmcDomainHistoryInfo();
-	amcDomainHistory.setAmcId(newAmc.getAmcId());
-	amcDomainHistoryRepository.save(amcDomainHistory);
+		AMCDomainHistory amcDomainHistory=createAMC.getAmcDomainHistoryInfo();
+		amcDomainHistory.setAmcId(newAmc.getAmcId());
+		amcDomainHistoryRepository.save(amcDomainHistory);
+		
+		
+		AMCGsuitHistory amcGsuitHistory = createAMC.getAmcGsuitHistory();
+		amcGsuitHistory.setAmcId(newAmc.getAmcId());
+		amcGsuitHistoryRepository.save(amcGsuitHistory);
 		
 		return ResponseEntity.ok(createAMC);
 	}
