@@ -11,5 +11,7 @@ import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
 public interface AMCGsuitHistoryRepository extends JpaRepository<AMCGsuitHistory, String>{
 
 	List<AMCGsuitHistory> findByAmcId(String amcId);
+	
+	boolean existsByAmcIdAndSequence(String amcId, int sequence);
 
 }

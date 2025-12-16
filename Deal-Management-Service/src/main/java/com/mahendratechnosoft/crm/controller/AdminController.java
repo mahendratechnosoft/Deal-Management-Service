@@ -1466,4 +1466,21 @@ public class AdminController {
 	public ResponseEntity<String> deleteAMCGsuitHistory(@PathVariable String amcGsuitHistoryId){
 		return amcService.deleteAMCGsuitHistory(amcGsuitHistoryId);
 	}
+	
+	@GetMapping("/isGsuitHistorySequenceUnique/{amcId}/{sequence}")
+	public ResponseEntity<Boolean> isGsuitHistorySequenceUnique(@PathVariable String amcId,@PathVariable int sequence) {
+        return amcService.isGsuitHistorySequenceUnique(amcId, sequence);
+    }
+	
+	@GetMapping("/isDomainHistorySequenceUnique/{amcId}/{sequence}")
+	public ResponseEntity<Boolean> isDomainHistorySequenceUnique(@PathVariable String amcId,@PathVariable int sequence) {
+        return amcService.isDomainHistorySequenceUnique(amcId, sequence);
+    }
+	
+	@GetMapping("/isAmcHistorySequenceUnique/{amcId}/{sequence}")
+	public ResponseEntity<Boolean> isAmcHistorySequenceUnique(@PathVariable String amcId,@PathVariable int sequence) {
+        return amcService.isAmcHistorySequenceUnique(amcId, sequence);
+    }
+	
+
 }

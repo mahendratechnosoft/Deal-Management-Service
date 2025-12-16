@@ -195,4 +195,16 @@ public class AMCService {
 		return ResponseEntity.ok("Deleted Successfully");
 	}
 	
+	public ResponseEntity<Boolean> isGsuitHistorySequenceUnique(String amcId, int sequence) {
+        return ResponseEntity.ok(!amcGsuitHistoryRepository.existsByAmcIdAndSequence(amcId, sequence));
+    }
+	
+	public ResponseEntity<Boolean> isDomainHistorySequenceUnique(String amcId, int sequence) {
+        return ResponseEntity.ok(!amcDomainHistoryRepository.existsByAmcIdAndSequence(amcId, sequence));
+    }
+	
+	public ResponseEntity<Boolean> isAmcHistorySequenceUnique(String amcId, int sequence) {
+        return ResponseEntity.ok(!amcHistoryRepository.existsByAmcIdAndSequence(amcId, sequence));
+    }
+	
 }
