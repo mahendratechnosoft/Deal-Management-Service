@@ -102,4 +102,13 @@ public class SettingServices {
     	paymentProfileRepository.delete(paymentProfile);
     	return ResponseEntity.ok("Payment profile deleted successfully with id :"+ paymentProfileId);
     }
+    
+    public ResponseEntity<PaymentProfile> updatePaymentProfileStatus(String paymentProfileId, boolean isActive) {
+        PaymentProfile profile = paymentProfileRepository.findById(paymentProfileId)
+                .orElseThrow(() -> new RuntimeException("Payment profile not found"));
+
+        profile.setActive(isActive);
+        PaymentProfile save = paymentProfileRepository.save(profile);
+        return ResponseEntity.ok(save);
+    }
 }

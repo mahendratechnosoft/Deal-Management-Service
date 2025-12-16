@@ -40,6 +40,7 @@ public class PaymentProfile {
     private boolean isDefault = false; 
     private boolean forInvoice = true; 
     private boolean forExpense = false;
+    private boolean isActive = true;
     
     
 	public String getPaymentProfileId() {
@@ -125,6 +126,12 @@ public class PaymentProfile {
 	}
 	public void setAdminId(String adminId) {
 		this.adminId = adminId;
+	}
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	} 
     
 }
