@@ -40,6 +40,7 @@ import com.mahendratechnosoft.crm.dto.UserCredential;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
 import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Attendance;
@@ -1447,5 +1448,20 @@ public class AdminController {
 	@DeleteMapping("/deletePaymentProfile/{paymentProfileId}")
 	public ResponseEntity<String> deletePaymentProfile(@PathVariable String paymentProfileId){
 		return settingServices.deletePaymentProfile(paymentProfileId);
+	}
+	
+	@GetMapping("/getAllAMCGsuitHistory/{amcId}")
+	public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(@PathVariable String amcId){
+		return amcService.getAllAMCGsuitHistory(amcId);
+	}
+	
+	@PutMapping("/updateAMCGsuitHistory")
+	public ResponseEntity<AMCGsuitHistory> updateAMCGsuitHistory(@RequestBody AMCGsuitHistory updateAMCHistory ){
+		return amcService.updateAMCGsuitHistory(updateAMCHistory);
+	}
+	
+	@DeleteMapping("/deleteAMCGsuitHistory/{amcGsuitHistoryId}")
+	public ResponseEntity<String> deleteAMCGsuitHistory(@PathVariable String amcGsuitHistoryId){
+		return amcService.deleteAMCGsuitHistory(amcGsuitHistoryId);
 	}
 }
