@@ -20,6 +20,7 @@ public class AdminUpdateDto {
     private String stampBase64;
     private String companyEmail;
     private String panNumber;
+    private String website;
 
 	public String getName() {
 		return name;
@@ -139,6 +140,14 @@ public class AdminUpdateDto {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
     
     

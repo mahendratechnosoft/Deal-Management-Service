@@ -169,6 +169,7 @@ public class AdminController {
         adminToUpdate.setIfscCode(updateDto.getIfscCode());
         adminToUpdate.setCompanyEmail(updateDto.getCompanyEmail());
         adminToUpdate.setPanNumber(updateDto.getPanNumber());
+        adminToUpdate.setWebsite(updateDto.getWebsite());
         
 
         String base64Image = updateDto.getLogoBase64();
