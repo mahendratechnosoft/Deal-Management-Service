@@ -33,6 +33,7 @@ import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
+import com.mahendratechnosoft.crm.dto.PaymentProfileDropdownDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
@@ -1494,6 +1495,12 @@ public class AdminController {
             @RequestParam boolean active) {
 
         return settingServices.updatePaymentProfileStatus(paymentProfileId, active);
+    }
+	
+	@GetMapping("/getPaymentModesForInvoice")
+    public ResponseEntity<List<PaymentProfileDropdownDto>> getPaymentModesForInvoice(@ModelAttribute Admin admin) {
+        List<PaymentProfileDropdownDto> profiles = salesService.getPaymentModesForInvoice(admin.getAdminId());
+        return ResponseEntity.ok(profiles);
     }
 
 }

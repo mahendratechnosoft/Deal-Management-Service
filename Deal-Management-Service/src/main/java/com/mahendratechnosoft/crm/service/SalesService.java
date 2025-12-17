@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
+import com.mahendratechnosoft.crm.dto.PaymentProfileDropdownDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryDTO;
@@ -30,6 +31,7 @@ import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.InvoiceContent;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
+import com.mahendratechnosoft.crm.entity.PaymentProfile;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
@@ -39,6 +41,7 @@ import com.mahendratechnosoft.crm.repository.AttendanceRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceRepository;
 import com.mahendratechnosoft.crm.repository.ItemsRepository;
+import com.mahendratechnosoft.crm.repository.PaymentProfileRepository;
 import com.mahendratechnosoft.crm.repository.PaymentsRepository;
 import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.ProformaInvoiceRepository;
@@ -75,6 +78,9 @@ public class SalesService {
 	
 	@Autowired
 	private ItemsRepository itemsRepository;
+	
+	@Autowired
+	private PaymentProfileRepository paymentProfileRepository;
 
 	SalesService(AttendanceRepository attendanceRepository) {
 		this.attendanceRepository = attendanceRepository;
@@ -511,9 +517,17 @@ public class SalesService {
 		try {
 
 			ProformaInvoiceDto response = new ProformaInvoiceDto();
-			response.setProformaInvoiceInfo(proformaInvoiceRepository.findByProformaInvoiceId(proformaInvoiceId));
+			ProformaInvoice proformaInvoice = proformaInvoiceRepository.findByProformaInvoiceId(proformaInvoiceId);
+			response.setProformaInvoiceInfo(proformaInvoice);
 			response.setProformaInvoiceContents(
 					proformaInvoiceContentRepository.findByProformaInvoiceIdOrderByCreatedAt(proformaInvoiceId));
+			
+			List<String> ids = proformaInvoice.getPaymentProfileIds();
+            
+            if (ids != null && !ids.isEmpty()) {
+                List<PaymentProfile> profiles = paymentProfileRepository.findAllById(ids);
+                response.setPaymentProfiles(profiles);
+            }
 
 			return ResponseEntity.ok(response);
 
@@ -1227,4 +1241,8 @@ public class SalesService {
 	                .body("Error: " + e.getMessage());
 	    }
 	}
+	
+	public List<PaymentProfileDropdownDto> getPaymentModesForInvoice(String adminId) {
+        return paymentProfileRepository.findInvoiceDropdownByAdmin(adminId);
+    }
 }

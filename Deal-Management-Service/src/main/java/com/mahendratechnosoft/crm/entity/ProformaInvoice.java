@@ -3,15 +3,21 @@ package com.mahendratechnosoft.crm.entity;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 public class ProformaInvoice {
@@ -68,6 +74,14 @@ public class ProformaInvoice {
     
     private int invoiceNumber;
     private Date invoiceDate;
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "proforma_invoice_payment_mode",
+        joinColumns = @JoinColumn(name = "proforma_invoice_id")
+    )
+    @Column(name = "payment_profile_id")
+    private List<String> paymentProfileIds = new ArrayList<>();
     
     @PrePersist
     protected void onCreate() {
@@ -441,6 +455,13 @@ public class ProformaInvoice {
 
 	public void setInvoiceDate(Date invoiceDate) {
 		this.invoiceDate = invoiceDate;
+	}
+	public List<String> getPaymentProfileIds() {
+		return paymentProfileIds;
+	}
+
+	public void setPaymentProfileIds(List<String> paymentProfileIds) {
+		this.paymentProfileIds = paymentProfileIds;
 	}
 
 	@Override
