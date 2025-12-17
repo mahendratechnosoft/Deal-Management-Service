@@ -50,6 +50,7 @@ public class Admin {
     private byte[] companyStamp;
     
     private String panNumber;
+    private String website;
 	
 	public Admin() {
 		super();
@@ -231,6 +232,16 @@ public class Admin {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+
+	public String getWebsite() {
+		return website;
+	}
+
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 	
 	

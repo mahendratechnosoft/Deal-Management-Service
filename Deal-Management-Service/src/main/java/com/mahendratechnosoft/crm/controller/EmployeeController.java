@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
+import com.mahendratechnosoft.crm.dto.PaymentProfileDropdownDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
@@ -1220,5 +1221,11 @@ public class EmployeeController {
 		@GetMapping("/getAmcDashboardCounts")
 	    public ResponseEntity<Map<String, Object>> getDashboardCounts(@ModelAttribute Employee employee) {
 	        return amcService.getDashboardCounts(employee.getAdmin().getAdminId());
+	    }
+		
+		@GetMapping("/getPaymentModesForInvoice")
+	    public ResponseEntity<List<PaymentProfileDropdownDto>> getPaymentModesForInvoice(@ModelAttribute Employee employee) {
+	        List<PaymentProfileDropdownDto> profiles = salesService.getPaymentModesForInvoice(employee.getAdmin().getAdminId());
+	        return ResponseEntity.ok(profiles);
 	    }
 }
