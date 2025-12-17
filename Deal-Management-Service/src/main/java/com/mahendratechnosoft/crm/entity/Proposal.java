@@ -25,6 +25,8 @@ public class Proposal {
 	private double discount;
 	private String taxType;
 	private double taxPercentage;
+	private double cgstPercentage;
+	private double sgstPercentage;
 	private Date dueDate;
 	private Date proposalDate;
 	private double totalAmmount;
@@ -357,6 +359,22 @@ public class Proposal {
 
 	public void setAttachmentFileType(String attachmentFileType) {
 		this.attachmentFileType = attachmentFileType;
+	}
+
+	public double getCgstPercentage() {
+		return cgstPercentage;
+	}
+
+	public void setCgstPercentage(double cgstPercentage) {
+		this.cgstPercentage = cgstPercentage;
+	}
+
+	public double getSgstPercentage() {
+		return sgstPercentage;
+	}
+
+	public void setSgstPercentage(double sgstPercentage) {
+		this.sgstPercentage = sgstPercentage;
 	}
 	
 }
