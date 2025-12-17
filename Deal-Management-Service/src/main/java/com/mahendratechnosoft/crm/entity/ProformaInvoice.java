@@ -34,6 +34,8 @@ public class ProformaInvoice {
 	private double discount;
 	private String taxType;
 	private double taxPercentage;
+	private double cgstPercentage;
+	private double sgstPercentage;
 	private Date dueDate;
 	private Date proformaInvoiceDate;
 	private double totalAmount;
@@ -462,6 +464,22 @@ public class ProformaInvoice {
 
 	public void setPaymentProfileIds(List<String> paymentProfileIds) {
 		this.paymentProfileIds = paymentProfileIds;
+	}
+	
+	public double getCgstPercentage() {
+		return cgstPercentage;
+	}
+
+	public void setCgstPercentage(double cgstPercentage) {
+		this.cgstPercentage = cgstPercentage;
+	}
+
+	public double getSgstPercentage() {
+		return sgstPercentage;
+	}
+
+	public void setSgstPercentage(double sgstPercentage) {
+		this.sgstPercentage = sgstPercentage;
 	}
 
 	@Override

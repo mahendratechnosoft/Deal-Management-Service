@@ -44,22 +44,29 @@ public class AMCService {
 	public ResponseEntity<CreateAMC> createAMC( CreateAMC createAMC) {
 
 		AMC newAmc=	amcRepository.save(createAMC.getAmcInfo());
+		
+		if(createAMC.getAmcHistoryInfo() != null) {
+			AMCHistory  amcHistory=createAMC.getAmcHistoryInfo();
+			amcHistory.setAmcId(newAmc.getAmcId());
+			amcHistory.setPaid(false);
+			amcHistoryRepository.save(amcHistory);
+		}
 			
-		AMCHistory  amcHistory=createAMC.getAmcHistoryInfo();
-		amcHistory.setAmcId(newAmc.getAmcId());
-		amcHistory.setPaid(false);
-		amcHistoryRepository.save(amcHistory);
 		
-		AMCDomainHistory amcDomainHistory=createAMC.getAmcDomainHistoryInfo();
-		amcDomainHistory.setAmcId(newAmc.getAmcId());
-		amcDomainHistory.setPaid(false);
-		amcDomainHistoryRepository.save(amcDomainHistory);
+		if(createAMC.getAmcDomainHistoryInfo()!= null) {
+			AMCDomainHistory amcDomainHistory=createAMC.getAmcDomainHistoryInfo();
+			amcDomainHistory.setAmcId(newAmc.getAmcId());
+			amcDomainHistory.setPaid(false);
+			amcDomainHistoryRepository.save(amcDomainHistory);
+		}
 		
 		
-		AMCGsuitHistory amcGsuitHistory = createAMC.getAmcGsuitHistory();
-		amcGsuitHistory.setAmcId(newAmc.getAmcId());
-		amcGsuitHistory.setPaid(false);
-		amcGsuitHistoryRepository.save(amcGsuitHistory);
+		if (createAMC.getAmcGsuitHistory() != null) {
+			AMCGsuitHistory amcGsuitHistory = createAMC.getAmcGsuitHistory();
+			amcGsuitHistory.setAmcId(newAmc.getAmcId());
+			amcGsuitHistory.setPaid(false);
+			amcGsuitHistoryRepository.save(amcGsuitHistory);
+		}
 		
 		return ResponseEntity.ok(createAMC);
 	}
