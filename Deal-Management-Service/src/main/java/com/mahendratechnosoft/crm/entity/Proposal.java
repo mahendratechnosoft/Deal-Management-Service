@@ -3,12 +3,18 @@ package com.mahendratechnosoft.crm.entity;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.PrePersist;
 
@@ -64,6 +70,14 @@ public class Proposal {
     private String attachmentFileType;
 
 	private LocalDateTime createdAt;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "proposal_invoice_payment_mode",
+        joinColumns = @JoinColumn(name = "proforma_invoice_id")
+    )
+    @Column(name = "payment_profile_id")
+    private List<String> paymentProfileIds = new ArrayList<>();
 
 	@PrePersist
 	protected void onCreate() {
@@ -375,6 +389,14 @@ public class Proposal {
 
 	public void setSgstPercentage(double sgstPercentage) {
 		this.sgstPercentage = sgstPercentage;
+	}
+
+	public List<String> getPaymentProfileIds() {
+		return paymentProfileIds;
+	}
+
+	public void setPaymentProfileIds(List<String> paymentProfileIds) {
+		this.paymentProfileIds = paymentProfileIds;
 	}
 	
 }

@@ -171,8 +171,16 @@ public class SalesService {
 		try {
 
 			ProposalDto response = new ProposalDto();
-			response.setProposalInfo(proposalRepository.findByProposalId(proposalId));
+			Proposal proposal = proposalRepository.findByProposalId(proposalId);
+			response.setProposalInfo(proposal);
 			response.setProposalContent(proposalContentRepository.findByProposalIdOrderByCreatedAt(proposalId));
+			
+			List<String> ids = proposal.getPaymentProfileIds();
+            
+            if (ids != null && !ids.isEmpty()) {
+                List<PaymentProfile> profiles = paymentProfileRepository.findAllById(ids);
+                response.setPaymentProfiles(profiles);
+            }
 
 			return ResponseEntity.ok(response);
 
