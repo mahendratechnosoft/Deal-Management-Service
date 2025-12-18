@@ -82,6 +82,12 @@ public class ModuleAccess {
 	private boolean amcCreate;
 	private boolean amcDelete;
 	private boolean amcEdit;
+	
+	private boolean vendorAccess;
+	private boolean vendorViewAll;
+	private boolean vendorCreate;
+	private boolean vendorDelete;
+	private boolean vendorEdit;
     
 	public String getModuleAccessId() {
 		return moduleAccessId;
@@ -447,5 +453,36 @@ public class ModuleAccess {
 	public void setAmcEdit(boolean amcEdit) {
 		this.amcEdit = amcEdit;
 	}
+	public boolean isVendorAccess() {
+		return vendorAccess;
+	}
+	public void setVendorAccess(boolean vendorAccess) {
+		this.vendorAccess = vendorAccess;
+	}
+	public boolean isVendorViewAll() {
+		return vendorViewAll;
+	}
+	public void setVendorViewAll(boolean vendorViewAll) {
+		this.vendorViewAll = vendorViewAll;
+	}
+	public boolean isVendorCreate() {
+		return vendorCreate;
+	}
+	public void setVendorCreate(boolean vendorCreate) {
+		this.vendorCreate = vendorCreate;
+	}
+	public boolean isVendorDelete() {
+		return vendorDelete;
+	}
+	public void setVendorDelete(boolean vendorDelete) {
+		this.vendorDelete = vendorDelete;
+	}
+	public boolean isVendorEdit() {
+		return vendorEdit;
+	}
+	public void setVendorEdit(boolean vendorEdit) {
+		this.vendorEdit = vendorEdit;
+	}
+	
 	
 }
