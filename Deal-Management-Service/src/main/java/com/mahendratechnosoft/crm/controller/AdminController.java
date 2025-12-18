@@ -1573,4 +1573,11 @@ public class AdminController {
 	    expenceService.deleteVendorContact(vendorContactId);
 	    return ResponseEntity.noContent().build();
 	}
+	
+	@PutMapping("/updateVendorContactStatus/{vendorContactId}")
+	public ResponseEntity<VendorContact> updateVendorContactStatus(
+			@PathVariable String vendorContactId,
+            @RequestParam boolean active) {
+		return expenceService.updateVendorContactStatus(vendorContactId,active);
+    }
 }

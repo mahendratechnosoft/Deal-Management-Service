@@ -5,12 +5,14 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
+import com.mahendratechnosoft.crm.entity.PaymentProfile;
 import com.mahendratechnosoft.crm.entity.Vendor;
 import com.mahendratechnosoft.crm.entity.VendorContact;
 import com.mahendratechnosoft.crm.repository.VendorContactRepository;
@@ -147,5 +149,13 @@ public class ExpenceService {
 
 	    vendorContactRepository.deleteById(vendorContactId);
 	}
+	
+	public ResponseEntity<VendorContact> updateVendorContactStatus(String vendorContactId, Boolean isActive) {
+        VendorContact vendorContact = vendorContactRepository.findById(vendorContactId)
+                .orElseThrow(() -> new RuntimeException("Payment profile not found"));
+        vendorContact.setIsActive(isActive);
+        VendorContact save = vendorContactRepository.save(vendorContact);
+        return ResponseEntity.ok(save);
+    }
 
 }
