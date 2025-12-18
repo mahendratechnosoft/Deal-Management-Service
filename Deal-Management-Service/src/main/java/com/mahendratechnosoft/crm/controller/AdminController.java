@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -59,6 +60,8 @@ import com.mahendratechnosoft.crm.entity.Role;
 import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.TaskComments;
+import com.mahendratechnosoft.crm.entity.Vendor;
+import com.mahendratechnosoft.crm.entity.VendorContact;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
@@ -77,6 +80,7 @@ import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.DonorService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.ExcelService;
+import com.mahendratechnosoft.crm.service.ExpenceService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.SalesService;
 import com.mahendratechnosoft.crm.service.SettingServices;
@@ -129,6 +133,9 @@ public class AdminController {
 	
 	@Autowired
 	private AMCService amcService;
+	
+	@Autowired
+	private ExpenceService expenceService;
 
     AdminController(ProformaInvoiceContentRepository proformaInvoiceContentRepository) {
         this.proformaInvoiceContentRepository = proformaInvoiceContentRepository;
@@ -1503,5 +1510,69 @@ public class AdminController {
         List<PaymentProfileDropdownDto> profiles = salesService.getPaymentModesForInvoice(admin.getAdminId());
         return ResponseEntity.ok(profiles);
     }
+	
+	@PostMapping("/createVendor")
+	public ResponseEntity<Vendor> createVendor(@ModelAttribute Admin admin,@RequestBody Vendor request){
+		Vendor vendor = expenceService.createVendor(admin, request);
+		return ResponseEntity.ok(vendor);
+	}
+	
+	@PutMapping("/updateVendor")
+	public ResponseEntity<Vendor> updateVendor(@ModelAttribute Admin admin,@RequestBody Vendor request){
+		Vendor vendor = expenceService.updateVendor(admin, request);
+		return ResponseEntity.ok(vendor);
+	}
+	
+	@GetMapping("/getVendorById/{vendorId}")
+	public ResponseEntity<Vendor> getVendorById(@PathVariable String vendorId){
+		Vendor vendor = expenceService.getVendorById(vendorId);
+		return ResponseEntity.ok(vendor);
+	}
+	
+	@GetMapping("/getAllVendors")
+    public ResponseEntity<Page<Vendor>> getAllVendors(
+            @RequestParam(required = false) String search,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @ModelAttribute Admin admin
+    ) {
+        Page<Vendor> vendors = expenceService.getVendors(admin, search, pageable);
+        return ResponseEntity.ok(vendors);
+    }
+	
+	
+	@PostMapping("/createVendorContact")
+    public ResponseEntity<VendorContact> createVendorContact(@ModelAttribute Admin admin,@RequestBody VendorContact request) {
+        VendorContact createdContact = expenceService.createVendorContact(admin,request);
+        return ResponseEntity.ok(createdContact);
+    }
+	
+	@PutMapping("/updateVendorContact")
+    public ResponseEntity<VendorContact> updateVendorContact(@ModelAttribute Admin admin,@RequestBody VendorContact request) {
+        VendorContact createdContact = expenceService.updateVendorContact(admin,request);
+        return ResponseEntity.ok(createdContact);
+    }
+	
+	@GetMapping("/getVendorContactById/{vendorContactId}")
+	public ResponseEntity<VendorContact> getVendorContactById(@PathVariable String vendorContactId){
+		VendorContact vendorContact = expenceService.getVendorContactById(vendorContactId);
+		return ResponseEntity.ok(vendorContact);
+	}
+	
+	@GetMapping("/getAllVendorContacts/{vendorId}")
+    public ResponseEntity<Page<VendorContact>> getAllVendorContacts(
+            @RequestParam(required = false) String search,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @PathVariable String vendorId
+    ) {
+        Page<VendorContact> vendorContact = expenceService.getVendorContacts(vendorId, search, pageable);
+        return ResponseEntity.ok(vendorContact);
+    }
+	
+	@DeleteMapping("/deleteVendorContact/{vendorContactId}")
+	public ResponseEntity<Void> deleteVendorContact(
+	        @PathVariable String vendorContactId) {
 
+	    expenceService.deleteVendorContact(vendorContactId);
+	    return ResponseEntity.noContent().build();
+	}
 }
