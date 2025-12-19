@@ -39,6 +39,7 @@ import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
 import com.mahendratechnosoft.crm.dto.UserCredential;
+import com.mahendratechnosoft.crm.dto.VendorDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
@@ -61,6 +62,7 @@ import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.TaskComments;
 import com.mahendratechnosoft.crm.entity.Vendor;
+import com.mahendratechnosoft.crm.entity.VendorAttachment;
 import com.mahendratechnosoft.crm.entity.VendorContact;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
@@ -1510,7 +1512,12 @@ public class AdminController {
     }
 	
 	@PostMapping("/createVendor")
-	public ResponseEntity<Vendor> createVendor(@ModelAttribute Admin admin,@RequestBody Vendor request){
+	public ResponseEntity<?> createVendor(@ModelAttribute Admin admin,@RequestBody VendorDto request){
+		if (request.getVendorAttachments() != null && request.getVendorAttachments().size() > 4) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Error: Only 4 attachments are allowed at a time.");
+        }
 		Vendor vendor = expenceService.createVendor(admin, request);
 		return ResponseEntity.ok(vendor);
 	}
@@ -1580,4 +1587,26 @@ public class AdminController {
             @RequestParam boolean active) {
 		return expenceService.updateVendorContactStatus(vendorContactId,active);
     }
+	
+	@PostMapping("/addVendorAttachement")
+	public ResponseEntity<?> addVendorAttachement(@ModelAttribute("admin") Admin admin,@RequestBody List<VendorAttachment> request) {
+		if (request != null && request.size() > 4) {
+	        return ResponseEntity
+	                .status(HttpStatus.BAD_REQUEST)
+	                .body("Error: Only 4 attachments are allowed at a time.");
+	    }
+		return ResponseEntity.ok(expenceService.addVendorAttachement(admin,request));
+	}
+	
+	@GetMapping("/getVendorAttachmentByVendorId/{vendorId}")
+	public ResponseEntity<?> getVendorAttachmentByVendorId(@PathVariable String vendorId) {
+		List<VendorAttachment> vendorAttachments= expenceService.getVendorAttachmentByVendorId(vendorId);
+		return ResponseEntity.ok(vendorAttachments);
+	}
+	
+	@DeleteMapping("/deleteVendorAttachement/{vendorAttachmentId}")
+	public ResponseEntity<?> deleteVendorAttachement(@PathVariable String vendorAttachmentId){
+		expenceService.deleteVendorAttachement(vendorAttachmentId);
+		return ResponseEntity.noContent().build();
+	}
 }
