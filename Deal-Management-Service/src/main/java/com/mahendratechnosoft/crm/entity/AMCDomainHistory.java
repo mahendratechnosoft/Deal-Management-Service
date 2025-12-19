@@ -19,6 +19,7 @@ public class AMCDomainHistory {
     private int sequence;
     private boolean isPaid;
     private boolean isDeleted;
+    private String proformaInvoiceId;
 	
 	
 	public AMCDomainHistory(String acmDomainHistoryId, String amcId, LocalDate domainStartDate, LocalDate domainRenewalDate,
@@ -90,6 +91,12 @@ public class AMCDomainHistory {
 	}
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	public String getProformaInvoiceId() {
+		return proformaInvoiceId;
+	}
+	public void setProformaInvoiceId(String proformaInvoiceId) {
+		this.proformaInvoiceId = proformaInvoiceId;
 	}
 	
 }

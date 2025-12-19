@@ -20,7 +20,7 @@ public class AMCHistory {
 	private int sequence;
 	private boolean isPaid;
 	private boolean isDeleted;
-	
+	private String proformaInvoiceId;
 	
 	public AMCHistory() {
 		super();
@@ -97,6 +97,11 @@ public class AMCHistory {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-	
+	public String getProformaInvoiceId() {
+		return proformaInvoiceId;
+	}
+	public void setProformaInvoiceId(String proformaInvoiceId) {
+		this.proformaInvoiceId = proformaInvoiceId;
+	}
 	
 }

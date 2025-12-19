@@ -22,6 +22,7 @@ public class AMC {
 	private String technology;
 	private String hostingProvider;
 	private String domainProvider;
+	private String customerId;
 
 	
 	public AMC(String amcId, String adminId, String employeeId, String clientName, String companyName,
@@ -126,7 +127,10 @@ public class AMC {
 	public void setAssingedTo(String assingedTo) {
 		this.assingedTo = assingedTo;
 	}
-	
-	
-
+	public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
 }

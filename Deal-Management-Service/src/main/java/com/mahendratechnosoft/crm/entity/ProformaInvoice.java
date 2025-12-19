@@ -85,6 +85,10 @@ public class ProformaInvoice {
     @Column(name = "payment_profile_id")
     private List<String> paymentProfileIds = new ArrayList<>();
     
+    private String acmHistoryId;
+    private String acmDomainHistoryId;
+    private String acmGsuitHistoryId; 
+    
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
@@ -480,6 +484,30 @@ public class ProformaInvoice {
 
 	public void setSgstPercentage(double sgstPercentage) {
 		this.sgstPercentage = sgstPercentage;
+	}
+
+	public String getAcmHistoryId() {
+		return acmHistoryId;
+	}
+
+	public void setAcmHistoryId(String acmHistoryId) {
+		this.acmHistoryId = acmHistoryId;
+	}
+
+	public String getAcmDomainHistoryId() {
+		return acmDomainHistoryId;
+	}
+
+	public void setAcmDomainHistoryId(String acmDomainHistoryId) {
+		this.acmDomainHistoryId = acmDomainHistoryId;
+	}
+
+	public String getAcmGsuitHistoryId() {
+		return acmGsuitHistoryId;
+	}
+
+	public void setAcmGsuitHistoryId(String acmGsuitHistoryId) {
+		this.acmGsuitHistoryId = acmGsuitHistoryId;
 	}
 
 	@Override
