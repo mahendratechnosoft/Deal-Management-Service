@@ -36,6 +36,7 @@ public class AMCGsuitHistory {
     private int sequence;
     
     private boolean isPaid;
+    private String proformaInvoiceId;
     
 	public String getAcmGsuitHistoryId() {
 		return acmGsuitHistoryId;
@@ -138,6 +139,12 @@ public class AMCGsuitHistory {
 	}
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	public String getProformaInvoiceId() {
+		return proformaInvoiceId;
+	}
+	public void setProformaInvoiceId(String proformaInvoiceId) {
+		this.proformaInvoiceId = proformaInvoiceId;
 	}
 	
 }
