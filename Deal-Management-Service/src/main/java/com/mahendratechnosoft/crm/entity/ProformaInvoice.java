@@ -85,9 +85,9 @@ public class ProformaInvoice {
     @Column(name = "payment_profile_id")
     private List<String> paymentProfileIds = new ArrayList<>();
     
-    private String acmHistoryId;
-    private String acmDomainHistoryId;
-    private String acmGsuitHistoryId; 
+    private String amcHistoryId;
+    private String amcDomainHistoryId;
+    private String amcGsuitHistoryId; 
     
     @PrePersist
     protected void onCreate() {
@@ -486,28 +486,28 @@ public class ProformaInvoice {
 		this.sgstPercentage = sgstPercentage;
 	}
 
-	public String getAcmHistoryId() {
-		return acmHistoryId;
+	public String getAmcHistoryId() {
+		return amcHistoryId;
 	}
 
-	public void setAcmHistoryId(String acmHistoryId) {
-		this.acmHistoryId = acmHistoryId;
+	public void setAmcHistoryId(String amcHistoryId) {
+		this.amcHistoryId = amcHistoryId;
 	}
 
-	public String getAcmDomainHistoryId() {
-		return acmDomainHistoryId;
+	public String getAmcDomainHistoryId() {
+		return amcDomainHistoryId;
 	}
 
-	public void setAcmDomainHistoryId(String acmDomainHistoryId) {
-		this.acmDomainHistoryId = acmDomainHistoryId;
+	public void setAmcDomainHistoryId(String amcDomainHistoryId) {
+		this.amcDomainHistoryId = amcDomainHistoryId;
 	}
 
-	public String getAcmGsuitHistoryId() {
-		return acmGsuitHistoryId;
+	public String getAmcGsuitHistoryId() {
+		return amcGsuitHistoryId;
 	}
 
-	public void setAcmGsuitHistoryId(String acmGsuitHistoryId) {
-		this.acmGsuitHistoryId = acmGsuitHistoryId;
+	public void setAmcGsuitHistoryId(String amcGsuitHistoryId) {
+		this.amcGsuitHistoryId = amcGsuitHistoryId;
 	}
 
 	@Override
@@ -517,8 +517,5 @@ public class ProformaInvoice {
 				+ totalAmount + ", paidAmount=" + paidAmount + ", status=" + status + ", companyName=" + companyName
 				+ "]";
 	}
-
-	
-	
 	
 }

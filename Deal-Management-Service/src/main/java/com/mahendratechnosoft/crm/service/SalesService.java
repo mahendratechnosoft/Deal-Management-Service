@@ -25,6 +25,9 @@ import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryCountDTO;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceSummaryDTO;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
+import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
+import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
+import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Invoice;
@@ -37,6 +40,9 @@ import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
+import com.mahendratechnosoft.crm.repository.AMCDomainHistoryRepository;
+import com.mahendratechnosoft.crm.repository.AMCGsuitHistoryRepository;
+import com.mahendratechnosoft.crm.repository.AMCHistoryRepository;
 import com.mahendratechnosoft.crm.repository.AttendanceRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceRepository;
@@ -81,6 +87,15 @@ public class SalesService {
 	
 	@Autowired
 	private PaymentProfileRepository paymentProfileRepository;
+	
+	@Autowired
+	private AMCHistoryRepository amcHistoryRepository;
+	
+	@Autowired
+	private AMCDomainHistoryRepository amcDomainHistoryRepository;
+	
+	@Autowired
+	private AMCGsuitHistoryRepository amcGsuitHistoryRepository;
 
 	SalesService(AttendanceRepository attendanceRepository) {
 		this.attendanceRepository = attendanceRepository;
@@ -449,14 +464,44 @@ public class SalesService {
 			if(invoice.getTotalAmount() == invoice.getPaidAmount()) {
 				invoice.setStatus("Paid");
 			}
-			proformaInvoiceRepository.save(invoice);
+			
+			ProformaInvoice savedProformaInvoice = proformaInvoiceRepository.save(invoice);
+			
+			String amcmHistoryId = invoice.getAmcHistoryId();
+			if(amcmHistoryId!= null && !amcmHistoryId.isBlank()) {
+				AMCHistory amcHistory = amcHistoryRepository.findById(amcmHistoryId)
+				.orElseThrow(()-> new RuntimeException("No amc history found with id : "+ amcmHistoryId));
+				
+				amcHistory.setProformaInvoiceId(savedProformaInvoice.getProformaInvoiceId());
+				amcHistory.setAmcAmount(savedProformaInvoice.getTotalAmount());
+				amcHistoryRepository.save(amcHistory);
+			}
+			
+			String amcDomainHistoryId = invoice.getAmcDomainHistoryId();
+			if(amcDomainHistoryId!= null && !amcDomainHistoryId.isBlank()) {
+				AMCDomainHistory amcDomainHistory = amcDomainHistoryRepository.findById(amcDomainHistoryId)
+				.orElseThrow(()-> new RuntimeException("No amc history found with id : "+ amcDomainHistoryId));
+				
+				amcDomainHistory.setProformaInvoiceId(savedProformaInvoice.getProformaInvoiceId());
+				amcDomainHistory.setDomainAmount(String.valueOf(savedProformaInvoice.getTotalAmount()));
+				amcDomainHistoryRepository.save(amcDomainHistory);
+			}
+			
+			String amcGsuitHistoryId = invoice.getAmcGsuitHistoryId();
+			if(amcGsuitHistoryId!= null && !amcGsuitHistoryId.isBlank()) {
+				AMCGsuitHistory amcGsuitHistory = amcGsuitHistoryRepository.findById(amcGsuitHistoryId)
+				.orElseThrow(()-> new RuntimeException("No amc history found with id : "+ amcGsuitHistoryId));
+				
+				amcGsuitHistory.setProformaInvoiceId(savedProformaInvoice.getProformaInvoiceId());
+				amcGsuitHistory.setGsuitAmount(String.valueOf(savedProformaInvoice.getTotalAmount()));
+				amcGsuitHistoryRepository.save(amcGsuitHistory);
+			}
+			
 
 			List<ProformaInvoiceContent> invoiceContentAll = new ArrayList<>();
 
 			for (ProformaInvoiceContent content : invoiceDto.getProformaInvoiceContents()) {
-
 				content.setProformaInvoiceId(invoice.getProformaInvoiceId());
-
 				invoiceContentAll.add(content);
 			}
 
