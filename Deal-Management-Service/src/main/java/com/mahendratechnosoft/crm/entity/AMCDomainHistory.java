@@ -18,6 +18,7 @@ public class AMCDomainHistory {
 	private String domainRenewalCycle;
     private int sequence;
     private boolean isPaid;
+    private boolean isDeleted;
 	
 	
 	public AMCDomainHistory(String acmDomainHistoryId, String amcId, LocalDate domainStartDate, LocalDate domainRenewalDate,
@@ -84,5 +85,11 @@ public class AMCDomainHistory {
 	public void setPaid(boolean isPaid) {
 		this.isPaid = isPaid;
 	}
-
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+	
 }

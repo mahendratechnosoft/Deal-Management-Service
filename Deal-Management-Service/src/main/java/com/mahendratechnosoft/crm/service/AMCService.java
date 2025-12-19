@@ -151,7 +151,11 @@ public class AMCService {
 	}
 
 
-	public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(String amcId) {
+	public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(Object loginUser,String amcId) {
+		
+		if(loginUser instanceof Employee employee) {
+			return ResponseEntity.ok(amcHistoryRepository.findByAmcIdAndIsDeletedFalse(amcId));
+		}
 		
 		return ResponseEntity.ok(amcHistoryRepository.findByAmcId(amcId));
 	}
@@ -163,14 +167,25 @@ public class AMCService {
 	}
 
 
-	public ResponseEntity<String> deleteAMCHistory(String amcHistoryId) {
+	public ResponseEntity<String> deleteAMCHistory(Object loginUser,String amcHistoryId) {
+		
+		if(loginUser instanceof Employee employee) {
+			AMCHistory amcHistory = amcHistoryRepository.findById(amcHistoryId)
+				.orElseThrow(()->new RuntimeException("No histosry found with id :"+ amcHistoryId));
+				amcHistory.setDeleted(true);
+				amcHistoryRepository.save(amcHistory);
+			return ResponseEntity.ok("Deleted Successfully");
+		}
+		
 		amcHistoryRepository.deleteById(amcHistoryId);
 		return ResponseEntity.ok("Deleted Successfully");
 	}
 	
 	
-	public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(String amcId) {
-		// TODO Auto-generated method stub
+	public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(Object loginUser,String amcId) {
+		if(loginUser instanceof Employee employee) {
+			return ResponseEntity.ok(amcDomainHistoryRepository.findByAmcIdAndIsDeletedFalse(amcId));
+		}
 		return ResponseEntity.ok(amcDomainHistoryRepository.findByAmcId(amcId));
 	}
 
@@ -181,7 +196,15 @@ public class AMCService {
 	}
 
 
-	public ResponseEntity<String> deleteAMCDomainHistory(String amcDomainHistoryId) {
+	public ResponseEntity<String> deleteAMCDomainHistory(Object loginUser,String amcDomainHistoryId) {
+		if(loginUser instanceof Employee employee) {
+			AMCDomainHistory domainHistory = amcDomainHistoryRepository.findById(amcDomainHistoryId)
+				.orElseThrow(()->new RuntimeException("No histosry found with id :"+ amcDomainHistoryId));
+			domainHistory.setDeleted(true);
+			amcDomainHistoryRepository.save(domainHistory);
+			return ResponseEntity.ok("Deleted Successfully");
+		}
+		
 		amcDomainHistoryRepository.deleteById(amcDomainHistoryId);
 		return ResponseEntity.ok("Deleted Successfully");
 	}
@@ -192,7 +215,10 @@ public class AMCService {
 				.orElseThrow(()->new RuntimeException("Amc not Found with Id : "+amcId)));
 	}
 
-	public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(String amcId) {
+	public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(Object loginUser,String amcId) {
+		if(loginUser instanceof Employee employee) {
+			return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcIdAndIsDeletedFalse(amcId));
+		}
 		return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcId(amcId));
 	}
 	
@@ -200,7 +226,16 @@ public class AMCService {
 		return ResponseEntity.ok(amcGsuitHistoryRepository.save(amcGsuitHistory));
 	}
 	
-	public ResponseEntity<String> deleteAMCGsuitHistory(String amcGsuitHistoryId) {
+	public ResponseEntity<String> deleteAMCGsuitHistory(Object loginUser,String amcGsuitHistoryId) {
+		
+		if(loginUser instanceof Employee employee) {
+			AMCGsuitHistory gsuitHistory = amcGsuitHistoryRepository.findById(amcGsuitHistoryId)
+				.orElseThrow(()->new RuntimeException("No histosry found with id :"+ amcGsuitHistoryId));
+			gsuitHistory.setDeleted(true);
+			amcGsuitHistoryRepository.save(gsuitHistory);
+			return ResponseEntity.ok("Deleted Successfully");
+		}
+		
 		amcGsuitHistoryRepository.deleteById(amcGsuitHistoryId);
 		return ResponseEntity.ok("Deleted Successfully");
 	}

@@ -25,6 +25,7 @@ public class AMCGsuitHistory {
     private String adminPassword;
     private Integer totalLicenses;
 	private String gsuitAmount;
+	private boolean isDeleted;
 	
 	@Enumerated(EnumType.STRING)
     private PayerType paidBy;
@@ -131,6 +132,12 @@ public class AMCGsuitHistory {
 	}
 	public void setPaid(boolean isPaid) {
 		this.isPaid = isPaid;
+	}
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 	
 }
