@@ -14,4 +14,6 @@ public interface AMCGsuitHistoryRepository extends JpaRepository<AMCGsuitHistory
 	
 	boolean existsByAmcIdAndSequence(String amcId, int sequence);
 
+	List<AMCGsuitHistory> findByAmcIdAndIsDeletedFalse(String amcId);
+
 }

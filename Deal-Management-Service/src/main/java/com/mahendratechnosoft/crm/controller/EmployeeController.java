@@ -1113,8 +1113,8 @@ public class EmployeeController {
 		
 		
 		@GetMapping("/getAllAMCHistoy/{amcId}")
-		public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(@PathVariable String amcId){
-			return amcService.getAllAMCHistoy(amcId);
+		public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(@ModelAttribute Employee employee,@PathVariable String amcId){
+			return amcService.getAllAMCHistoy(employee,amcId);
 		}
 		
 		@PutMapping("/updateAMCHistory")
@@ -1123,13 +1123,13 @@ public class EmployeeController {
 		}
 		
 		@DeleteMapping("/deleteAMCHistory/{amcHistoryId}")
-		public ResponseEntity<String> deleteAMCHistory(@PathVariable String amcHistoryId){
-			return amcService.deleteAMCHistory(amcHistoryId);
+		public ResponseEntity<String> deleteAMCHistory(@ModelAttribute Employee employee,@PathVariable String amcHistoryId){
+			return amcService.deleteAMCHistory(employee,amcHistoryId);
 		}
 		
 		@GetMapping("/getAllAMCDomainHistoy/{amcId}")
-		public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(@PathVariable String amcId){
-			return amcService.getAllAMCDomainHistoy(amcId);
+		public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(@ModelAttribute Employee employee,@PathVariable String amcId){
+			return amcService.getAllAMCDomainHistoy(employee,amcId);
 		}
 		
 		@PutMapping("/updateAMCDomainHistoy")
@@ -1138,8 +1138,8 @@ public class EmployeeController {
 		}
 		
 		@DeleteMapping("/deleteAMCDomainHistory/{amcDomainHistoryId}")
-		public ResponseEntity<String> deleteAMCDomainHistory(@PathVariable String amcDomainHistoryId){
-			return amcService.deleteAMCDomainHistory(amcDomainHistoryId);
+		public ResponseEntity<String> deleteAMCDomainHistory(@ModelAttribute Employee employee,@PathVariable String amcDomainHistoryId){
+			return amcService.deleteAMCDomainHistory(employee,amcDomainHistoryId);
 		}
 
 		// amc API END
@@ -1196,8 +1196,8 @@ public class EmployeeController {
 		}
 		
 		@GetMapping("/getAllAMCGsuitHistory/{amcId}")
-		public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(@PathVariable String amcId){
-			return amcService.getAllAMCGsuitHistory(amcId);
+		public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(@ModelAttribute("employee") Employee employee,@PathVariable String amcId){
+			return amcService.getAllAMCGsuitHistory(employee,amcId);
 		}
 		
 		@PutMapping("/updateAMCGsuitHistory")
@@ -1206,8 +1206,8 @@ public class EmployeeController {
 		}
 		
 		@DeleteMapping("/deleteAMCGsuitHistory/{amcGsuitHistoryId}")
-		public ResponseEntity<String> deleteAMCGsuitHistory(@PathVariable String amcGsuitHistoryId){
-			return amcService.deleteAMCGsuitHistory(amcGsuitHistoryId);
+		public ResponseEntity<String> deleteAMCGsuitHistory(@ModelAttribute("employee") Employee employee,@PathVariable String amcGsuitHistoryId){
+			return amcService.deleteAMCGsuitHistory(employee,amcGsuitHistoryId);
 		}
 		
 		@GetMapping("/isGsuitHistorySequenceUnique/{amcId}/{sequence}")

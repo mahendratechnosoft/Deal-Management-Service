@@ -19,6 +19,8 @@ public class AMCHistory {
 	private String amcRecycleType;
 	private int sequence;
 	private boolean isPaid;
+	private boolean isDeleted;
+	
 	
 	public AMCHistory() {
 		super();
@@ -89,4 +91,12 @@ public class AMCHistory {
 	public void setPaid(boolean isPaid) {
 		this.isPaid = isPaid;
 	}
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+	
+	
 }
