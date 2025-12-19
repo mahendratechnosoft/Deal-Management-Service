@@ -32,6 +32,7 @@ import com.mahendratechnosoft.crm.dto.PaymentProfileDropdownDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
 import com.mahendratechnosoft.crm.dto.ProposalDto;
 import com.mahendratechnosoft.crm.dto.TaskDto;
+import com.mahendratechnosoft.crm.dto.VendorDto;
 import com.mahendratechnosoft.crm.dto.Hospital.AllocationDetailsDTO;
 import com.mahendratechnosoft.crm.entity.AMC;
 import com.mahendratechnosoft.crm.entity.AMCDomainHistory;
@@ -50,6 +51,7 @@ import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.TaskComments;
 import com.mahendratechnosoft.crm.entity.Vendor;
+import com.mahendratechnosoft.crm.entity.VendorAttachment;
 import com.mahendratechnosoft.crm.entity.VendorContact;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorBloodReport;
 import com.mahendratechnosoft.crm.entity.Hospital.DonorFamilyInfo;
@@ -1237,7 +1239,7 @@ public class EmployeeController {
 	    }
 		
 		@PostMapping("/createVendor")
-		public ResponseEntity<Vendor> createVendor(@ModelAttribute Employee employee,@RequestBody Vendor request){
+		public ResponseEntity<Vendor> createVendor(@ModelAttribute Employee employee,@RequestBody VendorDto request){
 			Vendor vendor = expenceService.createVendor(employee, request);
 			return ResponseEntity.ok(vendor);
 		}
@@ -1307,4 +1309,26 @@ public class EmployeeController {
 	            @RequestParam boolean active) {
 			return expenceService.updateVendorContactStatus(vendorContactId,active);
 	    }
+		
+		@PostMapping("/addVendorAttachement")
+		public ResponseEntity<?> addVendorAttachement(@ModelAttribute Employee employee,@RequestBody List<VendorAttachment> request) {
+			if (request != null && request.size() > 4) {
+		        return ResponseEntity
+		                .status(HttpStatus.BAD_REQUEST)
+		                .body("Error: Only 4 attachments are allowed at a time.");
+		    }
+			return ResponseEntity.ok(expenceService.addVendorAttachement(employee,request));
+		}
+		
+		@GetMapping("/getVendorAttachmentByVendorId/{vendorId}")
+		public ResponseEntity<?> getVendorAttachmentByVendorId(@PathVariable String vendorId) {
+			List<VendorAttachment> vendorAttachments= expenceService.getVendorAttachmentByVendorId(vendorId);
+			return ResponseEntity.ok(vendorAttachments);
+		}
+		
+		@DeleteMapping("/deleteVendorAttachement/{vendorAttachmentId}")
+		public ResponseEntity<?> deleteVendorAttachement(@PathVariable String vendorAttachmentId){
+			expenceService.deleteVendorAttachement(vendorAttachmentId);
+			return ResponseEntity.noContent().build();
+		}
 }

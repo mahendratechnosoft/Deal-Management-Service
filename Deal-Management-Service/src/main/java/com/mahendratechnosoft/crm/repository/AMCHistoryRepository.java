@@ -17,10 +17,10 @@ public interface AMCHistoryRepository extends JpaRepository<AMCHistory, String>{
     @Query("DELETE FROM AMCHistory a WHERE a.amcId = :amcId")
     void deleteByAmcId(String amcId);
 	
-	List<AMCHistory> findByAmcId(String amcId);
+	List<AMCHistory> findByAmcIdOrderBySequenceDesc(String amcId);
 	
 	boolean existsByAmcIdAndSequence(String amcId, int sequence);
 
-	List<AMCHistory> findByAmcIdAndIsDeletedFalse(String amcId);
+	List<AMCHistory> findByAmcIdAndIsDeletedFalseOrderBySequenceDesc(String amcId);
 
 }

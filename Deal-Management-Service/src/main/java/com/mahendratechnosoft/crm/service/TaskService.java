@@ -117,7 +117,6 @@ public class TaskService {
         if(request.getTaskAttachments() != null) {
 	        	
 	        for (TaskAttachment taskAttachment : request.getTaskAttachments()) {
-	        	System.out.println("check");
 				taskAttachment.setTaskId(savedTask.getTaskId());
 				taskAttachment.setUploadedBy(name);
 				attachments.add(taskAttachment);

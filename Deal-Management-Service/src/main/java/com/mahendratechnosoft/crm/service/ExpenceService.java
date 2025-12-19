@@ -1,25 +1,36 @@
 package com.mahendratechnosoft.crm.service;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
+import com.mahendratechnosoft.crm.dto.VendorDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.PaymentProfile;
+import com.mahendratechnosoft.crm.entity.Task;
+import com.mahendratechnosoft.crm.entity.TaskAttachment;
 import com.mahendratechnosoft.crm.entity.Vendor;
+import com.mahendratechnosoft.crm.entity.VendorAttachment;
 import com.mahendratechnosoft.crm.entity.VendorContact;
+import com.mahendratechnosoft.crm.repository.TaskRepository;
+import com.mahendratechnosoft.crm.repository.VendorAttachmentRepository;
 import com.mahendratechnosoft.crm.repository.VendorContactRepository;
 import com.mahendratechnosoft.crm.repository.VendorRepository;
 
 @Service
 public class ExpenceService {
+
+    private final TaskRepository taskRepository;
 	
 	@Autowired
 	private VendorRepository vendorRepository;
@@ -27,7 +38,14 @@ public class ExpenceService {
 	@Autowired
 	private VendorContactRepository vendorContactRepository;
 	
-	public Vendor createVendor(Object loginUser,Vendor request) {
+	@Autowired
+	private VendorAttachmentRepository vendorAttachmentRepository;
+
+    ExpenceService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+	
+	public Vendor createVendor(Object loginUser,VendorDto request) {
 		String adminId = null;
 		String employeeId= null;
 		String createdBy =null;
@@ -40,11 +58,24 @@ public class ExpenceService {
             employeeId = employee.getEmployeeId();
             createdBy = employee.getName();
         }
+		Vendor vendor = request.getVendor();
+		vendor.setAdminId(adminId);
+		vendor.setEmployeeId(employeeId);
+		vendor.setCreatedBy(createdBy);
+		Vendor save = vendorRepository.save(vendor);
 		
-		request.setAdminId(adminId);
-		request.setEmployeeId(employeeId);
-		request.setCreatedBy(createdBy);
-        return vendorRepository.save(request);
+		List<VendorAttachment> attachments = new LinkedList<>();
+        if(request.getVendorAttachments() != null) {
+        	
+	        for (VendorAttachment vendorAttachment : request.getVendorAttachments()) {
+	        	vendorAttachment.setVendorId(save.getVendorId());
+				vendorAttachment.setUploadedBy(createdBy);
+				attachments.add(vendorAttachment);
+			}
+	        vendorAttachmentRepository.saveAll(attachments);
+        }
+		
+        return save;
     }
 	
 	public Vendor updateVendor(Object loginUser,Vendor request) {
@@ -157,5 +188,34 @@ public class ExpenceService {
         VendorContact save = vendorContactRepository.save(vendorContact);
         return ResponseEntity.ok(save);
     }
+
+	public String addVendorAttachement(Object loginUser, List<VendorAttachment> request) {
+		final String uploadedBy = 
+	            (loginUser instanceof Admin admin) ? admin.getName()
+	          : (loginUser instanceof Employee employee) ? employee.getName()
+	          : null;
+		
+		List<VendorAttachment> attachments = request.stream()
+	            .peek(a -> {
+	                a.setUploadedBy(uploadedBy);
+	            })
+	            .collect(Collectors.toList());
+
+	    vendorAttachmentRepository.saveAll(attachments);
+		return "All attachments added successfully.";
+	}
+
+	public List<VendorAttachment> getVendorAttachmentByVendorId(String vendorId) {
+		List<VendorAttachment> attachments = vendorAttachmentRepository.findByVendorId(vendorId);
+		return attachments;
+	}
+
+	public void deleteVendorAttachement(String vendorAttachmentId) {
+		if(!vendorAttachmentRepository.existsById(vendorAttachmentId)) {
+			throw new RuntimeException("No attachement found with id : "+ vendorAttachmentId);
+		}
+		
+		vendorAttachmentRepository.deleteById(vendorAttachmentId);
+	}
 
 }

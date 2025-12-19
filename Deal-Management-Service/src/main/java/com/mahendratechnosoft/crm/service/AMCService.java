@@ -154,10 +154,10 @@ public class AMCService {
 	public ResponseEntity<List<AMCHistory>> getAllAMCHistoy(Object loginUser,String amcId) {
 		
 		if(loginUser instanceof Employee employee) {
-			return ResponseEntity.ok(amcHistoryRepository.findByAmcIdAndIsDeletedFalse(amcId));
+			return ResponseEntity.ok(amcHistoryRepository.findByAmcIdAndIsDeletedFalseOrderBySequenceDesc(amcId));
 		}
 		
-		return ResponseEntity.ok(amcHistoryRepository.findByAmcId(amcId));
+		return ResponseEntity.ok(amcHistoryRepository.findByAmcIdOrderBySequenceDesc(amcId));
 	}
 
 
@@ -184,9 +184,9 @@ public class AMCService {
 	
 	public ResponseEntity<List<AMCDomainHistory>> getAllAMCDomainHistoy(Object loginUser,String amcId) {
 		if(loginUser instanceof Employee employee) {
-			return ResponseEntity.ok(amcDomainHistoryRepository.findByAmcIdAndIsDeletedFalse(amcId));
+			return ResponseEntity.ok(amcDomainHistoryRepository.findByAmcIdAndIsDeletedFalseOrderBySequenceDesc(amcId));
 		}
-		return ResponseEntity.ok(amcDomainHistoryRepository.findByAmcId(amcId));
+		return ResponseEntity.ok(amcDomainHistoryRepository.findByAmcIdOrderBySequenceDesc(amcId));
 	}
 
 
@@ -217,9 +217,9 @@ public class AMCService {
 
 	public ResponseEntity<List<AMCGsuitHistory>> getAllAMCGsuitHistory(Object loginUser,String amcId) {
 		if(loginUser instanceof Employee employee) {
-			return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcIdAndIsDeletedFalse(amcId));
+			return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcIdAndIsDeletedFalseOrderBySequenceDesc(amcId));
 		}
-		return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcId(amcId));
+		return ResponseEntity.ok(amcGsuitHistoryRepository.findByAmcIdOrderBySequenceDesc(amcId));
 	}
 	
 	public ResponseEntity<AMCGsuitHistory> updateAMCGsuitHistory(AMCGsuitHistory amcGsuitHistory) {

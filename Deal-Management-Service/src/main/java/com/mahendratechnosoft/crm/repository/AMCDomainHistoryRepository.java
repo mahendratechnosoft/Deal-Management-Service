@@ -18,10 +18,10 @@ public interface AMCDomainHistoryRepository extends JpaRepository<AMCDomainHisto
     @Query("DELETE FROM AMCDomainHistory a WHERE a.amcId = :amcId")
     void deleteByAmcId(String amcId);
 	
-	List<AMCDomainHistory> findByAmcId(String amcId);
+	List<AMCDomainHistory> findByAmcIdOrderBySequenceDesc(String amcId);
 	
 	boolean existsByAmcIdAndSequence(String amcId, int sequence);
 
-	List<AMCDomainHistory> findByAmcIdAndIsDeletedFalse(String amcId);
+	List<AMCDomainHistory> findByAmcIdAndIsDeletedFalseOrderBySequenceDesc(String amcId);
 
 }
