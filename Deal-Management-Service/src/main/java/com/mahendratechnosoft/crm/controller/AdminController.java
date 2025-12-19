@@ -1,7 +1,6 @@
 package com.mahendratechnosoft.crm.controller;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
-import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
@@ -73,7 +70,6 @@ import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
-import com.mahendratechnosoft.crm.repository.ProformaInvoiceContentRepository;
 import com.mahendratechnosoft.crm.service.AMCService;
 import com.mahendratechnosoft.crm.service.AttendanceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
@@ -94,8 +90,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-
-    private final ProformaInvoiceContentRepository proformaInvoiceContentRepository;
 
 	@Autowired
     private AdminRepository adminRepository;
@@ -138,10 +132,6 @@ public class AdminController {
 	
 	@Autowired
 	private ExpenceService expenceService;
-
-    AdminController(ProformaInvoiceContentRepository proformaInvoiceContentRepository) {
-        this.proformaInvoiceContentRepository = proformaInvoiceContentRepository;
-    }
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
