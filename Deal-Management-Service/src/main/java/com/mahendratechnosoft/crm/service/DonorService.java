@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import com.mahendratechnosoft.crm.repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +33,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
+import com.mahendratechnosoft.crm.entity.Hospital.SemenEnquiry;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorBloodReportRepositroy;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorFamilyInfoRepository;
@@ -40,11 +41,14 @@ import com.mahendratechnosoft.crm.repository.Hospital.DonorsRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.FamilyInfoRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.FamilyVialAllocationRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.SampleReportRepository;
+import com.mahendratechnosoft.crm.repository.Hospital.SemenEnquiryRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.SemenReportRepository;
 
 
 @Service
 public class DonorService {
+
+    private final InvoiceRepository invoiceRepository;
 	
 	@Autowired
 	private DonorsRepository donorsRepository;
@@ -69,6 +73,14 @@ public class DonorService {
 	
 	@Autowired
 	private FamilyVialAllocationRepository familyVialAllocationRepository;
+	
+	@Autowired
+	private SemenEnquiryRepository semenEnquiryRepository;
+
+
+    DonorService(InvoiceRepository invoiceRepository) {
+        this.invoiceRepository = invoiceRepository;
+    }
 	
 	
 	public ResponseEntity<?> createDonor( Donors request) {
@@ -913,4 +925,90 @@ public class DonorService {
 	    
 	    return ResponseEntity.ok(donarInfoDto);
 	}
+	
+	
+	public SemenEnquiry createSemenEnquiry(Object loginUser ,SemenEnquiry request) {
+		String adminId = null;
+		String employeeId = null;
+		String name = "";
+		if (loginUser instanceof Admin admin) {
+			adminId = admin.getAdminId();
+			name = admin.getName();
+		}else if (loginUser instanceof Employee employee) {
+			adminId = employee.getAdmin().getAdminId();
+			employeeId = employee.getEmployeeId();
+			name = employee.getName();
+		}
+		request.setAdminId(adminId);
+		request.setEmployeeId(employeeId);
+		request.setCreatedBy(name);
+		SemenEnquiry save = semenEnquiryRepository.save(request);
+		return save;
+	}
+	
+	public SemenEnquiry updateSemenEnquiry(Object loginUser ,SemenEnquiry request) {
+		String adminId = null;
+		if (loginUser instanceof Admin admin) {
+			adminId = admin.getAdminId();
+		}else if (loginUser instanceof Employee employee) {
+			adminId = employee.getAdmin().getAdminId();
+		}
+		request.setAdminId(adminId);
+		SemenEnquiry save = semenEnquiryRepository.save(request);
+		return save;
+	}
+
+
+	public SemenEnquiry getSemenEnquiryById(String semenEnquiryId) {
+		SemenEnquiry semenEnquiry = semenEnquiryRepository.findById(semenEnquiryId)
+		.orElseThrow(()->new RuntimeException("Seme enquiry with not found for Id : "+ semenEnquiryId));
+		return semenEnquiry;
+	}
+	
+	public Page<SemenEnquiry> getAllSemenEnquiry(Object loginUser, String search, Pageable pageable) {
+
+	    String adminId;
+	    String employeeId = null;
+	    boolean canViewAll = false;
+
+	    if (loginUser instanceof Admin admin) {
+	        adminId = admin.getAdminId();
+	        canViewAll = true;
+	    } 
+	    else if (loginUser instanceof Employee employee) {
+	        adminId = employee.getAdmin().getAdminId();
+	        employeeId = employee.getEmployeeId();
+
+	        ModuleAccess moduleAccess = employee.getModuleAccess();
+	        if (moduleAccess != null) {
+	            canViewAll = moduleAccess.isDonorViewAll();
+	        }
+	    } 
+	    else {
+	        throw new RuntimeException("Invalid user type");
+	    }
+
+	    return semenEnquiryRepository.getAllSemenEnquiry(
+	            adminId,
+	            canViewAll ? null : employeeId,
+	            search,
+	            pageable
+	    );
+	}
+
+
+	public void deleteSemenEnquiry(String semenEnquiryId) {
+		if(!semenEnquiryRepository.existsById(semenEnquiryId)) {
+			throw new RuntimeException("Semen Enquiry not found with id : "+ semenEnquiryId);
+		}
+		
+		semenEnquiryRepository.deleteById(semenEnquiryId);
+	}
+	
+	
+	public SemenEnquiry createSemenEnquiryPublic( SemenEnquiry request) {
+		semenEnquiryRepository.save(request);
+		return request;
+	}
+	
 }

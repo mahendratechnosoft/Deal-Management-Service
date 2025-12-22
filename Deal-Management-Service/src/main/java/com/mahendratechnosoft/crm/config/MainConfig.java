@@ -66,7 +66,7 @@ public class MainConfig {
                 .requestMatchers("/admin/**","/lead/**").hasRole("ADMIN")
                 .requestMatchers("/employee/**").hasRole("EMPLOYEE")
                 .requestMatchers("/super/**").hasRole("SUPERADMIN")
-                .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register","/registerData","/checkEmail/**","/generateLeads").permitAll()
+                .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register","/registerData","/checkEmail/**","/generateLeads","/createSemenEnquiry").permitAll()
 
                 .anyRequest().authenticated()
                 .and()
