@@ -67,6 +67,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
+import com.mahendratechnosoft.crm.entity.Hospital.SemenEnquiry;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
 import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
@@ -1599,4 +1600,38 @@ public class AdminController {
 		expenceService.deleteVendorAttachement(vendorAttachmentId);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PostMapping("/createSemenEnquiry")
+	public ResponseEntity<SemenEnquiry> createSemenEnquiry(@ModelAttribute("admin") Admin admin,@RequestBody SemenEnquiry enquiry){
+		SemenEnquiry semenEnquiry = donorService.createSemenEnquiry(admin,enquiry);
+		return ResponseEntity.ok(semenEnquiry);
+	}
+	
+	@PutMapping("/updateSemenEnquiry")
+	public ResponseEntity<SemenEnquiry> updateSemenEnquiry(@ModelAttribute("admin") Admin admin,@RequestBody SemenEnquiry enquiry){
+		SemenEnquiry semenEnquiry = donorService.updateSemenEnquiry(admin,enquiry);
+		return ResponseEntity.ok(semenEnquiry);
+	}
+	
+	@GetMapping("/getSemenEnquiryById/{semenEnquiryId}")
+	public ResponseEntity<SemenEnquiry> getSemenEnquiryById(@PathVariable String semenEnquiryId){
+		SemenEnquiry semenEnquiry = donorService.getSemenEnquiryById(semenEnquiryId);
+		return ResponseEntity.ok(semenEnquiry);
+	}
+	
+	@GetMapping("/getAllSemenEnquiry")
+	public ResponseEntity<Page<SemenEnquiry>> getAllSemenEnquiry(
+			@ModelAttribute Admin admin,
+			@RequestParam(required = false) String search,
+			Pageable pageable){
+		Page<SemenEnquiry> allSemenEnquiry = donorService.getAllSemenEnquiry(admin, search, pageable);
+		return ResponseEntity.ok(allSemenEnquiry);
+	}
+	
+	@DeleteMapping("/deleteSemenEnquiry/{semenEnquiryId}")
+	public ResponseEntity<?> deleteSemenEnquiry(@PathVariable String semenEnquiryId){
+		donorService.deleteSemenEnquiry(semenEnquiryId);
+		return ResponseEntity.noContent().build();
+	}
+	
 }
