@@ -684,8 +684,38 @@ public class SalesService {
 			}
 			invoice.setPaidAmount(invoice.getPaidAmount() + payment.getAmount());
 
-			proformaInvoiceRepository.save(invoice);
-
+			ProformaInvoice proformaInvoice = proformaInvoiceRepository.save(invoice);
+			
+			
+			if(proformaInvoice.getStatus().equals("Paid")) {
+				String amchHistoryId = proformaInvoice.getAmcHistoryId();
+				if(amchHistoryId != null && 
+				   !amchHistoryId.isBlank()) {
+						AMCHistory amcHistory = amcHistoryRepository.findById(amchHistoryId)
+							.orElseThrow(()->new RuntimeException("No amc history found with id :"+ amchHistoryId));
+						amcHistory.setPaid(true);
+						amcHistoryRepository.save(amcHistory);
+					}
+				
+				String amcDomainHistoryId = proformaInvoice.getAmcDomainHistoryId();
+				if(amcDomainHistoryId != null && 
+				   !amcDomainHistoryId.isBlank()) {
+						AMCDomainHistory amcDomainHistory = amcDomainHistoryRepository.findById(amcDomainHistoryId)
+									.orElseThrow(()->new RuntimeException("No amc domain history found with id :"+ amcDomainHistoryId));
+						amcDomainHistory.setPaid(true);
+						amcDomainHistoryRepository.save(amcDomainHistory);
+					}
+				
+				String amcGsuitHistoryId = proformaInvoice.getAmcGsuitHistoryId();
+				if(amcGsuitHistoryId != null && 
+				   !amcGsuitHistoryId.isBlank()) {
+						AMCGsuitHistory amcGsuitHistory = amcGsuitHistoryRepository.findById(amcGsuitHistoryId)
+								.orElseThrow(()->new RuntimeException("No amc gsuit history found with id :"+ amcGsuitHistoryId));
+						amcGsuitHistory.setPaid(true);
+						amcGsuitHistoryRepository.save(amcGsuitHistory);
+					}
+				}
+			
 			payment.setTotalProformaInvoicePaidAmount(invoice.getPaidAmount());
 
 			return ResponseEntity.ok(payment);
@@ -722,7 +752,35 @@ public class SalesService {
 			}
 
 			invoice.setPaidAmount(payment.getTotalProformaInvoicePaidAmount());
-			proformaInvoiceRepository.save(invoice);
+			ProformaInvoice proformaInvoice = proformaInvoiceRepository.save(invoice);
+			if(proformaInvoice.getStatus().equals("Paid")) {
+				String amchHistoryId = proformaInvoice.getAmcHistoryId();
+				if(amchHistoryId != null && 
+				   !amchHistoryId.isBlank()) {
+						AMCHistory amcHistory = amcHistoryRepository.findById(amchHistoryId)
+							.orElseThrow(()->new RuntimeException("No amc history found with id :"+ amchHistoryId));
+						amcHistory.setPaid(true);
+						amcHistoryRepository.save(amcHistory);
+					}
+				
+				String amcDomainHistoryId = proformaInvoice.getAmcDomainHistoryId();
+				if(amcDomainHistoryId != null && 
+				   !amcDomainHistoryId.isBlank()) {
+						AMCDomainHistory amcDomainHistory = amcDomainHistoryRepository.findById(amcDomainHistoryId)
+									.orElseThrow(()->new RuntimeException("No amc domain history found with id :"+ amcDomainHistoryId));
+						amcDomainHistory.setPaid(true);
+						amcDomainHistoryRepository.save(amcDomainHistory);
+					}
+				
+				String amcGsuitHistoryId = proformaInvoice.getAmcGsuitHistoryId();
+				if(amcGsuitHistoryId != null && 
+				   !amcGsuitHistoryId.isBlank()) {
+						AMCGsuitHistory amcGsuitHistory = amcGsuitHistoryRepository.findById(amcGsuitHistoryId)
+								.orElseThrow(()->new RuntimeException("No amc gsuit history found with id :"+ amcGsuitHistoryId));
+						amcGsuitHistory.setPaid(true);
+						amcGsuitHistoryRepository.save(amcGsuitHistory);
+					}
+				}
 
 			return ResponseEntity.ok(payment);
 
@@ -934,6 +992,8 @@ public class SalesService {
 		proforma.setDiscount(proposal.getDiscount());
 		proforma.setTaxType(proposal.getTaxType());
 		proforma.setTaxPercentage(proposal.getTaxPercentage());
+		proforma.setCgstPercentage(proposal.getCgstPercentage());
+		proforma.setSgstPercentage(proposal.getSgstPercentage());
 		proforma.setTotalAmount(proposal.getTotalAmmount());
 		proforma.setPaidAmount(0.0);
 		proforma.setStatus("Unpaid");
