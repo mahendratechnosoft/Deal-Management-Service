@@ -2,6 +2,7 @@ package com.mahendratechnosoft.crm.entity;
 
 import org.hibernate.annotations.UuidGenerator;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -33,6 +34,7 @@ public class Customer {
 	private String shippingZipCode;
 	private String description;
 	private boolean status;
+	private String userId;
 	
 	public Customer() {
 		super();
@@ -222,12 +224,14 @@ public class Customer {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-   
-	
-	
-	
-	
-	
-	
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	
+	
 }

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
+import com.mahendratechnosoft.crm.dto.CustomerDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.PaymentProfileDropdownDto;
@@ -440,11 +441,10 @@ public class AdminController {
     
     
     @PostMapping("/createCustomer")
-	public ResponseEntity<?> createCustomer(@ModelAttribute("admin") Admin admin,@RequestBody Customer customer) {
+	public ResponseEntity<?> createCustomer(@ModelAttribute("admin") Admin admin,@RequestBody CustomerDto customer) {
 
 		try {
-            customer.setAdminId(admin.getAdminId());
-			return customerService.createCustomer(customer);
+			return customerService.createCustomer(admin,customer);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -466,11 +466,10 @@ public class AdminController {
  	}
     
     @PutMapping("/updateCustomer")
-	public ResponseEntity<?> udpateCustomer(@ModelAttribute("admin") Admin admin,@RequestBody Customer customer) {
+	public ResponseEntity<?> udpateCustomer(@ModelAttribute("admin") Admin admin,@RequestBody CustomerDto customer) {
 
 		try {
-            customer.setAdminId(admin.getAdminId());
-			return customerService.updateCustomer(customer);
+			return customerService.updateCustomer(admin,customer);
 
 		} catch (Exception e) {
 			e.printStackTrace();

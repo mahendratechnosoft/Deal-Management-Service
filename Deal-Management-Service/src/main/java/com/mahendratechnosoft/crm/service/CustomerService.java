@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,25 +11,65 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.mahendratechnosoft.crm.dto.CustomerDto;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
+import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.repository.CustomerRepository;
+import com.mahendratechnosoft.crm.repository.UserRepository;
 
 @Service
 public class CustomerService {
 
 	@Autowired
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+    private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private UserRepository userRepository;
 
-	public ResponseEntity<?> createCustomer(Customer customer) {
-
+	public ResponseEntity<?> createCustomer(Object loginUser, CustomerDto request) {
 		try {
-
+			
+			String adminId=null;
+			String employeeId = null;
+			
+			if(loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+			}else if(loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+				employeeId = employee.getEmployeeId();
+			}
+			
+			Customer customer = request.getCustomer();
+			customer.setAdminId(adminId);
+			customer.setEmployeeId(employeeId);
+			
+			if(request.getLoginEmail() != null && !request.getLoginEmail().isEmpty() &&
+				request.getPassword() != null && !request.getPassword().isEmpty()) {
+				
+				if (userRepository.existsByLoginEmail(request.getLoginEmail())) {
+		            throw new RuntimeException("Error: Email is already in use!");
+		        }
+				
+				User newCustomerUser = new User();
+				newCustomerUser.setLoginEmail(request.getLoginEmail());
+				newCustomerUser.setPassword(passwordEncoder.encode(request.getPassword()));
+				newCustomerUser.setRole("ROLE_CUSTOMER");
+				newCustomerUser.setExpiryDate(LocalDateTime.now().plusYears(1));
+				
+				User savedUser = userRepository.save(newCustomerUser);
+				customer.setUserId(savedUser.getUserId());
+			}
+			
 			customerRepository.save(customer);
 			return ResponseEntity.ok(customer);
 
@@ -44,8 +85,18 @@ public class CustomerService {
 
 		try {
 
+			Customer customer = customerRepository.findByCustomerId(customerId);
+			CustomerDto customerDto = new CustomerDto();
+			customerDto.setCustomer(customer);
 			
-			return ResponseEntity.ok(customerRepository.findByCustomerId(customerId));
+			String userId = customer.getUserId();
+			if(userId != null && !userId.isBlank()) {
+				User userCustomer = userRepository.findById(userId)
+						.orElseThrow(()-> new RuntimeException("user with not found with id :" + userId));
+				customerDto.setLoginEmail(userCustomer.getLoginEmail());
+			}
+			
+			return ResponseEntity.ok(customerDto);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,9 +106,53 @@ public class CustomerService {
 
 	}
 
-	public ResponseEntity<?> updateCustomer(Customer customer) {
+	public ResponseEntity<?> updateCustomer(Object loginUser, CustomerDto request) {
 
 		try {
+			String adminId=null;
+			
+			if(loginUser instanceof Admin admin) {
+				adminId = admin.getAdminId();
+			}else if(loginUser instanceof Employee employee) {
+				adminId = employee.getAdmin().getAdminId();
+			}
+			
+			Customer customer = request.getCustomer();
+			customer.setAdminId(adminId);
+			
+			if(request.getLoginEmail() != null && !request.getLoginEmail().isEmpty()) {
+				
+				String userId = customer.getUserId();
+				
+				if(userId != null && !userId.isBlank()) {
+					User userCustomer = userRepository.findById(userId)
+					.orElseThrow(()-> new RuntimeException("user with not found with id :" + userId));
+					
+					if (userRepository.existsByLoginEmailAndUserIdNot(request.getLoginEmail(),userCustomer.getUserId())) {
+			            throw new RuntimeException("Error: Email is already in use!");
+			        }
+					
+					userCustomer.setLoginEmail(request.getLoginEmail());
+					if(request.getPassword()!=null && !request.getPassword().isBlank()) {
+						userCustomer.setPassword(passwordEncoder.encode(request.getPassword()));
+					}
+					
+					userRepository.save(userCustomer);
+				} else {
+					if (userRepository.existsByLoginEmail(request.getLoginEmail())) {
+			            throw new RuntimeException("Error: Email is already in use!");
+			        }
+					
+					User newCustomerUser = new User();
+					newCustomerUser.setLoginEmail(request.getLoginEmail());
+					newCustomerUser.setPassword(passwordEncoder.encode(request.getPassword()));
+					newCustomerUser.setRole("ROLE_CUSTOMER");
+					newCustomerUser.setExpiryDate(LocalDateTime.now().plusYears(1));
+					
+					User savedUser = userRepository.save(newCustomerUser);
+					customer.setUserId(savedUser.getUserId());
+				}
+			}
 
 			customerRepository.save(customer);
 			return ResponseEntity.ok(customer);
