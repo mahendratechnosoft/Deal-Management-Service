@@ -1353,10 +1353,10 @@ public class EmployeeController {
 		
 		@GetMapping("/getAllSemenEnquiry")
 		public ResponseEntity<Page<SemenEnquiry>> getAllSemenEnquiry(
-				@ModelAttribute Admin admin,
+				@ModelAttribute Employee employee,
 				@RequestParam(required = false) String search,
 				Pageable pageable){
-			Page<SemenEnquiry> allSemenEnquiry = donorService.getAllSemenEnquiry(admin, search, pageable);
+			Page<SemenEnquiry> allSemenEnquiry = donorService.getAllSemenEnquiry(employee, search, pageable);
 			return ResponseEntity.ok(allSemenEnquiry);
 		}
 		
