@@ -26,6 +26,7 @@ public class Vendor {
     private String phone;
     private Double balance;
     private String pan;
+    private String gstNumber;
     private Boolean isMSMERegister;
     private String udyamRegistrationType;
     private String udyamRegistrationNumber;
@@ -333,6 +334,16 @@ public class Vendor {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+
+	public String getGstNumber() {
+		return gstNumber;
+	}
+
+
+	public void setGstNumber(String gstNumber) {
+		this.gstNumber = gstNumber;
 	}
     
 }
