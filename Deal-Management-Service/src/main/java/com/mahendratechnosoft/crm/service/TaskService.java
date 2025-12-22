@@ -593,7 +593,7 @@ public class TaskService {
 			
 			List<TaskTimeLog> response = new LinkedList<>();
 			
-			if (role.equals("ROLE_ADMIN") || moduleAccess.isTaskViewAll()) {
+			if (role.equals("ROLE_ADMIN") || moduleAccess.isTaskLogAccess()) {
 				response = taskTimeLogRepository.findByTaskIdAndAdminIdOrderByStartTimeDesc(taskId, adminId);
 			} else {
 				response = taskTimeLogRepository.findByTaskIdAndEmployeeIdOrderByStartTimeDesc(taskId, employeeId);

@@ -69,6 +69,7 @@ public class ModuleAccess {
 	private boolean itemEdit;
 	
 	private boolean taskAccess;
+	private boolean taskLogAccess;
 	private boolean taskViewAll;
 	private boolean taskCreate;
 	private boolean taskDelete;
@@ -483,6 +484,10 @@ public class ModuleAccess {
 	public void setVendorEdit(boolean vendorEdit) {
 		this.vendorEdit = vendorEdit;
 	}
-	
-	
+	public boolean isTaskLogAccess() {
+		return taskLogAccess;
+	}
+	public void setTaskLogAccess(boolean taskLogAccess) {
+		this.taskLogAccess = taskLogAccess;
+	}
 }
