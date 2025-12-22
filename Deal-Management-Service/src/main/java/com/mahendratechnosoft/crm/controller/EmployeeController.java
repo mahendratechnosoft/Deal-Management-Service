@@ -1334,14 +1334,14 @@ public class EmployeeController {
 		}
 		
 		@PostMapping("/createSemenEnquiry")
-		public ResponseEntity<SemenEnquiry> createSemenEnquiry(@ModelAttribute("admin") Admin admin,SemenEnquiry enquiry){
-			SemenEnquiry semenEnquiry = donorService.createSemenEnquiry(admin,enquiry);
+		public ResponseEntity<SemenEnquiry> createSemenEnquiry(@ModelAttribute Employee employee,@RequestBody SemenEnquiry enquiry){
+			SemenEnquiry semenEnquiry = donorService.createSemenEnquiry(employee,enquiry);
 			return ResponseEntity.ok(semenEnquiry);
 		}
 		
 		@PutMapping("/updateSemenEnquiry")
-		public ResponseEntity<SemenEnquiry> updateSemenEnquiry(@ModelAttribute("admin") Admin admin,SemenEnquiry enquiry){
-			SemenEnquiry semenEnquiry = donorService.updateSemenEnquiry(admin,enquiry);
+		public ResponseEntity<SemenEnquiry> updateSemenEnquiry(@ModelAttribute Employee employee, @RequestBody SemenEnquiry enquiry){
+			SemenEnquiry semenEnquiry = donorService.updateSemenEnquiry(employee,enquiry);
 			return ResponseEntity.ok(semenEnquiry);
 		}
 		
