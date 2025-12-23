@@ -20,6 +20,7 @@ import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
@@ -29,6 +30,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenEnquiry;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.repository.CustomerRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.ModuleAccessRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
@@ -71,6 +73,9 @@ public class HomeController {
     
 	@Autowired
 	private ModuleAccessRepository moduleAccessRepository;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
     
 
     @PostMapping("/register")
@@ -98,23 +103,33 @@ public class HomeController {
             String name=null;
             String employeeId=null;
             String adminId=null;
+            String customerId = null;
             ModuleAccess moduleAccess=null;
             if (user.getRole().equals("ROLE_ADMIN")) {
             	 Optional<Admin> admin=adminRepository.findByLoginEmail(user.getLoginEmail());
             	 name=admin.get().getName();
             	 adminId=admin.get().getAdminId();
             	 
-            	 moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeId(adminId,null);
+            	 moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,null,null);
             }else if(user.getRole().equals("ROLE_EMPLOYEE")){
             	Optional<Employee> employee=employeeRepository.findByLoginEmail(user.getLoginEmail());
             	name=employee.get().getName();
             	adminId=employee.get().getAdmin().getAdminId();
             	employeeId=employee.get().getEmployeeId();
             	
-            	moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeId(adminId,employeeId);
+            	moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,employeeId,null);
+            }else if(user.getRole().equals("ROLE_CUSTOMER")) {
+            	Customer customer = customerRepository.findByUserId(user.getUserId())
+            	.orElseThrow(()->new RuntimeException("Customer not found for user id :"+user.getUserId()));
+            	
+            	name = customer.getCompanyName();
+            	adminId = customer.getAdminId();
+            	employeeId = customer.getEmployeeId();
+            	customerId = customer.getCustomerId();
+            	moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,employeeId,customerId);
             }
             
-            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess);
+            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess,customerId);
             
             return ResponseEntity.ok(signInRespoonceDto);
 

@@ -1,7 +1,9 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -104,7 +106,7 @@ public class SuperAdminController {
 
 			Optional<Admin> adminInfo = adminRepository.findByAdmin(adminId);
 
-			ModuleAccess access = moduleAccessRepository.findByAdminIdAndEmployeeId(adminId,null);
+			ModuleAccess access = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,null,null);
 
 			Map<String, Object> response = new HashMap<String, Object>();
 
@@ -142,10 +144,31 @@ public class SuperAdminController {
 		   adminRepository.save(adminInfo.get());
 		   
 		//   ModuleAccess access=moduleAccessRepository.findByAdminIdAndEmployeeId(admin.getAdminId(),null);
+		   ModuleAccess savedAdminAccess = moduleAccessRepository.save(admin.getModuleAccess());
+		   
+		   List<ModuleAccess> customerAccessList = moduleAccessRepository.findByAdminIdAndCustomerIdIsNotNull(admin.getAdminId());
+
+	        if (!customerAccessList.isEmpty()) {
+	            Field[] fields = ModuleAccess.class.getDeclaredFields();
+	            for (ModuleAccess customerAccess : customerAccessList) {
+	                for (Field field : fields) {
+	                    if (field.getName().startsWith("customer") && field.getType() == boolean.class) {
+	                        try {
+	                            field.setAccessible(true);
+	                            Object newValue = field.get(savedAdminAccess);
+	                            field.set(customerAccess, newValue);
+	                            
+	                        } catch (IllegalAccessException e) {
+	                            System.err.println("Failed to sync field: " + field.getName());
+	                        }
+	                    }
+	                }
+	            }
+	            moduleAccessRepository.saveAll(customerAccessList);
+	        }
 		   
 			response.put("adminInfo",adminInfo);
-			
-	     	response.put("moduleAccess",  moduleAccessRepository.save(admin.getModuleAccess()));
+	     	response.put("moduleAccess",  savedAdminAccess);
 
 
 			return ResponseEntity.ok(response);

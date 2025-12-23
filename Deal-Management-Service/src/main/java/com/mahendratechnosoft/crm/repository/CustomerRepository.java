@@ -1,6 +1,7 @@
 package com.mahendratechnosoft.crm.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,4 +49,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
 
     boolean existsByCompanyNameAndAdminId(String companyName,String adminId);
+
+
+	Optional<Customer> findByUserId(String userId);
 }
