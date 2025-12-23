@@ -11,6 +11,7 @@ public class ModuleAccess {
 	private String moduleAccessId;
 	private String adminId;
 	private String employeeId;
+	private String customerId;
 
 	private boolean leadAccess;
 	private boolean leadViewAll;
@@ -89,6 +90,22 @@ public class ModuleAccess {
 	private boolean vendorCreate;
 	private boolean vendorDelete;
 	private boolean vendorEdit;
+	
+	private boolean complianceAccess;
+	private boolean complianceViewAll;
+	private boolean complianceCreate;
+	private boolean complianceDelete;
+	private boolean complianceEdit;
+	
+	private boolean canCustomerLogin;
+	private boolean canContactPersonLogin;
+	
+	//customer Access
+	private boolean customerComplianceAccess;
+	private boolean customerComplianceViewAll;
+	private boolean customerComplianceCreate;
+	private boolean customerComplianceDelete;
+	private boolean customerComplianceEdit;
     
 	public String getModuleAccessId() {
 		return moduleAccessId;
@@ -489,5 +506,83 @@ public class ModuleAccess {
 	}
 	public void setTaskLogAccess(boolean taskLogAccess) {
 		this.taskLogAccess = taskLogAccess;
+	}
+	public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+	public boolean isComplianceAccess() {
+		return complianceAccess;
+	}
+	public void setComplianceAccess(boolean complianceAccess) {
+		this.complianceAccess = complianceAccess;
+	}
+	public boolean isComplianceViewAll() {
+		return complianceViewAll;
+	}
+	public void setComplianceViewAll(boolean complianceViewAll) {
+		this.complianceViewAll = complianceViewAll;
+	}
+	public boolean isComplianceCreate() {
+		return complianceCreate;
+	}
+	public void setComplianceCreate(boolean complianceCreate) {
+		this.complianceCreate = complianceCreate;
+	}
+	public boolean isComplianceDelete() {
+		return complianceDelete;
+	}
+	public void setComplianceDelete(boolean complianceDelete) {
+		this.complianceDelete = complianceDelete;
+	}
+	public boolean isComplianceEdit() {
+		return complianceEdit;
+	}
+	public void setComplianceEdit(boolean complianceEdit) {
+		this.complianceEdit = complianceEdit;
+	}
+	public boolean isCanCustomerLogin() {
+		return canCustomerLogin;
+	}
+	public void setCanCustomerLogin(boolean canCustomerLogin) {
+		this.canCustomerLogin = canCustomerLogin;
+	}
+	public boolean isCanContactPersonLogin() {
+		return canContactPersonLogin;
+	}
+	public void setCanContactPersonLogin(boolean canContactPersonLogin) {
+		this.canContactPersonLogin = canContactPersonLogin;
+	}
+	public boolean isCustomerComplianceAccess() {
+		return customerComplianceAccess;
+	}
+	public void setCustomerComplianceAccess(boolean customerComplianceAccess) {
+		this.customerComplianceAccess = customerComplianceAccess;
+	}
+	public boolean isCustomerComplianceViewAll() {
+		return customerComplianceViewAll;
+	}
+	public void setCustomerComplianceViewAll(boolean customerComplianceViewAll) {
+		this.customerComplianceViewAll = customerComplianceViewAll;
+	}
+	public boolean isCustomerComplianceCreate() {
+		return customerComplianceCreate;
+	}
+	public void setCustomerComplianceCreate(boolean customerComplianceCreate) {
+		this.customerComplianceCreate = customerComplianceCreate;
+	}
+	public boolean isCustomerComplianceDelete() {
+		return customerComplianceDelete;
+	}
+	public void setCustomerComplianceDelete(boolean customerComplianceDelete) {
+		this.customerComplianceDelete = customerComplianceDelete;
+	}
+	public boolean isCustomerComplianceEdit() {
+		return customerComplianceEdit;
+	}
+	public void setCustomerComplianceEdit(boolean customerComplianceEdit) {
+		this.customerComplianceEdit = customerComplianceEdit;
 	}
 }

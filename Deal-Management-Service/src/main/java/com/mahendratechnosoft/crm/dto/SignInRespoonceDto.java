@@ -14,6 +14,7 @@ public class SignInRespoonceDto {
 	private String loginUserName;
 	private String employeeId;
 	private String adminId;
+	private String customerId;
 	private ModuleAccess moduleAccess;
 	public SignInRespoonceDto() {
 		super();
@@ -21,7 +22,7 @@ public class SignInRespoonceDto {
 	}
 	
 	public SignInRespoonceDto(String jwtToken, String userId, String loginEmail, String role,
-			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess) {
+			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess,String customerId) {
 		super();
 		this.jwtToken = jwtToken;
 		this.userId = userId;
@@ -32,6 +33,7 @@ public class SignInRespoonceDto {
 		this.employeeId=employeeId;
 		this.adminId=adminId;
 		this.moduleAccess=moduleAccess;
+		this.customerId = customerId;
 	}
 	
 	public String getJwtToken() {
@@ -95,6 +97,14 @@ public class SignInRespoonceDto {
 
 	public void setModuleAccess(ModuleAccess moduleAccess) {
 		this.moduleAccess = moduleAccess;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 	@Override

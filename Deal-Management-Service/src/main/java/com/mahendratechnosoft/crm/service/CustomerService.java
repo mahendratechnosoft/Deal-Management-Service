@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.service;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +23,13 @@ import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.repository.CustomerRepository;
+import com.mahendratechnosoft.crm.repository.ModuleAccessRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 
 @Service
 public class CustomerService {
+
+    private final ModuleAccessRepository moduleAccessRepository;
 
 	@Autowired
 	private CustomerRepository customerRepository;
@@ -35,6 +39,10 @@ public class CustomerService {
 	
 	@Autowired
 	private UserRepository userRepository;
+
+    CustomerService(ModuleAccessRepository moduleAccessRepository) {
+        this.moduleAccessRepository = moduleAccessRepository;
+    }
 
 	public ResponseEntity<?> createCustomer(Object loginUser, CustomerDto request) {
 		try {
@@ -48,6 +56,8 @@ public class CustomerService {
 				adminId = employee.getAdmin().getAdminId();
 				employeeId = employee.getEmployeeId();
 			}
+			
+			ModuleAccess adminAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId, null,null);
 			
 			Customer customer = request.getCustomer();
 			customer.setAdminId(adminId);
@@ -70,7 +80,25 @@ public class CustomerService {
 				customer.setUserId(savedUser.getUserId());
 			}
 			
-			customerRepository.save(customer);
+			Customer savedCustomer = customerRepository.save(customer);
+			if(savedCustomer.getUserId()!= null && !savedCustomer.getUserId().isBlank()) {
+				ModuleAccess customerModuleAccess = new ModuleAccess();
+		        customerModuleAccess.setAdminId(adminId);
+		        customerModuleAccess.setCustomerId(savedCustomer.getCustomerId());
+		        Field[] fields = ModuleAccess.class.getDeclaredFields();
+		        for (Field field : fields) {
+		            if (field.getName().startsWith("customer") && field.getType() == boolean.class) {
+		                try {
+		                    field.setAccessible(true);
+		                    Object value = field.get(adminAccess);
+		                    field.set(customerModuleAccess, value); 
+		                } catch (IllegalAccessException e) {
+		                    System.err.println("Failed to copy field: " + field.getName());
+		                }
+		            }
+		        }
+		        moduleAccessRepository.save(customerModuleAccess);
+			}
 			return ResponseEntity.ok(customer);
 
 		} catch (Exception e) {
@@ -119,6 +147,7 @@ public class CustomerService {
 			
 			Customer customer = request.getCustomer();
 			customer.setAdminId(adminId);
+			ModuleAccess adminAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId, null,null);
 			
 			if(request.getLoginEmail() != null && !request.getLoginEmail().isEmpty()) {
 				
@@ -154,7 +183,26 @@ public class CustomerService {
 				}
 			}
 
-			customerRepository.save(customer);
+			Customer savedCustomer = customerRepository.save(customer);
+			
+			if(savedCustomer.getUserId()!= null && !savedCustomer.getUserId().isBlank()) {
+				ModuleAccess customerModuleAccess = new ModuleAccess();
+		        customerModuleAccess.setAdminId(adminId);
+		        customerModuleAccess.setCustomerId(savedCustomer.getCustomerId());
+		        Field[] fields = ModuleAccess.class.getDeclaredFields();
+		        for (Field field : fields) {
+		            if (field.getName().startsWith("customer") && field.getType() == boolean.class) {
+		                try {
+		                    field.setAccessible(true);
+		                    Object value = field.get(adminAccess);
+		                    field.set(customerModuleAccess, value); 
+		                } catch (IllegalAccessException e) {
+		                    System.err.println("Failed to copy field: " + field.getName());
+		                }
+		            }
+		        }
+		        moduleAccessRepository.save(customerModuleAccess);
+			}
 			return ResponseEntity.ok(customer);
 
 		} catch (Exception e) {
@@ -306,6 +354,7 @@ public class CustomerService {
 			} else if (loginUser instanceof Employee employee) {
 
 				adminId = employee.getAdmin().getAdminId();
+				
 				
 			}
 			boolean exists = customerRepository.existsByCompanyNameAndAdminId(companyName,adminId);
