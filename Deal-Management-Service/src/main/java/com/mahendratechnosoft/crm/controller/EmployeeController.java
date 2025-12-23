@@ -429,10 +429,8 @@ public class EmployeeController {
 
 		}
 		
-		@GetMapping("/checkCustomerIsExist")
-		public ResponseEntity<?> getInvoiceByCustomerId(@ModelAttribute("employee") Employee employee,@RequestBody Map<String, String> request ) {
-
-			String companyName = request.get("companyName");
+		@GetMapping("/checkCustomerIsExist/{companyName}")
+		public ResponseEntity<?> checkCustomerIsExist(@ModelAttribute("employee") Employee employee, @PathVariable String companyName) {
 	        return customerService.checkCustomerExist(employee,companyName);
 
 		}
