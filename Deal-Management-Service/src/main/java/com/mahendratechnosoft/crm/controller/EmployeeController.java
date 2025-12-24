@@ -48,6 +48,7 @@ import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.Leads;
+import com.mahendratechnosoft.crm.entity.PF;
 import com.mahendratechnosoft.crm.entity.Payments;
 import com.mahendratechnosoft.crm.entity.Task;
 import com.mahendratechnosoft.crm.entity.TaskAttachment;
@@ -67,6 +68,7 @@ import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.service.AMCService;
 import com.mahendratechnosoft.crm.service.AttendanceService;
+import com.mahendratechnosoft.crm.service.ComplianceService;
 import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
@@ -121,6 +123,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private ExpenceService expenceService;
+	
+	@Autowired
+	private ComplianceService complianceService;
 
     // Helper method to get the currently logged-in Employee
     @ModelAttribute("employee")
@@ -1366,5 +1371,35 @@ public class EmployeeController {
 		public ResponseEntity<?> deleteSemenEnquiry(@PathVariable String semenEnquiryId){
 			donorService.deleteSemenEnquiry(semenEnquiryId);
 			return ResponseEntity.noContent().build();
+		}
+		
+		@PutMapping("/updatePf")
+		public ResponseEntity<PF> updatePf(@RequestBody PF pf){
+			PF responce = complianceService.updatePF(pf);
+			return ResponseEntity.ok(responce);
+		}
+		
+		@GetMapping("/getPfById/{pfId}")
+		public ResponseEntity<PF> getPfById(@PathVariable String pfId){
+			PF responce = complianceService.getPfById(pfId);
+			return ResponseEntity.ok(responce);
+		}
+		
+		@DeleteMapping("/deletePfById/{pfId}")
+		public ResponseEntity<?> deletePfById(@PathVariable String pfId){
+			complianceService.deletePfById(pfId);
+			return ResponseEntity.noContent().build();
+		}
+		
+		@GetMapping("/getAllPf")
+		public ResponseEntity<Page<PF>> getAllPf(
+				@ModelAttribute Employee employee,
+				@RequestParam(required = false) String customerId,
+			    @RequestParam(required = false) String contactId,
+			    @RequestParam(required = false) String search,
+			    Pageable pageable){
+			
+			Page<PF> result = complianceService.getAllPF(employee, customerId, contactId, search, pageable);
+		    return ResponseEntity.ok(result);
 		}
 }

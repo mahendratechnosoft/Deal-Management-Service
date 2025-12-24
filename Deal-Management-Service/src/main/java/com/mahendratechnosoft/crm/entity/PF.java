@@ -1,6 +1,8 @@
 package com.mahendratechnosoft.crm.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -8,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
 @Entity
 public class PF {
 
@@ -40,6 +43,13 @@ public class PF {
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] aadhaarPhoto;
+    
+    private LocalDateTime createdAt;
+	
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+	}
 
 	public String getPfId() {
 		return pfId;
@@ -207,6 +217,14 @@ public class PF {
 
 	public void setContactId(String contactId) {
 		this.contactId = contactId;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 }
