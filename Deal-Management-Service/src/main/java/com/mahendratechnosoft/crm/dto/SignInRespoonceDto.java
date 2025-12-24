@@ -15,6 +15,7 @@ public class SignInRespoonceDto {
 	private String employeeId;
 	private String adminId;
 	private String customerId;
+	private byte[] logo;
 	private ModuleAccess moduleAccess;
 	public SignInRespoonceDto() {
 		super();
@@ -22,7 +23,7 @@ public class SignInRespoonceDto {
 	}
 	
 	public SignInRespoonceDto(String jwtToken, String userId, String loginEmail, String role,
-			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess,String customerId) {
+			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess,String customerId,byte[] logo) {
 		super();
 		this.jwtToken = jwtToken;
 		this.userId = userId;
@@ -34,6 +35,7 @@ public class SignInRespoonceDto {
 		this.adminId=adminId;
 		this.moduleAccess=moduleAccess;
 		this.customerId = customerId;
+		this.logo = logo;
 	}
 	
 	public String getJwtToken() {
@@ -106,13 +108,19 @@ public class SignInRespoonceDto {
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
+	
+	public byte[] getLogo() {
+		return logo;
+	}
+
+	public void setLogo(byte[] logo) {
+		this.logo = logo;
+	}
 
 	@Override
 	public String toString() {
 		return "SignInRespoonceDto [jwtToken=" + jwtToken + ", userId=" + userId + ", loginEmail=" + loginEmail
 				+ ", role=" + role + ", expiryDate=" + expiryDate + ", loginUserName=" + loginUserName + "]";
 	}
-	
-	
 	
 }

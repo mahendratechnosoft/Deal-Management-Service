@@ -20,6 +20,7 @@ import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
 import com.mahendratechnosoft.crm.entity.Admin;
+import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
@@ -29,8 +30,10 @@ import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenEnquiry;
+import com.mahendratechnosoft.crm.helper.ResourceNotFoundException;
 import com.mahendratechnosoft.crm.helper.SoftwareValidityExpiredException;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
+import com.mahendratechnosoft.crm.repository.ContactsRepository;
 import com.mahendratechnosoft.crm.repository.CustomerRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.ModuleAccessRepository;
@@ -80,6 +83,9 @@ public class HomeController {
 	private CustomerRepository customerRepository;
 	
 	@Autowired
+	private ContactsRepository contactsRepository;
+	
+	@Autowired
 	private ComplianceService complianceService;
     
 
@@ -109,32 +115,54 @@ public class HomeController {
             String employeeId=null;
             String adminId=null;
             String customerId = null;
+            byte[] logo = null;
             ModuleAccess moduleAccess=null;
             if (user.getRole().equals("ROLE_ADMIN")) {
             	 Optional<Admin> admin=adminRepository.findByLoginEmail(user.getLoginEmail());
             	 name=admin.get().getName();
             	 adminId=admin.get().getAdminId();
-            	 
+            	 logo = admin.get().getLogo();
             	 moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,null,null);
             }else if(user.getRole().equals("ROLE_EMPLOYEE")){
             	Optional<Employee> employee=employeeRepository.findByLoginEmail(user.getLoginEmail());
             	name=employee.get().getName();
             	adminId=employee.get().getAdmin().getAdminId();
             	employeeId=employee.get().getEmployeeId();
+            	logo = employee.get().getAdmin().getLogo();
             	
             	moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,employeeId,null);
             }else if(user.getRole().equals("ROLE_CUSTOMER")) {
             	Customer customer = customerRepository.findByUserId(user.getUserId())
             	.orElseThrow(()->new RuntimeException("Customer not found for user id :"+user.getUserId()));
             	
+            	Admin admin = adminRepository.findById(customer.getAdminId())
+            	.orElseThrow(()->new ResourceNotFoundException("Admin","adminId",customer.getAdminId()));
+            	
             	name = customer.getCompanyName();
             	adminId = customer.getAdminId();
             	employeeId = customer.getEmployeeId();
             	customerId = customer.getCustomerId();
+            	logo = admin.getLogo();
             	moduleAccess = moduleAccessRepository.findByAdminIdAndEmployeeIdAndCustomerId(adminId,employeeId,customerId);
+            } else if(user.getRole().equals("ROLE_CONTACT")) {
+            	Contacts contacts = contactsRepository.findByUserId(user.getUserId())
+            			.orElseThrow(()->new ResourceNotFoundException("Contact", "userId", user.getUserId()));
+            	
+            	Customer customer = customerRepository.findById(contacts.getCustomerId())
+            	.orElseThrow(()->new ResourceNotFoundException("Contact", "contactId", contacts.getCustomerId()));
+            	
+            	Admin admin = adminRepository.findById(customer.getAdminId())
+            	.orElseThrow(()->new ResourceNotFoundException("Admin","adminId",customer.getAdminId()));
+            	
+            	name = contacts.getName();
+            	adminId = customer.getAdminId();
+            	employeeId = customer.getEmployeeId();
+            	customerId = customer.getCustomerId();
+            	logo = admin.getLogo();
             }
             
-            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(), user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess,customerId);
+            SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(),
+            		user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess,customerId,logo);
             
             return ResponseEntity.ok(signInRespoonceDto);
 
