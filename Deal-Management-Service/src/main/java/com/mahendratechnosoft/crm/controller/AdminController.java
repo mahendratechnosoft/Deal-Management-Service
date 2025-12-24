@@ -1673,4 +1673,10 @@ public class AdminController {
 	    return ResponseEntity.ok(result);
 	}
 	
+	@GetMapping("/convertSemenEnquiryToDonor/{semenEnquiryId}")
+	public ResponseEntity<?> convertSemenEnquiryToDonor(@PathVariable String semenEnquiryId){
+		donorService.convertSemenEnquiryToDonor(semenEnquiryId);
+		return ResponseEntity.noContent().build();
+	}
+	
 }
