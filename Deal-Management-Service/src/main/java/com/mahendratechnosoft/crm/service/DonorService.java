@@ -35,6 +35,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenEnquiry;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
+import com.mahendratechnosoft.crm.helper.ResourceNotFoundException;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorBloodReportRepositroy;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorFamilyInfoRepository;
 import com.mahendratechnosoft.crm.repository.Hospital.DonorsRepository;
@@ -1010,5 +1011,42 @@ public class DonorService {
 		semenEnquiryRepository.save(request);
 		return request;
 	}
+
+
+	public void convertSemenEnquiryToDonor(String semenEnquiryId) {
+
+	    SemenEnquiry semenEnquiry = semenEnquiryRepository.findById(semenEnquiryId)
+	        .orElseThrow(() -> new ResourceNotFoundException(
+	            "Semen Enquiry", "semenEnquiryId", semenEnquiryId));
+
+	    Donors donors = new Donors();
+	    donors.setAdminId(semenEnquiry.getAdminId());
+	    donors.setEmployeeId(semenEnquiry.getEmployeeId());
+	    donors.setCreatedBy(semenEnquiry.getCreatedBy());
+	    donors.setStatus("New Donor");
+
+	    donors.setName(semenEnquiry.getName());
+	    donors.setAge(semenEnquiry.getAge());
+	    donors.setDateOfBirth(semenEnquiry.getDateOfBirth());
+	    donors.setAdharCardNo(semenEnquiry.getAdharCardNo());
+	    donors.setMarriedStatus(semenEnquiry.getMarriedStatus());
+	    donors.setHeight(semenEnquiry.getHeight());
+	    donors.setWeight(semenEnquiry.getWeight());
+	    donors.setEducation(semenEnquiry.getEducation());
+	    donors.setProfession(semenEnquiry.getProfession());
+	    donors.setBloodGroup(semenEnquiry.getBloodGroup());
+	    donors.setPhoneNumber(semenEnquiry.getPhoneNumber());
+	    donors.setEmail(semenEnquiry.getEmail());
+	    donors.setAddress(semenEnquiry.getAddress());
+	    donors.setCity(semenEnquiry.getCity());
+	    donors.setPincode(semenEnquiry.getPincode());
+	    donors.setFullLengthImage(semenEnquiry.getFullLengthImage());
+	    donors.setSelfeImage(semenEnquiry.getSelfeImage());
+	    Donors save = donorsRepository.save(donors);
+	    if(save != null) {
+	    	semenEnquiryRepository.delete(semenEnquiry);
+	    }
+	}
+
 	
 }
