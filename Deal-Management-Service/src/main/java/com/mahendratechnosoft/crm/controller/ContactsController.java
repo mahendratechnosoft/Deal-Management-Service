@@ -1,16 +1,21 @@
 package com.mahendratechnosoft.crm.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.PF;
 import com.mahendratechnosoft.crm.entity.User;
@@ -49,10 +54,40 @@ public class ContactsController {
         return contacts;
     }
     
+	@PostMapping("/createPf")
+	public ResponseEntity<PF> createPf(@ModelAttribute Contacts contacts,@RequestBody PF pf){
+		pf.setContactId(contacts.getId());
+		PF responce = complianceService.createPF(pf);
+		return ResponseEntity.ok(responce);
+	}
 	
 	@PutMapping("/updatePf")
-	public ResponseEntity<PF> updatePf(@ModelAttribute Contacts contacts,@RequestBody PF pf){
-		PF responce = complianceService.updatePF(contacts, pf);
+	public ResponseEntity<PF> updatePf(@RequestBody PF pf){
+		PF responce = complianceService.updatePF(pf);
 		return ResponseEntity.ok(responce);
+	}
+	
+	@GetMapping("/getPfById/{pfId}")
+	public ResponseEntity<PF> getPfById(@PathVariable String pfId){
+		PF responce = complianceService.getPfById(pfId);
+		return ResponseEntity.ok(responce);
+	}
+	
+	@DeleteMapping("/deletePfById/{pfId}")
+	public ResponseEntity<?> deletePfById(@PathVariable String pfId){
+		complianceService.deletePfById(pfId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/getAllPf")
+	public ResponseEntity<Page<PF>> getAllPf(
+			@ModelAttribute Contacts contacts,
+			@RequestParam(required = false) String customerId,
+		    @RequestParam(required = false) String contactId,
+		    @RequestParam(required = false) String search,
+		    Pageable pageable){
+		
+		Page<PF> result = complianceService.getAllPF(contacts, customerId, contactId, search, pageable);
+	    return ResponseEntity.ok(result);
 	}
 }

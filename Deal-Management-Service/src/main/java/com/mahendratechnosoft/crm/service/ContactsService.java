@@ -149,14 +149,13 @@ public class ContactsService {
 		try {
 			Contacts contacts = contactsRepository.findById(contactId)
 			.orElseThrow(()->new RuntimeException("Contact with not found for id :"+ contactId));
-			
-			User user = userRepository.findById(contacts.getUserId())
-			.orElseThrow(()->new RuntimeException("User with not found for id :"+ contacts.getCustomerId()));
-			
 			ContactDto contactDto = new ContactDto();
 			contactDto.setContacts(contacts);
-			contactDto.setLoginEmail(user.getLoginEmail());
-			
+			if(contacts.getUserId() != null && ! contacts.getUserId().isBlank()) {
+				User user = userRepository.findById(contacts.getUserId())
+						.orElseThrow(()->new RuntimeException("User with not found for id :"+ contacts.getCustomerId()));
+				contactDto.setLoginEmail(user.getLoginEmail());
+			}
 			return ResponseEntity.ok(contactDto);
 
 		} catch (Exception e) {
