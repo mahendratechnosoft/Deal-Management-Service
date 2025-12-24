@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.dto.AdminUpdateDto;
+import com.mahendratechnosoft.crm.dto.ContactDto;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.CustomerDto;
 import com.mahendratechnosoft.crm.dto.EmployeeRegistrationDto;
@@ -516,14 +517,14 @@ public class AdminController {
     
 	
 	@PostMapping("/createContact")
-	public ResponseEntity<?> createContact(@RequestBody Contacts contacts) {
+	public ResponseEntity<?> createContact(@RequestBody ContactDto contacts) {
           
 		return contactsService.createContact(contacts);
 		
 	}
 	
 	@PutMapping("/updateContact")
-	public ResponseEntity<?> updateContact(@RequestBody Contacts contacts) {
+	public ResponseEntity<?> updateContact(@RequestBody ContactDto contacts) {
 
 		return contactsService.updateContact(contacts);
 
@@ -542,6 +543,10 @@ public class AdminController {
 		return contactsService.deleteContacts(contactId);
 	}
 	
+	@GetMapping("/getContactById/{contactId}")
+	public ResponseEntity<?> getContactById(@PathVariable String contactId) {
+		return contactsService.getContactById(contactId);
+	}
 	
     @PostMapping("/createDepartment")
     public ResponseEntity<?> createDepartment(

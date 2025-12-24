@@ -17,6 +17,7 @@ public class Contacts {
 	private String phone;
 	private String position;
 	private boolean status;
+	private String userId;
 	
 	
 	public Contacts(String id, String companyId, String customerId, String name, String email, String phone,
@@ -77,7 +78,10 @@ public class Contacts {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
-	
-	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 }
