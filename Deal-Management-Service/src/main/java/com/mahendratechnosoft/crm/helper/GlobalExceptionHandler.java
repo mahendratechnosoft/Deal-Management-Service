@@ -49,6 +49,19 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+    
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleResourceNotFoundException(
+            ResourceNotFoundException ex, HttpServletRequest request) {
+        
+        ErrorMessage errorResponse = new ErrorMessage(
+                "Resource Not Found",
+                ex.getMessage(),
+                null, 
+                HttpStatus.NOT_FOUND
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

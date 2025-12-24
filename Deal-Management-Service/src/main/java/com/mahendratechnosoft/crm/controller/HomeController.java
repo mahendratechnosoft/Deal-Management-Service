@@ -24,6 +24,7 @@ import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
+import com.mahendratechnosoft.crm.entity.PF;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.entity.Hospital.Donors;
 import com.mahendratechnosoft.crm.entity.Hospital.FamilyInfo;
@@ -35,6 +36,7 @@ import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.ModuleAccessRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.security.JwtUtil;
+import com.mahendratechnosoft.crm.service.ComplianceService;
 import com.mahendratechnosoft.crm.service.DonorService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.UserService;
@@ -76,6 +78,9 @@ public class HomeController {
 	
 	@Autowired
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private ComplianceService complianceService;
     
 
     @PostMapping("/register")
@@ -179,6 +184,12 @@ public class HomeController {
 	public ResponseEntity<SemenEnquiry> createPublicSemenEnquiry(@RequestBody SemenEnquiry enquiry){
 		SemenEnquiry semenEnquiry = donorService.createSemenEnquiryPublic(enquiry);
 		return ResponseEntity.ok(semenEnquiry);
+	}
+	
+	@PostMapping("/submitPfForm")
+	public ResponseEntity<PF> submitPfForm(@RequestBody PF pf){
+		PF responce = complianceService.createPF(pf);
+		return ResponseEntity.ok(responce);
 	}
 
 
