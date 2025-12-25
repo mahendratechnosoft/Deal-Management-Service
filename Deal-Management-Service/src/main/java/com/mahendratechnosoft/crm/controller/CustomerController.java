@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mahendratechnosoft.crm.dto.EsicDto;
 import com.mahendratechnosoft.crm.entity.Customer;
+import com.mahendratechnosoft.crm.entity.Esic;
 import com.mahendratechnosoft.crm.entity.PF;
 import com.mahendratechnosoft.crm.entity.User;
 import com.mahendratechnosoft.crm.helper.ResourceNotFoundException;
@@ -83,4 +85,39 @@ public class CustomerController {
 	    return ResponseEntity.ok(result);
 	}
 	
+	@PutMapping("/updateEsic")
+	public ResponseEntity<Esic> updateEsic(@RequestBody EsicDto request){
+		Esic responce = complianceService.updateEsic(request);
+		return ResponseEntity.ok(responce);
+	}
+	
+	@GetMapping("/getEsicById/{esicId}")
+	public ResponseEntity<EsicDto> getEsicById(@PathVariable String esicId){
+		EsicDto responce = complianceService.getEsicById(esicId);
+		return ResponseEntity.ok(responce);
+	}
+	
+	@DeleteMapping("/deleteEsicById/{esicId}")
+	public ResponseEntity<?> deleteEsicById(@PathVariable String esicId){
+		complianceService.deleteEsicById(esicId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@DeleteMapping("/deleteEsicContentById/{esicContentId}")
+	public ResponseEntity<?> deleteEsicContentById(@PathVariable String esicContentId){
+		complianceService.deleteEsicContentById(esicContentId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/getAllEsics")
+	public ResponseEntity<Page<Esic>> getAllEsics(
+			@ModelAttribute Customer customer,
+			@RequestParam(required = false) String customerId,
+		    @RequestParam(required = false) String contactId,
+		    @RequestParam(required = false) String search,
+		    Pageable pageable){
+		
+		Page<Esic> result = complianceService.getAllEsics(customer, customerId, contactId, search, pageable);
+	    return ResponseEntity.ok(result);
+	}
 }

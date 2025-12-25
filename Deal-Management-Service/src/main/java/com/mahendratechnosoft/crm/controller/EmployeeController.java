@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mahendratechnosoft.crm.dto.ContactDto;
 import com.mahendratechnosoft.crm.dto.CreateAMC;
 import com.mahendratechnosoft.crm.dto.CustomerDto;
+import com.mahendratechnosoft.crm.dto.EsicDto;
 import com.mahendratechnosoft.crm.dto.InvoiceDto;
 import com.mahendratechnosoft.crm.dto.PaymentProfileDropdownDto;
 import com.mahendratechnosoft.crm.dto.ProformaInvoiceDto;
@@ -46,6 +47,7 @@ import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.Esic;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.Leads;
 import com.mahendratechnosoft.crm.entity.PF;
@@ -1407,5 +1409,41 @@ public class EmployeeController {
 		public ResponseEntity<?> convertSemenEnquiryToDonor(@PathVariable String semenEnquiryId){
 			donorService.convertSemenEnquiryToDonor(semenEnquiryId);
 			return ResponseEntity.noContent().build();
+		}
+		
+		@PutMapping("/updateEsic")
+		public ResponseEntity<Esic> updateEsic(@RequestBody EsicDto request){
+			Esic responce = complianceService.updateEsic(request);
+			return ResponseEntity.ok(responce);
+		}
+		
+		@GetMapping("/getEsicById/{esicId}")
+		public ResponseEntity<EsicDto> getEsicById(@PathVariable String esicId){
+			EsicDto responce = complianceService.getEsicById(esicId);
+			return ResponseEntity.ok(responce);
+		}
+		
+		@DeleteMapping("/deleteEsicById/{esicId}")
+		public ResponseEntity<?> deleteEsicById(@PathVariable String esicId){
+			complianceService.deleteEsicById(esicId);
+			return ResponseEntity.noContent().build();
+		}
+		
+		@DeleteMapping("/deleteEsicContentById/{esicContentId}")
+		public ResponseEntity<?> deleteEsicContentById(@PathVariable String esicContentId){
+			complianceService.deleteEsicContentById(esicContentId);
+			return ResponseEntity.noContent().build();
+		}
+		
+		@GetMapping("/getAllEsics")
+		public ResponseEntity<Page<Esic>> getAllEsics(
+				@ModelAttribute Employee employee,
+				@RequestParam(required = false) String customerId,
+			    @RequestParam(required = false) String contactId,
+			    @RequestParam(required = false) String search,
+			    Pageable pageable){
+			
+			Page<Esic> result = complianceService.getAllEsics(employee, customerId, contactId, search, pageable);
+		    return ResponseEntity.ok(result);
 		}
 }

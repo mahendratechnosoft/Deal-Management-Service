@@ -70,7 +70,7 @@ public class MainConfig {
                 .requestMatchers("/contacts/**").hasRole("CONTACT")
                 .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register",
                 		"/registerData","/checkEmail/**","/generateLeads","/createDonor","/createFamily",
-                		"/createSemenEnquiry","/submitPfForm").permitAll()
+                		"/createSemenEnquiry","/submitPfForm","/submitEsicForm").permitAll()
 
                 .anyRequest().authenticated()
                 .and()
