@@ -16,6 +16,7 @@ public class SignInRespoonceDto {
 	private String adminId;
 	private String customerId;
 	private byte[] logo;
+	private String contactId;
 	private ModuleAccess moduleAccess;
 	public SignInRespoonceDto() {
 		super();
@@ -23,7 +24,8 @@ public class SignInRespoonceDto {
 	}
 	
 	public SignInRespoonceDto(String jwtToken, String userId, String loginEmail, String role,
-			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess,String customerId,byte[] logo) {
+			LocalDateTime expiryDate,String loginUserName,String employeeId,String adminId ,ModuleAccess moduleAccess,
+			String customerId,byte[] logo,String contactId) {
 		super();
 		this.jwtToken = jwtToken;
 		this.userId = userId;
@@ -36,6 +38,8 @@ public class SignInRespoonceDto {
 		this.moduleAccess=moduleAccess;
 		this.customerId = customerId;
 		this.logo = logo;
+		this.contactId = contactId;
+		
 	}
 	
 	public String getJwtToken() {
@@ -115,6 +119,15 @@ public class SignInRespoonceDto {
 
 	public void setLogo(byte[] logo) {
 		this.logo = logo;
+	}
+	
+	
+	public String getContactId() {
+		return contactId;
+	}
+
+	public void setContactId(String contactId) {
+		this.contactId = contactId;
 	}
 
 	@Override
