@@ -118,6 +118,7 @@ public class HomeController {
             String employeeId=null;
             String adminId=null;
             String customerId = null;
+            String contactId = null;
             byte[] logo = null;
             ModuleAccess moduleAccess=null;
             if (user.getRole().equals("ROLE_ADMIN")) {
@@ -162,10 +163,11 @@ public class HomeController {
             	employeeId = customer.getEmployeeId();
             	customerId = customer.getCustomerId();
             	logo = admin.getLogo();
+            	contactId = contacts.getId();
             }
             
             SignInRespoonceDto signInRespoonceDto = new SignInRespoonceDto(token, user.getUserId(), user.getLoginEmail(),
-            		user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess,customerId,logo);
+            		user.getRole(), user.getExpiryDate(),name,employeeId,adminId,moduleAccess,customerId,logo,contactId);
             
             return ResponseEntity.ok(signInRespoonceDto);
 
