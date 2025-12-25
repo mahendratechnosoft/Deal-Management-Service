@@ -42,6 +42,11 @@ public class PaymentProfile {
     private boolean forExpense = false;
     private boolean isActive = true;
     
+    private String cardNumber;
+    private String cardType;
+    private String cardHolderName;
+    private String cardBankName;
+    
     
 	public String getPaymentProfileId() {
 		return paymentProfileId;
@@ -132,6 +137,32 @@ public class PaymentProfile {
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	public String getCardNumber() {
+		return cardNumber;
+	}
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
+	}
+	public String getCardType() {
+		return cardType;
+	}
+	public void setCardType(String cardType) {
+		this.cardType = cardType;
+	}
+	public String getCardHolderName() {
+		return cardHolderName;
+	}
+	public void setCardHolderName(String cardHolderName) {
+		this.cardHolderName = cardHolderName;
+	}
+	public String getCardBankName() {
+		return cardBankName;
+	}
+	public void setCardBankName(String cardBankName) {
+		this.cardBankName = cardBankName;
 	} 
+	
+	
     
 }

@@ -77,6 +77,7 @@ public class ProformaInvoice {
     private int invoiceNumber;
     private Date invoiceDate;
     
+    
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "proforma_invoice_payment_mode",
@@ -85,9 +86,12 @@ public class ProformaInvoice {
     @Column(name = "payment_profile_id")
     private List<String> paymentProfileIds = new ArrayList<>();
     
+    private String paidPaymentProfileIds;
+    
     private String amcHistoryId;
     private String amcDomainHistoryId;
     private String amcGsuitHistoryId; 
+    private String proformaType;
     
     @PrePersist
     protected void onCreate() {
@@ -508,6 +512,23 @@ public class ProformaInvoice {
 
 	public void setAmcGsuitHistoryId(String amcGsuitHistoryId) {
 		this.amcGsuitHistoryId = amcGsuitHistoryId;
+	}
+
+	public String getProformaType() {
+		return proformaType;
+	}
+
+	public void setProformaType(String proformaType) {
+		this.proformaType = proformaType;
+	}
+	
+
+	public String getPaidPaymentProfileIds() {
+		return paidPaymentProfileIds;
+	}
+
+	public void setPaidPaymentProfileIds(String paidPaymentProfileIds) {
+		this.paidPaymentProfileIds = paidPaymentProfileIds;
 	}
 
 	@Override

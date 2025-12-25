@@ -724,9 +724,10 @@ public class AdminController {
 	
 	
 	@GetMapping("/getAllProformaInvoice/{page}/{size}")
-	public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) Date startDate,@RequestParam(required = false) Date endDate) {
+	public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("admin") Admin admin, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,
+			@RequestParam(required = false) Date startDate,@RequestParam(required = false) Date endDate,@RequestParam(required = false) String proformaType) {
 
-		return salesService.getAllProformaInvoice(page ,size,admin,search,startDate,endDate);
+		return salesService.getAllProformaInvoice(page ,size,admin,search,startDate,endDate,proformaType);
 
 	}
 	
