@@ -491,9 +491,10 @@ public class EmployeeController {
 		
 		
 		@GetMapping("/getAllProformaInvoice/{page}/{size}")
-		public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,@RequestParam(required = false) Date startDate,@RequestParam(required = false) Date endDate) {
+		public ResponseEntity<?> getAllProformaInvoice(@ModelAttribute("employee") Employee employee, @PathVariable int page,@PathVariable int size,@RequestParam(required = false) String search,
+				@RequestParam(required = false) Date startDate,@RequestParam(required = false) Date endDate,@RequestParam(required = false) String proformaType) {
 
-			return salesService.getAllProformaInvoice(page ,size,employee,search,startDate,endDate);
+			return salesService.getAllProformaInvoice(page ,size,employee,search,startDate,endDate,proformaType);
 
 		}
 		

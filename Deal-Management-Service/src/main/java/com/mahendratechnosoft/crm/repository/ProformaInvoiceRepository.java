@@ -25,13 +25,15 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    WHERE p.adminId = :adminId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
 		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
-		    ORDER BY p.createdAt DESC
+		     AND (:proformaType IS NULL OR LOWER(p.proformaType) = LOWER(:proformaType))
+		     ORDER BY p.createdAt DESC
 		""")
 		Page<ProformaInvoice> findByAdminId(
 		        @Param("adminId") String adminId,
 		        @Param("search") String search,
 		        @Param("startDate") Date startDate,
 		        @Param("endDate") Date endDate,
+		        @Param("proformaType") String proformaType,
 		        Pageable pageable);
 	
 
@@ -40,6 +42,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		    WHERE p.employeeId = :employeeId 
 		      AND (:search IS NULL OR LOWER(p.companyName) LIKE LOWER(CONCAT('%', :search, '%')))
 		      AND (p.proformaInvoiceDate BETWEEN :startDate AND :endDate)
+		      AND (:proformaType IS NULL OR LOWER(p.proformaType) = LOWER(:proformaType))
 		    ORDER BY p.createdAt DESC
 		""")
 		Page<ProformaInvoice> findByEmployeeId(
@@ -47,6 +50,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
 		        @Param("search") String search,
 		        @Param("startDate") Date startDate,
 		        @Param("endDate") Date endDate,
+		        @Param("proformaType") String proformaType,
 		        Pageable pageable);
 	
 	

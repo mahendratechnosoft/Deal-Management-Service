@@ -593,7 +593,7 @@ public class SalesService {
 	}
 
 	public ResponseEntity<?> getAllProformaInvoice(int page, int size, Object loginUser, String search, Date startDate,
-			Date endDate) {
+			Date endDate,String proformaType) {
 
 		try {
 			ModuleAccess moduleAccess = null;
@@ -618,15 +618,15 @@ public class SalesService {
 			// 2. Fetch paginated leads for company
 			Pageable pageable = PageRequest.of(page, size);
 			if (role.equals("ROLE_ADMIN")) {
-				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, startDate, endDate, pageable);
+				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, startDate, endDate,proformaType, pageable);
 
 			} else if (moduleAccess.isProformaInvoiceViewAll()) {
 				
-				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, startDate, endDate, pageable);
+				invoicePage = proformaInvoiceRepository.findByAdminId(adminId, search, startDate, endDate,proformaType, pageable);
 
 			} else {
                  
-				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search, startDate, endDate,
+				invoicePage = proformaInvoiceRepository.findByEmployeeId(employeeId, search, startDate, endDate,proformaType,
 						pageable);
 			}
 			// 3. Prepare response
