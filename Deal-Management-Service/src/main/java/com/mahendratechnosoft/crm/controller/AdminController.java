@@ -53,6 +53,7 @@ import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Department;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Esic;
+import com.mahendratechnosoft.crm.entity.FinanceSetting;
 import com.mahendratechnosoft.crm.entity.Items;
 import com.mahendratechnosoft.crm.entity.LeadStatus;
 import com.mahendratechnosoft.crm.entity.Leads;
@@ -74,6 +75,7 @@ import com.mahendratechnosoft.crm.entity.Hospital.FamilyVialAllocation;
 import com.mahendratechnosoft.crm.entity.Hospital.SampleReport;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenEnquiry;
 import com.mahendratechnosoft.crm.entity.Hospital.SemenReport;
+import com.mahendratechnosoft.crm.enums.TYPE;
 import com.mahendratechnosoft.crm.enums.TaskStatus;
 import com.mahendratechnosoft.crm.repository.AdminRepository;
 import com.mahendratechnosoft.crm.service.AMCService;
@@ -1720,4 +1722,18 @@ public class AdminController {
 	}
 	
 	
+	// Finance Setting APIs
+
+	@PutMapping("/updateFinanceSetting")
+	public FinanceSetting updateFinanceSetting(@ModelAttribute Admin admin, @RequestBody FinanceSetting request) {
+		request.setAdminId(admin.getAdminId());
+		return settingServices.updateFinanceSetting(request);
+	}
+
+	@GetMapping("/getFinanceSettingByType/{type}")
+	public FinanceSetting getFinanceSettingByType(@ModelAttribute Admin admin, @PathVariable TYPE type) {
+
+		return settingServices.getFinanceSettingByType(admin.getAdminId(), type);
+	}
+
 }
