@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Department;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.FinanceSetting;
 import com.mahendratechnosoft.crm.entity.PaymentProfile;
 import com.mahendratechnosoft.crm.entity.Role;
+import com.mahendratechnosoft.crm.enums.TYPE;
 import com.mahendratechnosoft.crm.repository.DepartmentRepository;
+import com.mahendratechnosoft.crm.repository.FinanceSettingRepository;
 import com.mahendratechnosoft.crm.repository.PaymentProfileRepository;
 import com.mahendratechnosoft.crm.repository.RoleRepository;
 
@@ -29,6 +32,9 @@ public class SettingServices {
 	
 	@Autowired
 	private PaymentProfileRepository paymentProfileRepository;
+	
+	@Autowired
+	private FinanceSettingRepository financeSettingRepository;
 	
 	public Department createDepartment(Department department) {
 		Department save = departmentRepository.save(department);
@@ -111,4 +117,14 @@ public class SettingServices {
         PaymentProfile save = paymentProfileRepository.save(profile);
         return ResponseEntity.ok(save);
     }
+    
+	public FinanceSetting updateFinanceSetting(FinanceSetting financeSetting) {
+
+		return financeSettingRepository.save(financeSetting);
+	}
+	
+	public FinanceSetting getFinanceSettingByType(String adminId,TYPE type) {
+
+		return financeSettingRepository.findByAdminIdAndType(adminId, type);
+	}
 }
