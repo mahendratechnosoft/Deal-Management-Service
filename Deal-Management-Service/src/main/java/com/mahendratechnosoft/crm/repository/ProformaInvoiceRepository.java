@@ -145,7 +145,7 @@ public interface ProformaInvoiceRepository extends JpaRepository<ProformaInvoice
                                    @Param("endDate") Date endDate);
 
 
-	@Query("SELECT p.proformaInvoiceId, p.proformaInvoiceNumber FROM ProformaInvoice p WHERE p.adminId = :adminId")
+	@Query("SELECT p.proformaInvoiceId, p.proformaInvoiceNumber,p.formatedProformaInvoiceNumber FROM ProformaInvoice p WHERE p.adminId = :adminId Order by createdAt DESC")
 	List<Object[]> proformaNumberAndIdByAdminId(@Param("adminId") String adminId);
 	
 	@Query("SELECT p.proformaInvoiceId, p.invoiceNumber "+ 
