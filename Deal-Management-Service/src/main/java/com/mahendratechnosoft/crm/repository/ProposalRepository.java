@@ -47,7 +47,7 @@ public interface ProposalRepository extends JpaRepository<Proposal, String >{
 	@Query("SELECT COUNT(p) > 0 FROM Proposal p WHERE p.adminId = :adminId AND p.proposalNumber = :proposalNumber")
 	boolean existsByAdminIdAndProposalNumber(String adminId, int proposalNumber);
 	
-	@Query("SELECT p.proposalId, p.proposalNumber FROM Proposal p WHERE p.adminId = :adminId")
+	@Query("SELECT p.proposalId, p.proposalNumber,p.formatedProposalNumber FROM Proposal p WHERE p.adminId = :adminId ORDER BY p.createdAt DESC")
 	List<Object[]> proposalNumberAndIdByAdminId(@Param("adminId") String adminId);
 
 
