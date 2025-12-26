@@ -27,6 +27,7 @@ public class Proposal {
 	private String employeeId;
 	private String assignTo;
 	private int proposalNumber;
+	private String formatedProposalNumber;
 	private String currencyType;
 	private double discount;
 	private String taxType;
@@ -397,6 +398,14 @@ public class Proposal {
 
 	public void setPaymentProfileIds(List<String> paymentProfileIds) {
 		this.paymentProfileIds = paymentProfileIds;
+	}
+
+	public String getFormatedProposalNumber() {
+		return formatedProposalNumber;
+	}
+
+	public void setFormatedProposalNumber(String formatedProposalNumber) {
+		this.formatedProposalNumber = formatedProposalNumber;
 	}
 	
 }
