@@ -1290,7 +1290,7 @@ public class SalesService {
 	        List<Object[]> proposal = proposalRepository.proposalNumberAndIdByAdminId(adminId);
 
 	        List<Map<String, Object>> result = proposal.stream()
-	                .map(e -> Map.of("proposalId", e[0], "proposalNumber", e[1]))
+	                .map(e -> Map.of("proposalId", e[0], "proposalNumber", e[1],"formatedProposalNumber",e[2] != null ? e[2] : ""))
 	                .toList();
 
 	        return ResponseEntity.ok(result);
