@@ -30,6 +30,7 @@ public class ProformaInvoice {
 	private String proposalId;
 	private String assignTo;
 	private int proformaInvoiceNumber;
+	private String formatedProformaInvoiceNumber;
 	private String currencyType;
 	private double discount;
 	private String taxType;
@@ -529,6 +530,14 @@ public class ProformaInvoice {
 
 	public void setPaidPaymentProfileIds(String paidPaymentProfileIds) {
 		this.paidPaymentProfileIds = paidPaymentProfileIds;
+	}
+	
+	public String getFormatedProformaInvoiceNumber() {
+		return formatedProformaInvoiceNumber;
+	}
+
+	public void setFormatedProformaInvoiceNumber(String formatedProformaInvoiceNumber) {
+		this.formatedProformaInvoiceNumber = formatedProformaInvoiceNumber;
 	}
 
 	@Override

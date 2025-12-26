@@ -1318,7 +1318,7 @@ public class SalesService {
 	        List<Object[]> proforma = proformaInvoiceRepository.proformaNumberAndIdByAdminId(adminId);
 
 	        List<Map<String, Object>> result = proforma.stream()
-	                .map(e -> Map.of("proformaInvoiceId", e[0], "proformaInvoiceNumber", e[1]))
+	                .map(e -> Map.of("proformaInvoiceId", e[0], "proformaInvoiceNumber", e[1],"formatedProformaInvoiceNumber",(e[2]!=null?e[2]:"")))
 	                .toList();
 
 	        return ResponseEntity.ok(result);
