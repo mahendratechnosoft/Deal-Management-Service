@@ -71,6 +71,8 @@ public class MainConfig {
                 .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register",
                 		"/registerData","/checkEmail/**","/generateLeads","/createDonor","/createFamily",
                 		"/createSemenEnquiry","/submitPfForm","/submitEsicForm").permitAll()
+                .requestMatchers("/notifications/**","/topic/**").permitAll()
+                .requestMatchers("/ws/**").permitAll()
 
                 .anyRequest().authenticated()
                 .and()

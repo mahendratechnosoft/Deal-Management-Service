@@ -22,8 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.TaskDto;
+import com.mahendratechnosoft.crm.dto.TaskNotifcation;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
@@ -69,12 +72,16 @@ public class TaskService {
 	@Autowired
 	private ExcelService excelService;
 	
+	@Autowired
+	private NotificationService notificationService;
+	
 	@Transactional
     public Task createTask(Object loginUser,TaskDto request) {
 		
 		String adminId = null;
 		String employeeId = null;
 		String name = null;
+		 Set<String> assigneeIds=null;
 		if (loginUser instanceof Admin admin) {
 			adminId = admin.getAdminId();
 			name = admin.getName();
@@ -92,7 +99,7 @@ public class TaskService {
 		
 		
         if (task.getAssignedEmployees() != null && !task.getAssignedEmployees().isEmpty()) {
-            Set<String> assigneeIds = task.getAssignedEmployees().stream()
+        	assigneeIds = task.getAssignedEmployees().stream()
                     .map(Employee::getEmployeeId)
                     .collect(Collectors.toSet());
             
@@ -123,6 +130,20 @@ public class TaskService {
 			}
 	        taskAttachmentRepository.saveAll(attachments);
         }
+         
+		if (task.getAssignedEmployees() != null && !task.getAssignedEmployees().isEmpty()) {
+			TaskNotifcation data = new TaskNotifcation();
+			data.setAdminId(adminId);
+			data.setAssignTo(assigneeIds);
+			data.setCreatedBy(name);
+			data.setEndDate(savedTask.getEndDate());
+			data.setPriority(savedTask.getPriority());
+			data.setStartDate(savedTask.getStartDate());
+			data.setSubject(savedTask.getSubject());
+			data.setTaskId(savedTask.getTaskId());
+
+			notificationService.sendTaskNotification(data);
+		}
         return savedTask;
     }
 	
@@ -724,6 +745,14 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
         		 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
         task.setStatus(newStatus);
+        
+        TaskNotifcation data=new TaskNotifcation();
+        data.setAdminId(task.getAdminId());
+        data.setEmployeeId(task.getEmployeeId());
+        data.setSubject(task.getSubject());
+        data.setStatus(task.getStatus());
+        notificationService.sendTaskStatusNotification(data);
+        
         return taskRepository.save(task);
     }
     
