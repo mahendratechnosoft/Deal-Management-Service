@@ -55,6 +55,8 @@ public class ComplianceService {
 		pf.setAdminId(customer.getAdminId());
 		pf.setEmployeeId(customer.getEmployeeId());
 		pf.setCustomerId(customer.getCustomerId());
+		pf.setCustomerName(customer.getCompanyName());
+		pf.setCreatedBy(contacts.getName());
 		
 		PF save = pfRepository.save(pf);
 		
@@ -135,6 +137,8 @@ public class ComplianceService {
 	    esic.setAdminId(customer.getAdminId());
 	    esic.setEmployeeId(customer.getEmployeeId());
 	    esic.setCustomerId(customer.getCustomerId());
+	    esic.setCustomerName(customer.getCompanyName());
+	    esic.setCreatedBy(contacts.getName());
 	    Esic savedEsic = esicRepository.save(esic);
 
 	    if (request.getEsicContents() != null) {
@@ -225,5 +229,18 @@ public class ComplianceService {
                 pageable
         );
     }
-
+	
+	public PF updatePFVerificationStatus(String pfId, boolean status) {
+        PF pf = pfRepository.findById(pfId)
+                .orElseThrow(() -> new ResourceNotFoundException("PF","pfId", pfId));
+        pf.setVerified(status);
+        return pfRepository.save(pf);
+    }
+	
+	public Esic updateEsicVerificationStatus(String esicId, boolean status) {
+		Esic esic = esicRepository.findById(esicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Esic","esicId", esicId));
+		esic.setVerified(status);
+        return esicRepository.save(esic);
+    }
 }
