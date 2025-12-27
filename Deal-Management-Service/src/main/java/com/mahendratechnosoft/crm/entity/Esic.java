@@ -46,6 +46,10 @@ public class Esic {
     private String nomineeName;
     private String nomineeRelation;
     private String nomineeAdhaar;
+    
+    private String createdBy;
+    private String customerName;
+    private boolean isVerified;
 
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
@@ -269,4 +273,29 @@ public class Esic {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public boolean isVerified() {
+		return isVerified;
+	}
+
+	public void setVerified(boolean isVerified) {
+		this.isVerified = isVerified;
+	}
+	
 }

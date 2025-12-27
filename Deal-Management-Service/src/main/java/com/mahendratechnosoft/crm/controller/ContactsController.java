@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -135,4 +136,30 @@ public class ContactsController {
 		Page<Esic> result = complianceService.getAllEsics(contacts, customerId, contactId, search, pageable);
 	    return ResponseEntity.ok(result);
 	}
+	
+	@PutMapping("/updatePFVerificationStatus/{pfId}")
+    public ResponseEntity<?> updatePFVerificationStatus(
+            @PathVariable String pfId, 
+            @RequestParam boolean status) {
+        
+        try {
+            PF updatedPF = complianceService.updatePFVerificationStatus(pfId, status);
+            return ResponseEntity.ok(updatedPF);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+	
+	@PutMapping("/updateEsicVerificationStatus/{esicId}")
+    public ResponseEntity<?> updateEsicVerificationStatus(
+            @PathVariable String esicId, 
+            @RequestParam boolean status) {
+        
+        try {
+        	Esic updatedEsic = complianceService.updateEsicVerificationStatus(esicId, status);
+            return ResponseEntity.ok(updatedEsic);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
