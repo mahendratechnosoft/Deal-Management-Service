@@ -1,5 +1,6 @@
 package com.mahendratechnosoft.crm.controller;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +11,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.mahendratechnosoft.crm.config.UserDetailServiceImp;
 import com.mahendratechnosoft.crm.dto.AdminRegistrationDto;
 import com.mahendratechnosoft.crm.dto.EsicDto;
 import com.mahendratechnosoft.crm.dto.SignInRespoonceDto;
+import com.mahendratechnosoft.crm.dto.TempEmailOTP;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
@@ -40,12 +44,17 @@ import com.mahendratechnosoft.crm.repository.ContactsRepository;
 import com.mahendratechnosoft.crm.repository.CustomerRepository;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.ModuleAccessRepository;
+import com.mahendratechnosoft.crm.repository.TempEmailOTPRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.security.JwtUtil;
 import com.mahendratechnosoft.crm.service.ComplianceService;
 import com.mahendratechnosoft.crm.service.DonorService;
+import com.mahendratechnosoft.crm.service.EmailService;
 import com.mahendratechnosoft.crm.service.LeadService;
 import com.mahendratechnosoft.crm.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 
 @Controller
@@ -90,7 +99,15 @@ public class HomeController {
 	
 	@Autowired
 	private ComplianceService complianceService;
+	
+	@Autowired
+	private EmailService emailService;
     
+	 @Autowired
+	 private PasswordEncoder passwordEncoder;
+	 
+	 @Autowired
+	 private TempEmailOTPRepository tempEmailOTPRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody AdminRegistrationDto registrationDto) {
@@ -236,4 +253,66 @@ public class HomeController {
 		Esic responce = complianceService.createEsic(request);
 		return ResponseEntity.ok(responce);
 	}
+	
+	@Transactional
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> sendOtp(@RequestParam String email) {
+
+		String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
+
+		tempEmailOTPRepository.deleteByEmail(email);
+
+		TempEmailOTP data = new TempEmailOTP();
+		data.setEmail(email);
+		data.setOtp(otp);
+		data.setExpiresAt(LocalDateTime.now().plusMinutes(10));
+
+		tempEmailOTPRepository.save(data);
+
+		String message = "Your password reset OTP is: " + otp + "\n\nThis OTP will expire in 10 minutes.";
+
+		emailService.sendForgotPasswordEmail(email, "Your OTP Code", "Your OTP is: " + message);
+
+		return ResponseEntity.ok("OTP sent");
+	}
+
+	@Transactional
+	@PostMapping("/verify-otp-and-reset")
+	public ResponseEntity<?> verifyOtpAndResetPassword(@RequestParam String email, @RequestParam String otp,
+			@RequestParam String newPassword) {
+
+		TempEmailOTP data = tempEmailOTPRepository.findByEmail(email);
+         
+		if (data==null || data.equals(null)) {
+			return ResponseEntity.badRequest().body("Password Updated or OTP not generated");
+		}
+
+		// Expired?
+		if (data.getExpiresAt().isBefore(LocalDateTime.now())) {
+			return ResponseEntity.badRequest().body("OTP expired");
+		}
+
+		// OTP must match
+		if (!data.getOtp().equals(otp)) {
+			return ResponseEntity.badRequest().body("Invalid OTP");
+		}
+
+		// Update password
+		Optional<User> userOpt = userRepository.findByLoginEmail(email);
+		if (userOpt.isEmpty()) {
+			return ResponseEntity.badRequest().body("User not found");
+		}
+
+		User user = userOpt.get();
+
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
+		
+		tempEmailOTPRepository.deleteByEmail(email);
+		
+		return ResponseEntity.ok("Password updated successfully");
+	}
+
+
+
 }
