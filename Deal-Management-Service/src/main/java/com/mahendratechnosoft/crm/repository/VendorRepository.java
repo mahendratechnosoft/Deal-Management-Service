@@ -24,4 +24,8 @@ public interface VendorRepository extends JpaRepository<Vendor, String>{
 	        @Param("employeeId") String employeeId,
 	        @Param("vendorName") String vendorName,
 	        Pageable pageable);
+	
+	
+	@Query("SELECT COALESCE(MAX(v.vendorCodeNumber), 0) FROM Vendor v WHERE v.adminId = :adminId")
+    int findMaxVendorNumberByAdminId(String adminId);
 }

@@ -1447,4 +1447,10 @@ public class EmployeeController {
 			Page<Esic> result = complianceService.getAllEsics(employee, customerId, contactId, search, pageable);
 		    return ResponseEntity.ok(result);
 		}
+		
+	@GetMapping("/getNextVendorNumber")
+    public ResponseEntity<Integer> getNextVendorNumber(@ModelAttribute Employee employee) {
+        int nextNumber = expenceService.getNextVendorNumberForAdmin(employee.getAdmin().getAdminId());
+        return ResponseEntity.ok(nextNumber);
+    }
 }

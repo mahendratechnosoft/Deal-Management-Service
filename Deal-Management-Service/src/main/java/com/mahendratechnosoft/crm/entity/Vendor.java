@@ -1,12 +1,9 @@
 package com.mahendratechnosoft.crm.entity;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -20,6 +17,7 @@ public class Vendor {
 	private String employeeId;
 
     private String vendorCode;
+    private int vendorCodeNumber;
     private String vendorName;
     private String companyName;
     private String emailAddress;
@@ -345,5 +343,16 @@ public class Vendor {
 	public void setGstNumber(String gstNumber) {
 		this.gstNumber = gstNumber;
 	}
+
+
+	public int getVendorCodeNumber() {
+		return vendorCodeNumber;
+	}
+
+
+	public void setVendorCodeNumber(int vendorCodeNumber) {
+		this.vendorCodeNumber = vendorCodeNumber;
+	}
     
+	
 }
