@@ -51,6 +51,7 @@ import com.mahendratechnosoft.crm.entity.Contacts;
 import com.mahendratechnosoft.crm.entity.Customer;
 import com.mahendratechnosoft.crm.entity.Deals;
 import com.mahendratechnosoft.crm.entity.Department;
+import com.mahendratechnosoft.crm.entity.EmailConfiguration;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.Esic;
 import com.mahendratechnosoft.crm.entity.FinanceSetting;
@@ -85,6 +86,7 @@ import com.mahendratechnosoft.crm.service.ContactsService;
 import com.mahendratechnosoft.crm.service.CustomerService;
 import com.mahendratechnosoft.crm.service.DealsService;
 import com.mahendratechnosoft.crm.service.DonorService;
+import com.mahendratechnosoft.crm.service.EmailService;
 import com.mahendratechnosoft.crm.service.EmployeeService;
 import com.mahendratechnosoft.crm.service.ExcelService;
 import com.mahendratechnosoft.crm.service.ExpenceService;
@@ -144,6 +146,9 @@ public class AdminController {
 	
 	@Autowired
 	private ComplianceService complianceService;
+	
+	@Autowired
+	private EmailService emailService;
 	
     @ModelAttribute("admin")
     public Admin getCurrentlyLoggedInAdmin(Authentication authentication) {
@@ -1747,6 +1752,20 @@ public class AdminController {
 	public ResponseEntity<Employee> updateEmployeeStatus(@PathVariable String employeeId, @RequestParam boolean status){
 		Employee responce = employeeService.updateEmployeeStatus(employeeId, status);
 		return ResponseEntity.ok(responce);
+	}
+	
+	// Email API
+	
+	@PutMapping("/updateEmailConfiguration")
+	public EmailConfiguration updateEmailConfiguration(@ModelAttribute Admin admin,
+			@RequestBody EmailConfiguration request) {
+		request.setAdminId(admin.getAdminId());
+		return emailService.updateEmailConfiguration(request);
+	}
+
+	@GetMapping("/getEmailConfiguration")
+	public EmailConfiguration getEmailConfiguration(@ModelAttribute Admin admin) {
+		return emailService.getEmailConfiguration(admin.getAdminId());
 	}
 
 }

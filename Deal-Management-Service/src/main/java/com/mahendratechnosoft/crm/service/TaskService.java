@@ -3,6 +3,7 @@ package com.mahendratechnosoft.crm.service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -75,6 +76,9 @@ public class TaskService {
 	@Autowired
 	private NotificationService notificationService;
 	
+	@Autowired
+	private EmailService  emailService;
+	
 	@Transactional
     public Task createTask(Object loginUser,TaskDto request) {
 		
@@ -144,6 +148,23 @@ public class TaskService {
 
 			notificationService.sendTaskNotification(data);
 		}
+		
+		String emailBody =
+                "New Task Notification\n\n" +
+                "Subject: " + task.getSubject() + "\n" +
+                "Status : " + task.getStatus() + "\n" +
+                "Priority: " + task.getPriority() + "\n" +
+                "Start Date: " + task.getStartDate() + "\n" +
+                "End Date  : " + task.getEndDate() + "\n\n" +
+                "Description:\n" + task.getDescription() + "\n\n" +
+                "Related To: " +task.getRelatedTo()+": "+ task.getRelatedToName() + "\n" +
+                "Hourly Rate: " + task.getHourlyRate() + "\n" +
+                "Estimated Hours: " + task.getEstimatedHours() + "\n\n" +
+                "Updated On: " + LocalDateTime.now() + "\n\n" +
+                "Regards,\nCRM Task System";
+        
+        emailService.sendSimpleEmail(task.getAdminId(), assigneeIds,"New Task : " +task.getSubject(), emailBody);
+		
         return savedTask;
     }
 	
@@ -746,6 +767,8 @@ public class TaskService {
         		 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
         task.setStatus(newStatus);
         
+        Task saveTask=  taskRepository.save(task);
+        
         TaskNotifcation data=new TaskNotifcation();
         data.setAdminId(task.getAdminId());
         data.setEmployeeId(task.getEmployeeId());
@@ -753,7 +776,27 @@ public class TaskService {
         data.setStatus(task.getStatus());
         notificationService.sendTaskStatusNotification(data);
         
-        return taskRepository.save(task);
+        
+        Set<String> employeeIds=new HashSet();
+        employeeIds.add(task.getEmployeeId());
+        
+        String emailBody =
+                "Task Update Notification\n\n" +
+                "Subject: " + task.getSubject() + "\n" +
+                "Status : " + task.getStatus() + "\n" +
+                "Priority: " + task.getPriority() + "\n" +
+                "Start Date: " + task.getStartDate() + "\n" +
+                "End Date  : " + task.getEndDate() + "\n\n" +
+                "Description:\n" + task.getDescription() + "\n\n" +
+                "Related To: " +task.getRelatedTo()+": "+ task.getRelatedToName() + "\n" +
+                "Hourly Rate: " + task.getHourlyRate() + "\n" +
+                "Estimated Hours: " + task.getEstimatedHours() + "\n\n" +
+                "Updated On: " + LocalDateTime.now() + "\n\n" +
+                "Regards,\nCRM Task System";
+        
+        emailService.sendSimpleEmail(task.getAdminId(), employeeIds,"Task Status Updated: " +task.getSubject(), emailBody);
+        
+        return saveTask ;
     }
     
     public ResponseEntity<?> getTaskCounts(Object loginUser, String listType) {
