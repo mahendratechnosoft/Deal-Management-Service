@@ -113,6 +113,12 @@ public class HomeController {
             final UserDetails userDetails = userDetailServiceImp.loadUserByUsername(adminRegistrationDto.getUsername());
             User user = userRepository.findByLoginEmail(adminRegistrationDto.getUsername()).get();
             
+            if (!user.isActive()) {
+                return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("Your account is deactivated. Please contact the administrator.");
+            }
+            
             final String token = jwtUtil.generateToken(userDetails);
             String name=null;
             String employeeId=null;

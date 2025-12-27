@@ -1740,5 +1740,11 @@ public class AdminController {
         int nextNumber = expenceService.getNextVendorNumberForAdmin(admin.getAdminId());
         return ResponseEntity.ok(nextNumber);
     }
+	
+	@PutMapping("/updateEmployeeStatus/{employeeId}")
+	public ResponseEntity<Employee> updateEmployeeStatus(@PathVariable String employeeId, @RequestParam boolean status){
+		Employee responce = employeeService.updateEmployeeStatus(employeeId, status);
+		return ResponseEntity.ok(responce);
+	}
 
 }

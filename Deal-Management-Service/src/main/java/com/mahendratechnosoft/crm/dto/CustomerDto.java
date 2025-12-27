@@ -9,6 +9,7 @@ public class CustomerDto {
 	private Customer customer;
 	private String password;
 	private String loginEmail;
+	private boolean isActive;
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -27,6 +28,10 @@ public class CustomerDto {
 	public void setLoginEmail(String loginEmail) {
 		this.loginEmail = loginEmail;
 	}
-	
-    
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

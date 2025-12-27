@@ -24,6 +24,7 @@ import com.mahendratechnosoft.crm.helper.ResourceNotFoundException;
 import com.mahendratechnosoft.crm.repository.CustomerRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 import com.mahendratechnosoft.crm.service.ComplianceService;
+import com.mahendratechnosoft.crm.service.ContactsService;
 
 @RestController
 @RequestMapping("/customer")
@@ -37,6 +38,9 @@ public class CustomerController {
 	
 	@Autowired
 	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private ContactsService contactsService;
 	
 	@ModelAttribute("customer")
     public Customer getCurrentlyLoggedInContact(Authentication authentication) {
@@ -119,5 +123,11 @@ public class CustomerController {
 		
 		Page<Esic> result = complianceService.getAllEsics(customer, customerId, contactId, search, pageable);
 	    return ResponseEntity.ok(result);
+	}
+	
+	@GetMapping("/getContacts/{customerId}")
+	public ResponseEntity<?> getContacts(@PathVariable String customerId,@RequestParam(defaultValue = "") String name) {
+      
+		return contactsService.getContacts(customerId, name);
 	}
 }

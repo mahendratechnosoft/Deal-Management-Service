@@ -42,6 +42,8 @@ public class Employee {
 	private String country;
 	private String state;
 	private String city;
+	@Column(columnDefinition = "boolean default true") 
+    private boolean isActive = true;
 	
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private ModuleAccess moduleAccess;
@@ -199,7 +201,12 @@ public class Employee {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	
-	
-	
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }

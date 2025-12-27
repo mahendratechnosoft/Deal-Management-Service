@@ -64,39 +64,50 @@ public class ContactsService {
 
 		try {
 			Contacts contacts = request.getContacts();
-			if(request.getLoginEmail() != null && !request.getLoginEmail().isEmpty()) {
-				
-				String userId = contacts.getUserId();
-				
-				if(userId != null && !userId.isBlank()) {
-					User userCustomer = userRepository.findById(userId)
-					.orElseThrow(()-> new RuntimeException("user with not found with id :" + userId));
+			if(request.isActive()) {
+				if(request.getLoginEmail() != null && !request.getLoginEmail().isEmpty()) {
 					
-					if (userRepository.existsByLoginEmailAndUserIdNot(request.getLoginEmail(),userCustomer.getUserId())) {
-			            throw new RuntimeException("Error: Email is already in use!");
-			        }
+					String userId = contacts.getUserId();
 					
-					userCustomer.setLoginEmail(request.getLoginEmail());
-					if(request.getPassword()!=null && !request.getPassword().isBlank()) {
-						userCustomer.setPassword(passwordEncoder.encode(request.getPassword()));
+					if(userId != null && !userId.isBlank()) {
+						User userCustomer = userRepository.findById(userId)
+						.orElseThrow(()-> new RuntimeException("user with not found with id :" + userId));
+						
+						if (userRepository.existsByLoginEmailAndUserIdNot(request.getLoginEmail(),userCustomer.getUserId())) {
+				            throw new RuntimeException("Error: Email is already in use!");
+				        }
+						
+						userCustomer.setLoginEmail(request.getLoginEmail());
+						if(request.getPassword()!=null && !request.getPassword().isBlank()) {
+							userCustomer.setPassword(passwordEncoder.encode(request.getPassword()));
+						}
+						userCustomer.setActive(true);
+						userRepository.save(userCustomer);
+					} else {
+						if (userRepository.existsByLoginEmail(request.getLoginEmail())) {
+				            throw new RuntimeException("Error: Email is already in use!");
+				        }
+						
+						User newCustomerUser = new User();
+						newCustomerUser.setLoginEmail(request.getLoginEmail());
+						newCustomerUser.setPassword(passwordEncoder.encode(request.getPassword()));
+						newCustomerUser.setRole("ROLE_CONTACT");
+						newCustomerUser.setExpiryDate(LocalDateTime.now().plusYears(1));
+						
+						User savedUser = userRepository.save(newCustomerUser);
+						contacts.setUserId(savedUser.getUserId());
 					}
-					
-					userRepository.save(userCustomer);
-				} else {
-					if (userRepository.existsByLoginEmail(request.getLoginEmail())) {
-			            throw new RuntimeException("Error: Email is already in use!");
-			        }
-					
-					User newCustomerUser = new User();
-					newCustomerUser.setLoginEmail(request.getLoginEmail());
-					newCustomerUser.setPassword(passwordEncoder.encode(request.getPassword()));
-					newCustomerUser.setRole("ROLE_CONTACT");
-					newCustomerUser.setExpiryDate(LocalDateTime.now().plusYears(1));
-					
-					User savedUser = userRepository.save(newCustomerUser);
-					contacts.setUserId(savedUser.getUserId());
+				}
+			}else {
+				String userId = contacts.getUserId();
+				if(userId != null && !userId.isBlank()) {
+					User user = userRepository.findById(userId)
+					.orElseThrow(()-> new RuntimeException("user with not found with id :" + userId));
+					user.setActive(false);
+					userRepository.save(user);
 				}
 			}
+			
 			
 			
 			Contacts contact = contactsRepository.save(contacts);
@@ -155,6 +166,7 @@ public class ContactsService {
 				User user = userRepository.findById(contacts.getUserId())
 						.orElseThrow(()->new RuntimeException("User with not found for id :"+ contacts.getCustomerId()));
 				contactDto.setLoginEmail(user.getLoginEmail());
+				contactDto.setActive(user.isActive());
 			}
 			return ResponseEntity.ok(contactDto);
 

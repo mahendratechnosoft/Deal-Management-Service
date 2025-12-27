@@ -19,6 +19,8 @@ public class User {
 	private String password;
 	private String role;
 	private LocalDateTime expiryDate;
+	@Column(columnDefinition = "boolean default true") 
+    private boolean isActive = true;
 	
 	public User() {
 		super();
@@ -74,4 +76,11 @@ public class User {
 		this.expiryDate = expiryDate;
 	}
 
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 }
