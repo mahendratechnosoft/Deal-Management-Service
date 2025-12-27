@@ -9,6 +9,7 @@ public class ContactDto {
 	private Contacts contacts;
 	private String password;
 	private String loginEmail;
+	private boolean isActive;
 	
 	public Contacts getContacts() {
 		return contacts;
@@ -27,5 +28,11 @@ public class ContactDto {
 	}
 	public void setLoginEmail(String loginEmail) {
 		this.loginEmail = loginEmail;
+	}
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 }

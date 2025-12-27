@@ -19,6 +19,7 @@ import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
 import com.mahendratechnosoft.crm.entity.ModuleAccess;
 import com.mahendratechnosoft.crm.entity.User;
+import com.mahendratechnosoft.crm.helper.ResourceNotFoundException;
 import com.mahendratechnosoft.crm.repository.EmployeeRepository;
 import com.mahendratechnosoft.crm.repository.UserRepository;
 
@@ -178,6 +179,21 @@ public class EmployeeService {
 		return ResponseEntity.ok("Password Updated !");
 
 	}
+	
+	public Employee updateEmployeeStatus(String employeeId, boolean isActive) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "employeeId", employeeId));
+        employee.setActive(isActive);
+        
+        User user = userRepository.findByLoginEmail(employee.getLoginEmail())
+        .orElseThrow(() -> new ResourceNotFoundException("User", "loginEmail", employee.getLoginEmail()));
+        
+        user.setActive(isActive);
+        
+        userRepository.save(user);
+
+        return employeeRepository.save(employee);
+    }
 
 }
 	
