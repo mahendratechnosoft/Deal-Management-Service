@@ -71,6 +71,9 @@ public class MainConfig {
                 .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register",
                 		"/registerData","/checkEmail/**","/generateLeads","/createDonor","/createFamily",
                 		"/createSemenEnquiry","/submitPfForm","/submitEsicForm").permitAll()
+                .requestMatchers("/signin", "/send_otp", "/verify_otp", "/change_password","/register",
+                		"/registerData","/checkEmail/**","/generateLeads","/createDonor","/createFamily",
+                		"/createSemenEnquiry","/submitPfForm","/submitEsicForm","/forgot-password","/verify-otp-and-reset").permitAll()
                 .requestMatchers("/notifications/**","/topic/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
 
