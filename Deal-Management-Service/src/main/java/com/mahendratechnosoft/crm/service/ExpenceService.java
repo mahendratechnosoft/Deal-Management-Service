@@ -217,5 +217,9 @@ public class ExpenceService {
 		
 		vendorAttachmentRepository.deleteById(vendorAttachmentId);
 	}
-
+	
+	public int getNextVendorNumberForAdmin(String adminId) {
+		int maxNumber = vendorRepository.findMaxVendorNumberByAdminId(adminId);
+		return maxNumber + 1;
+	}
 }

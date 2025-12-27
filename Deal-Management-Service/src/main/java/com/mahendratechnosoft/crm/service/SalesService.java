@@ -30,6 +30,7 @@ import com.mahendratechnosoft.crm.entity.AMCGsuitHistory;
 import com.mahendratechnosoft.crm.entity.AMCHistory;
 import com.mahendratechnosoft.crm.entity.Admin;
 import com.mahendratechnosoft.crm.entity.Employee;
+import com.mahendratechnosoft.crm.entity.FinanceSetting;
 import com.mahendratechnosoft.crm.entity.Invoice;
 import com.mahendratechnosoft.crm.entity.InvoiceContent;
 import com.mahendratechnosoft.crm.entity.Items;
@@ -40,10 +41,13 @@ import com.mahendratechnosoft.crm.entity.ProformaInvoice;
 import com.mahendratechnosoft.crm.entity.ProformaInvoiceContent;
 import com.mahendratechnosoft.crm.entity.Proposal;
 import com.mahendratechnosoft.crm.entity.ProposalContent;
+import com.mahendratechnosoft.crm.enums.FORMAT;
+import com.mahendratechnosoft.crm.enums.TYPE;
 import com.mahendratechnosoft.crm.repository.AMCDomainHistoryRepository;
 import com.mahendratechnosoft.crm.repository.AMCGsuitHistoryRepository;
 import com.mahendratechnosoft.crm.repository.AMCHistoryRepository;
 import com.mahendratechnosoft.crm.repository.AttendanceRepository;
+import com.mahendratechnosoft.crm.repository.FinanceSettingRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceContentRepository;
 import com.mahendratechnosoft.crm.repository.InvoiceRepository;
 import com.mahendratechnosoft.crm.repository.ItemsRepository;
@@ -96,6 +100,9 @@ public class SalesService {
 	
 	@Autowired
 	private AMCGsuitHistoryRepository amcGsuitHistoryRepository;
+	
+	@Autowired
+	private FinanceSettingRepository financeSettingRepository;
 
 	SalesService(AttendanceRepository attendanceRepository) {
 		this.attendanceRepository = attendanceRepository;
@@ -678,9 +685,30 @@ public class SalesService {
 			if (invoice.getTotalAmount() == (invoice.getPaidAmount() + payment.getAmount())) {
 				invoice.setStatus("Paid");
 				if (invoice.getInvoiceNumber() == 0) {
-					invoice.setInvoiceNumber(generateInvoiceNumber(adminId));
-					invoice.setInvoiceDate(payment.getPaymentDate());
-				}
+			        int invoiceNum = generateInvoiceNumber(adminId);
+			        invoice.setInvoiceNumber(invoiceNum);
+			        invoice.setInvoiceDate(payment.getPaymentDate());
+			        
+			        FinanceSetting financeSetting = financeSettingRepository.findByAdminIdAndType(adminId, TYPE.INVOICE);
+			        String formattedInvoiceNumber = "";
+			        String sequenceString = String.format("%06d", invoiceNum);
+			        if (financeSetting != null) {
+			            String prefix = financeSetting.getPrefix() != null ? financeSetting.getPrefix() + "-" : "INV-";
+			            
+			            if (financeSetting.getNumberFormat() == FORMAT.YEAR) {
+			            	if (invoice.getInvoiceDate() != null) {
+			                    int year = invoice.getInvoiceDate().toLocalDate().getYear();
+			                    prefix = prefix + year + "/";
+			                } else {
+			                    prefix = prefix + LocalDate.now().getYear() + "/";
+			                }
+			            }
+			            formattedInvoiceNumber = prefix + sequenceString;
+			        } else {
+			            formattedInvoiceNumber = String.valueOf("INV-"+sequenceString);
+			        }
+			        invoice.setFormatedInvoiceNumber(formattedInvoiceNumber);
+			    }
 			} else if (invoice.getTotalAmount() > (invoice.getPaidAmount() + payment.getAmount())) {
 				invoice.setStatus("Partially Paid");
 			}

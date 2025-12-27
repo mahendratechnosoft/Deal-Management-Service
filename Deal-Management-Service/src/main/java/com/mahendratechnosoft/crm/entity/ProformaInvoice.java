@@ -77,7 +77,7 @@ public class ProformaInvoice {
     
     private int invoiceNumber;
     private Date invoiceDate;
-    
+    private String formatedInvoiceNumber;
     
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
@@ -538,6 +538,14 @@ public class ProformaInvoice {
 
 	public void setFormatedProformaInvoiceNumber(String formatedProformaInvoiceNumber) {
 		this.formatedProformaInvoiceNumber = formatedProformaInvoiceNumber;
+	}
+	
+	public String getFormatedInvoiceNumber() {
+		return formatedInvoiceNumber;
+	}
+
+	public void setFormatedInvoiceNumber(String formatedInvoiceNumber) {
+		this.formatedInvoiceNumber = formatedInvoiceNumber;
 	}
 
 	@Override

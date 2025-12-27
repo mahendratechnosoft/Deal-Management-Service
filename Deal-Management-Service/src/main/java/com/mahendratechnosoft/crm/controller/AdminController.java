@@ -1736,5 +1736,11 @@ public class AdminController {
 
 		return settingServices.getFinanceSettingByType(admin.getAdminId(), type);
 	}
+	
+	@GetMapping("/getNextVendorNumber")
+    public ResponseEntity<Integer> getNextVendorNumber(@ModelAttribute Admin admin) {
+        int nextNumber = expenceService.getNextVendorNumberForAdmin(admin.getAdminId());
+        return ResponseEntity.ok(nextNumber);
+    }
 
 }
